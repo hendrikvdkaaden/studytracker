@@ -24,13 +24,14 @@ class GoalAdapter extends TypeAdapter<Goal> {
       type: fields[4] as GoalType,
       difficulty: fields[5] as Difficulty,
       isCompleted: fields[6] as bool,
+      studyTime: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Goal obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class GoalAdapter extends TypeAdapter<Goal> {
       ..writeByte(5)
       ..write(obj.difficulty)
       ..writeByte(6)
-      ..write(obj.isCompleted);
+      ..write(obj.isCompleted)
+      ..writeByte(7)
+      ..write(obj.studyTime);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'screens/home_screen.dart';
 import 'screens/plan_screen.dart';
 import 'screens/timer_screen.dart';
 import 'screens/stats_screen.dart';
+import 'screens/add_goal_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,10 +63,12 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: () {
-                // TODO: Navigate to add goal screen
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Add goal coming soon!')),
-                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddGoalScreen(),
+                  ),
+                ).then((_) => setState(() {}));
               },
               child: const Icon(Icons.add),
             )

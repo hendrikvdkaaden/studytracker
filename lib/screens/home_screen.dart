@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/goal_repository.dart';
 import '../models/goal.dart';
+import '../utils/goal_type_helper.dart';
+import '../utils/difficulty_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -75,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: CircleAvatar(
           backgroundColor: color.withValues(alpha: 0.2),
           child: Icon(
-            _getIconForType(goal.type),
+            GoalTypeHelper.getIconForType(goal.type),
             color: color,
           ),
         ),
@@ -88,75 +90,58 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(goal.subject),
             const SizedBox(height: 4),
-            Text(
-              isOverdue
-                  ? '${daysLeft.abs()} days overdue'
-                  : '$daysLeft days left',
-              style: TextStyle(
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
+            Row(
+              children: [
+                Icon(
+                  Icons.calendar_today,
+                  size: 14,
+                  color: color,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  isOverdue
+                      ? '${daysLeft.abs()} days overdue'
+                      : '$daysLeft days left',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
+            if (goal.studyTime > 0) ...[
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.access_time,
+                    size: 14,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    goal.getFormattedStudyTime(),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
         trailing: Chip(
           label: Text(
-            _getDifficultyLabel(goal.difficulty),
+            DifficultyHelper.getLabel(goal.difficulty),
             style: const TextStyle(fontSize: 12),
           ),
-          backgroundColor: _getDifficultyColor(goal.difficulty),
+          backgroundColor: DifficultyHelper.getColor(goal.difficulty),
         ),
         onTap: () {
           // TODO: Navigate to goal details
         },
       ),
     );
-  }
-
-  IconData _getIconForType(GoalType type) {
-    switch (type) {
-      case GoalType.exam:
-        return Icons.school;
-      case GoalType.test:
-        return Icons.quiz;
-      case GoalType.assignment:
-        return Icons.assignment;
-      case GoalType.presentation:
-        return Icons.present_to_all;
-      case GoalType.project:
-        return Icons.work;
-      case GoalType.paper:
-        return Icons.description;
-      case GoalType.quiz:
-        return Icons.question_answer;
-      case GoalType.other:
-        return Icons.more_horiz;
-    }
-  }
-
-  String _getDifficultyLabel(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return 'Easy';
-      case Difficulty.medium:
-        return 'Medium';
-      case Difficulty.hard:
-        return 'Hard';
-      case Difficulty.veryHard:
-        return 'Very Hard';
-    }
-  }
-
-  Color _getDifficultyColor(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return Colors.green.shade100;
-      case Difficulty.medium:
-        return Colors.yellow.shade100;
-      case Difficulty.hard:
-        return Colors.orange.shade100;
-      case Difficulty.veryHard:
-        return Colors.red.shade100;
-    }
   }
 }

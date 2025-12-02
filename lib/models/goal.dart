@@ -25,6 +25,9 @@ class Goal extends HiveObject {
   @HiveField(6)
   bool isCompleted;
 
+  @HiveField(7)
+  int studyTime; // in minutes
+
   Goal({
     required this.id,
     required this.title,
@@ -33,6 +36,7 @@ class Goal extends HiveObject {
     required this.type,
     required this.difficulty,
     this.isCompleted = false,
+    this.studyTime = 0,
   });
 
   // Helper methods
@@ -44,6 +48,16 @@ class Goal extends HiveObject {
     return date.difference(DateTime.now()).inDays;
   }
 
+  // Helper methods for study time
+  String getFormattedStudyTime() {
+    final hours = studyTime ~/ 60;
+    final minutes = studyTime % 60;
+    if (hours > 0) {
+      return minutes > 0 ? '${hours}h ${minutes}m' : '${hours}h';
+    }
+    return '${minutes}m';
+  }
+
   // CopyWith method voor immutability
   Goal copyWith({
     String? id,
@@ -53,6 +67,7 @@ class Goal extends HiveObject {
     GoalType? type,
     Difficulty? difficulty,
     bool? isCompleted,
+    int? studyTime,
   }) {
     return Goal(
       id: id ?? this.id,
@@ -62,6 +77,7 @@ class Goal extends HiveObject {
       type: type ?? this.type,
       difficulty: difficulty ?? this.difficulty,
       isCompleted: isCompleted ?? this.isCompleted,
+      studyTime: studyTime ?? this.studyTime,
     );
   }
 }

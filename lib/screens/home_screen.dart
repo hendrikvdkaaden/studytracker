@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/goal_repository.dart';
 import '../models/goal.dart';
-import '../utils/goal_type_helper.dart';
-import '../utils/difficulty_helper.dart';
+import '../widgets/home/goal_card.dart';
+import 'goal_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final upcomingGoals = _goalRepo.getUpcomingGoals(30);
     final overdueGoals = _goalRepo.getOverdueGoals();
+    final completedGoals = _goalRepo.getCompletedGoals();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -32,7 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          ...overdueGoals.map((goal) => _buildGoalCard(goal, isOverdue: true)),
+          ...overdueGoals.map((goal) => GoalCard(
+                goal: goal,
+                isOverdue: true,
+                onTap: () => _navigateToDetails(goal),
+              )),
           const SizedBox(height: 16),
         ],
         const Text(
@@ -58,90 +63,37 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         else
-          ...upcomingGoals.map((goal) => _buildGoalCard(goal)),
+          ...upcomingGoals.map((goal) => GoalCard(
+                goal: goal,
+                onTap: () => _navigateToDetails(goal),
+              )),
+        if (completedGoals.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          const Text(
+            'Completed',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ...completedGoals.map((goal) => GoalCard(
+                goal: goal,
+                isCompleted: true,
+                onTap: () => _navigateToDetails(goal),
+              )),
+        ],
       ],
     );
   }
 
-  Widget _buildGoalCard(Goal goal, {bool isOverdue = false}) {
-    final daysLeft = goal.daysUntilDeadline();
-    final color = isOverdue
-        ? Colors.red
-        : daysLeft <= 3
-            ? Colors.orange
-            : Colors.blue;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.2),
-          child: Icon(
-            GoalTypeHelper.getIconForType(goal.type),
-            color: color,
-          ),
-        ),
-        title: Text(
-          goal.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(goal.subject),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  size: 14,
-                  color: color,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  isOverdue
-                      ? '${daysLeft.abs()} days overdue'
-                      : '$daysLeft days left',
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            if (goal.studyTime > 0) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.access_time,
-                    size: 14,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    goal.getFormattedStudyTime(),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-        trailing: Chip(
-          label: Text(
-            DifficultyHelper.getLabel(goal.difficulty),
-            style: const TextStyle(fontSize: 12),
-          ),
-          backgroundColor: DifficultyHelper.getColor(goal.difficulty),
-        ),
-        onTap: () {
-          // TODO: Navigate to goal details
-        },
+  void _navigateToDetails(Goal goal) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GoalDetailsScreen(goal: goal),
       ),
-    );
+    ).then((_) => setState(() {}));
   }
 }

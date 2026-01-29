@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../models/goal.dart';
 import '../services/goal_repository.dart';
-import '../widgets/add_goal_modern/custom_text_field.dart';
-import '../widgets/add_goal_modern/clickable_field.dart';
-import '../widgets/add_goal_modern/goal_type_selector.dart';
-import '../widgets/add_goal_modern/study_time_picker_modal.dart';
-import '../widgets/add_goal_modern/fixed_footer_button.dart';
+import '../widgets/add_goal/study_time_picker_modal.dart';
+import '../widgets/add_goal/custom_text_field.dart';
+import '../widgets/add_goal/clickable_field.dart';
+import '../widgets/add_goal/goal_type_selector.dart';
+import '../widgets/add_goal/fixed_footer_button.dart';
 
 class AddGoalScreen extends StatefulWidget {
   const AddGoalScreen({super.key});

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/goal_repository.dart';
 import '../models/goal.dart';
-import '../widgets/home/goal_card.dart';
+import '../widgets/home/modern_goal_card.dart';
+import '../widgets/home/section_header.dart';
 import 'goal_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,67 +22,61 @@ class _HomeScreenState extends State<HomeScreen> {
     final completedGoals = _goalRepo.getCompletedGoals();
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       children: [
+        // Overdue Section
         if (overdueGoals.isNotEmpty) ...[
-          const Text(
-            'Overdue',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-            ),
+          const SectionHeader(
+            title: 'Overdue',
+            color: Colors.red,
           ),
-          const SizedBox(height: 8),
-          ...overdueGoals.map((goal) => GoalCard(
+          ...overdueGoals.map((goal) => ModernGoalCard(
                 goal: goal,
                 isOverdue: true,
                 onTap: () => _navigateToDetails(goal),
               )),
           const SizedBox(height: 16),
         ],
-        const Text(
-          'Upcoming Deadlines',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+
+        // Upcoming Section
+        const SectionHeader(
+          title: 'Upcoming Deadlines',
+          color: Color(0xFF135BEC),
         ),
-        const SizedBox(height: 8),
         if (upcomingGoals.isEmpty)
-          const Center(
+          Center(
             child: Padding(
-              padding: EdgeInsets.all(32),
+              padding: const EdgeInsets.symmetric(vertical: 48),
               child: Text(
                 'No upcoming deadlines.\nTap + to add a goal!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Colors.grey.shade400,
                   fontSize: 16,
                 ),
               ),
             ),
           )
         else
-          ...upcomingGoals.map((goal) => GoalCard(
+          ...upcomingGoals.map((goal) => ModernGoalCard(
                 goal: goal,
                 onTap: () => _navigateToDetails(goal),
               )),
+
+        // Completed Section
         if (completedGoals.isNotEmpty) ...[
           const SizedBox(height: 16),
-          const Text(
-            'Completed',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
-            ),
+          const SectionHeader(
+            title: 'Completed',
+            color: Colors.green,
           ),
-          const SizedBox(height: 8),
-          ...completedGoals.map((goal) => GoalCard(
-                goal: goal,
-                isCompleted: true,
-                onTap: () => _navigateToDetails(goal),
+          ...completedGoals.map((goal) => Opacity(
+                opacity: 0.8,
+                child: ModernGoalCard(
+                  goal: goal,
+                  isCompleted: true,
+                  onTap: () => _navigateToDetails(goal),
+                ),
               )),
         ],
       ],

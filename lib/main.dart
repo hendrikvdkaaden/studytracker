@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:studytrack/product/screens/add_goal_screen.dart';
+import 'package:studytrack/product/screens/home_screen.dart';
+import 'package:studytrack/product/screens/plan_screen.dart';
+import 'package:studytrack/product/screens/stats_screen.dart';
 import 'services/hive_service.dart';
-import 'screens/home_screen.dart';
-import 'screens/plan_screen.dart';
-import 'screens/timer_screen.dart';
-import 'screens/stats_screen.dart';
-import 'screens/add_goal_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,9 +52,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    PlanScreen(),
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const PlanScreen(),
     StatsScreen(),
     StatsScreen(), // Placeholder for Profile screen
   ];

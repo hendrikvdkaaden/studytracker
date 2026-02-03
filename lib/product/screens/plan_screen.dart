@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../services/goal_repository.dart';
-import '../widgets/calendar/calendar_section.dart';
-import '../widgets/calendar/goals/date_header.dart';
-import '../widgets/calendar/goals/goals_list.dart';
+
+import '../../services/goal_repository.dart';
+import '../../widgets/calendar/calendar_section.dart';
+import '../../widgets/calendar/goals/date_header.dart';
+import '../../widgets/calendar/goals/goals_list.dart';
 
 class PlanScreen extends StatefulWidget {
   const PlanScreen({super.key});

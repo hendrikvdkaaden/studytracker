@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
-import '../../../screens/goal_details_screen.dart';
+import '../../../product/screens/goal_details_screen.dart';
 import 'deadline_list_item.dart';
 
 class GoalsList extends StatelessWidget {

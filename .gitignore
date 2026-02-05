@@ -49,3 +49,6 @@ app.*.map.json
 
 # Exception: include pubspec.lock for Flutter projects
 !pubspec.lock
+
+# Claude documentation
+claude.md

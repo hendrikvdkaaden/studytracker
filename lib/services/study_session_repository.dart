@@ -45,9 +45,9 @@ class StudySessionRepository {
     return getSessionsByDateRange(startOfDay, endOfDay);
   }
 
-  /// Get total study time for a specific goal (in minutes)
+  /// Get total study time for a specific goal (in minutes) - only completed sessions
   int getTotalStudyTimeForGoal(String goalId) {
-    return getSessionsByGoalId(goalId)
+    return getCompletedSessionsByGoalId(goalId)
         .fold(0, (total, session) => total + session.duration);
   }
 
@@ -66,6 +66,60 @@ class StudySessionRepository {
 
     return getSessionsByDateRange(startOfWeekDay, endOfWeek)
         .fold(0, (total, session) => total + session.duration);
+  }
+
+  /// Get planned (not completed) sessions for a specific goal
+  List<StudySession> getPlannedSessionsByGoalId(String goalId) {
+    return _box.values
+        .where((session) => session.goalId == goalId && !session.isCompleted)
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date)); // Earliest first
+  }
+
+  /// Get completed sessions for a specific goal
+  List<StudySession> getCompletedSessionsByGoalId(String goalId) {
+    return _box.values
+        .where((session) => session.goalId == goalId && session.isCompleted)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date)); // Most recent first
+  }
+
+  /// Get planned sessions for a specific date
+  List<StudySession> getPlannedSessionsByDate(DateTime date) {
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    return _box.values
+        .where((session) {
+          if (session.isCompleted) return false;
+
+          // Check if session.date is on the same day
+          final sessionDay = DateTime(
+            session.date.year,
+            session.date.month,
+            session.date.day,
+          );
+
+          return sessionDay.year == date.year &&
+                 sessionDay.month == date.month &&
+                 sessionDay.day == date.day;
+        })
+        .toList()
+      ..sort((a, b) {
+        // Sort by start time if available, otherwise by date
+        if (a.startTime != null && b.startTime != null) {
+          return a.startTime!.compareTo(b.startTime!);
+        }
+        return a.date.compareTo(b.date);
+      });
+  }
+
+  /// Get all planned sessions
+  List<StudySession> getAllPlannedSessions() {
+    return _box.values
+        .where((session) => !session.isCompleted)
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 
   /// Add a new study session

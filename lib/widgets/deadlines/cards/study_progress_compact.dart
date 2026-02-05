@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/goal.dart';
-import '../../services/study_session_repository.dart';
+import '../../../models/goal.dart';
+import '../../../services/study_session_repository.dart';
 
 class StudyProgressCompact extends StatelessWidget {
   final Goal goal;

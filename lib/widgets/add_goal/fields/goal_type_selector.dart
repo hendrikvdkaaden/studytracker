@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/goal.dart';
+import '../../../models/goal.dart';
 
 class GoalTypeSelector extends StatelessWidget {
   final GoalType selectedType;

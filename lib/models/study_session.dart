@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 part 'study_session.g.dart';
 
 /// A study session that tracks time spent studying for a goal.
+/// Can be either planned (isCompleted = false) or completed (isCompleted = true).
 @HiveType(typeId: 3)
 class StudySession extends HiveObject {
   @HiveField(0)
@@ -13,12 +14,21 @@ class StudySession extends HiveObject {
   DateTime date;
   @HiveField(3)
   int duration;
+  @HiveField(4)
+  bool isCompleted;
+  @HiveField(5)
+  DateTime? startTime;
+  @HiveField(6)
+  String? notes;
 
   StudySession({
     required this.id,
     required this.goalId,
     required this.date,
     required this.duration,
+    this.isCompleted = true,
+    this.startTime,
+    this.notes,
   });
 
   /// Returns the duration as a formatted string (e.g., "1h 30m")
@@ -40,12 +50,18 @@ class StudySession extends HiveObject {
     String? goalId,
     DateTime? date,
     int? duration,
+    bool? isCompleted,
+    DateTime? startTime,
+    String? notes,
   }) {
     return StudySession(
       id: id ?? this.id,
       goalId: goalId ?? this.goalId,
       date: date ?? this.date,
       duration: duration ?? this.duration,
+      isCompleted: isCompleted ?? this.isCompleted,
+      startTime: startTime ?? this.startTime,
+      notes: notes ?? this.notes,
     );
   }
 }

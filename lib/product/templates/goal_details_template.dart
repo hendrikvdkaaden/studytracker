@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
-import '../../widgets/goal_details_modern/goal_info_card.dart';
-import '../../widgets/goal_details_modern/deadline_card.dart';
-import '../../widgets/goal_details_modern/progress_section_header.dart';
-import '../../widgets/goal_details_modern/progress_circle.dart';
-import '../../widgets/goal_details_modern/action_buttons.dart';
+import '../../models/study_session.dart';
+import '../../widgets/goal_details_modern/info/goal_info_card.dart';
+import '../../widgets/goal_details_modern/info/deadline_card.dart';
+import '../../widgets/goal_details_modern/progress/progress_section_header.dart';
+import '../../widgets/goal_details_modern/progress/progress_circle.dart';
+import '../../widgets/goal_details_modern/actions/action_buttons.dart';
+import '../../widgets/goal_details_modern/sessions/planned_sessions_section.dart';
 
 /// Layout template for the goal details screen
 class GoalDetailsTemplate extends StatelessWidget {
   final Goal goal;
   final int timeSpent;
+  final List<StudySession> plannedSessions;
   final VoidCallback onEditProgress;
   final VoidCallback onMarkComplete;
 
@@ -17,6 +20,7 @@ class GoalDetailsTemplate extends StatelessWidget {
     super.key,
     required this.goal,
     required this.timeSpent,
+    required this.plannedSessions,
     required this.onEditProgress,
     required this.onMarkComplete,
   });
@@ -27,54 +31,40 @@ class GoalDetailsTemplate extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildGoalInfoSection(),
-          _buildDeadlineSection(),
-          _buildProgressSection(),
-          _buildActionButtons(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoalInfoSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: GoalInfoCard(goal: goal),
-    );
-  }
-
-  Widget _buildDeadlineSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: DeadlineCard(goal: goal),
-    );
-  }
-
-  Widget _buildProgressSection() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-          child: ProgressSectionHeader(onEdit: onEditProgress),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ProgressCircle(
-            timeSpent: timeSpent,
-            targetTime: goal.studyTime,
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: GoalInfoCard(goal: goal),
           ),
-        ),
-        const SizedBox(height: 24),
-      ],
-    );
-  }
-
-  Widget _buildActionButtons() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      child: ActionButtons(
-        onMarkComplete: onMarkComplete,
-        isCompleted: goal.isCompleted,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: DeadlineCard(goal: goal),
+          ),
+          if (plannedSessions.isNotEmpty)
+            PlannedSessionsSection(sessions: plannedSessions),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                child: ProgressSectionHeader(onEdit: onEditProgress),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ProgressCircle(
+                  timeSpent: timeSpent,
+                  targetTime: goal.studyTime,
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: ActionButtons(
+              onMarkComplete: onMarkComplete,
+              isCompleted: goal.isCompleted,
+            ),
+          ),
+        ],
       ),
     );
   }

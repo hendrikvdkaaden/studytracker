@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
-import '../../widgets/goal_details_modern/edit_progress_dialog.dart';
-import '../../widgets/goal_details_modern/goal_details_app_bar.dart';
+import '../../services/study_session_repository.dart';
+import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
+import '../../widgets/goal_details_modern/progress/edit_progress_dialog.dart';
 import '../templates/goal_details_template.dart';
 
 class GoalDetailsScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class GoalDetailsScreen extends StatefulWidget {
 class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   late Goal _goal;
   final GoalOperationsService _operationsService = GoalOperationsService();
+  final StudySessionRepository _sessionRepo = StudySessionRepository();
 
   @override
   void initState() {
@@ -75,6 +77,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final timeSpent = _operationsService.getTotalStudyTime(_goal.id);
+    final plannedSessions = _sessionRepo.getPlannedSessionsByGoalId(_goal.id);
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF102221) : const Color(0xFFF5F8F8),
@@ -82,6 +85,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
       body: GoalDetailsTemplate(
         goal: _goal,
         timeSpent: timeSpent,
+        plannedSessions: plannedSessions,
         onEditProgress: _showEditProgressDialog,
         onMarkComplete: _toggleComplete,
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/goal.dart';
-import '../../utils/goal_type_helper.dart';
+import '../../../models/goal.dart';
+import '../../../utils/goal_type_helper.dart';
 import 'study_progress_compact.dart';
 
 class GoalCard extends StatelessWidget {

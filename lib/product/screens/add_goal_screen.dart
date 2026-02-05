@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../../models/goal.dart';
+import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
-import '../../widgets/add_goal/study_time_picker_modal.dart';
+import '../../services/study_session_repository.dart';
+import '../../widgets/add_goal/pickers/study_time_picker_modal.dart';
+import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
 
 class AddGoalScreen extends StatefulWidget {
@@ -17,11 +20,13 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   final _titleController = TextEditingController();
   final _subjectController = TextEditingController();
   final GoalRepository _goalRepo = GoalRepository();
+  final StudySessionRepository _sessionRepo = StudySessionRepository();
 
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
   GoalType _selectedType = GoalType.exam;
   int _studyTimeHours = 0;
   int _studyTimeMinutes = 0;
+  final List<StudySession> _plannedSessions = [];
 
   @override
   void dispose() {
@@ -69,7 +74,24 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     );
   }
 
-  void _saveGoal() {
+  Future<void> _showStudySessionPicker() async {
+    await showStudySessionPicker(
+      context: context,
+      onSessionAdded: (session) {
+        setState(() {
+          _plannedSessions.add(session);
+        });
+      },
+    );
+  }
+
+  void _deleteSession(int index) {
+    setState(() {
+      _plannedSessions.removeAt(index);
+    });
+  }
+
+  Future<void> _saveGoal() async {
     if (_formKey.currentState!.validate()) {
       final totalMinutes = (_studyTimeHours * 60) + _studyTimeMinutes;
 
@@ -83,11 +105,27 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         studyTime: totalMinutes,
       );
 
-      _goalRepo.addGoal(goal);
+      // Save goal first
+      await _goalRepo.addGoal(goal);
+
+      // Save planned sessions with the goal ID
+      for (var session in _plannedSessions) {
+        final sessionWithGoalId = session.copyWith(goalId: goal.id);
+        await _sessionRepo.addSession(sessionWithGoalId);
+      }
+
+      if (!mounted) return;
+
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Goal added successfully!')),
+        SnackBar(
+          content: Text(
+            _plannedSessions.isEmpty
+                ? 'Goal added successfully!'
+                : 'Goal and ${_plannedSessions.length} session${_plannedSessions.length != 1 ? 's' : ''} added!',
+          ),
+        ),
       );
     }
   }
@@ -125,9 +163,12 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         selectedType: _selectedType,
         formattedDate: _formatDate(_selectedDate),
         formattedStudyTime: _formatStudyTime(),
+        plannedSessions: _plannedSessions,
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
         onStudyTimeTap: _showStudyTimePicker,
+        onSessionTap: _showStudySessionPicker,
+        onSessionDelete: _deleteSession,
         onSave: _saveGoal,
       ),
     );

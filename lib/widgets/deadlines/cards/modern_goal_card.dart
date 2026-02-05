@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../models/goal.dart';
-import '../../utils/goal_type_helper.dart';
-import '../../services/study_session_repository.dart';
+import '../../../models/goal.dart';
+import '../../../utils/goal_type_helper.dart';
+import '../../../services/study_session_repository.dart';
 
 class ModernGoalCard extends StatelessWidget {
   final Goal goal;

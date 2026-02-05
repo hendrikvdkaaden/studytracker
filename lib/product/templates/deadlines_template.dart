@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
-import '../../widgets/home/modern_goal_card.dart';
-import '../../widgets/home/section_header.dart';
+import '../../widgets/deadlines/cards/modern_goal_card.dart';
+import '../../widgets/deadlines/headers/section_header.dart';
 
-/// Layout template for the home screen displaying categorized goals
+/// Layout template for the deadlines screen displaying categorized goals
 class HomeTemplate extends StatelessWidget {
   final List<Goal> overdueGoals;
   final List<Goal> upcomingGoals;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/goal.dart';
 import '../models/study_session.dart';
@@ -22,6 +23,39 @@ class HiveService {
     // Open all boxes
     await Hive.openBox<Goal>(goalsBoxName);
     await Hive.openBox<StudySession>(studySessionsBoxName);
+
+    // Run migration for existing study sessions
+    await _migrateStudySessions();
+  }
+
+  /// Migrate existing study sessions to mark them as completed
+  static Future<void> _migrateStudySessions() async {
+    final box = getStudySessionsBox();
+    bool needsMigration = false;
+
+    // Check if any session doesn't have the isCompleted field set properly
+    for (var session in box.values) {
+      // If startTime or notes are null and this looks like an old session,
+      // we can assume it's a completed session from before the migration
+      if (session.startTime == null && session.notes == null) {
+        needsMigration = true;
+        break;
+      }
+    }
+
+    if (needsMigration) {
+      debugPrint('Migrating study sessions...');
+      for (var session in box.values.toList()) {
+        // Only migrate if it looks like an old session
+        if (session.startTime == null && session.notes == null) {
+          final migratedSession = session.copyWith(
+            isCompleted: true,
+          );
+          await box.put(session.id, migratedSession);
+        }
+      }
+      debugPrint('Migration completed: ${box.length} sessions processed');
+    }
   }
 
   /// Get the goals box

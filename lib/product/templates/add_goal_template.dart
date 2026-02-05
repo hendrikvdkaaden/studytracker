@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
-import '../../widgets/add_goal/clickable_field.dart';
-import '../../widgets/add_goal/custom_text_field.dart';
-import '../../widgets/add_goal/fixed_footer_button.dart';
-import '../../widgets/add_goal/goal_type_selector.dart';
+import '../../models/study_session.dart';
+import '../../widgets/add_goal/fields/clickable_field.dart';
+import '../../widgets/add_goal/fields/custom_text_field.dart';
+import '../../widgets/add_goal/buttons/fixed_footer_button.dart';
+import '../../widgets/add_goal/fields/goal_type_selector.dart';
+import '../../widgets/add_goal/sessions/planned_sessions_list.dart';
 
 /// Layout template for the add goal screen
 class AddGoalTemplate extends StatelessWidget {
@@ -14,9 +16,12 @@ class AddGoalTemplate extends StatelessWidget {
   final GoalType selectedType;
   final String formattedDate;
   final String formattedStudyTime;
+  final List<StudySession> plannedSessions;
   final Function(GoalType) onTypeSelected;
   final VoidCallback onDateTap;
   final VoidCallback onStudyTimeTap;
+  final VoidCallback onSessionTap;
+  final Function(int) onSessionDelete;
   final VoidCallback onSave;
 
   const AddGoalTemplate({
@@ -28,9 +33,12 @@ class AddGoalTemplate extends StatelessWidget {
     required this.selectedType,
     required this.formattedDate,
     required this.formattedStudyTime,
+    required this.plannedSessions,
     required this.onTypeSelected,
     required this.onDateTap,
     required this.onStudyTimeTap,
+    required this.onSessionTap,
+    required this.onSessionDelete,
     required this.onSave,
   });
 
@@ -59,6 +67,8 @@ class AddGoalTemplate extends StatelessWidget {
           _buildDeadlineField(),
           const SizedBox(height: 32),
           _buildStudyTimeField(),
+          const SizedBox(height: 32),
+          _buildPlannedSessionsField(),
         ],
       ),
     );
@@ -115,6 +125,28 @@ class AddGoalTemplate extends StatelessWidget {
       displayText: formattedStudyTime,
       icon: Icons.access_time,
       onTap: onStudyTimeTap,
+    );
+  }
+
+  Widget _buildPlannedSessionsField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClickableField(
+          label: 'Study Sessions',
+          subtitle: 'Plan when you will study for this goal',
+          displayText: plannedSessions.isEmpty
+              ? 'Add study sessions'
+              : '${plannedSessions.length} session${plannedSessions.length != 1 ? 's' : ''} planned',
+          icon: Icons.event_note,
+          onTap: onSessionTap,
+        ),
+        if (plannedSessions.isNotEmpty)
+          PlannedSessionsList(
+            sessions: plannedSessions,
+            onDelete: onSessionDelete,
+          ),
+      ],
     );
   }
 

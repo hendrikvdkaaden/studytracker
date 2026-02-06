@@ -7,6 +7,7 @@ import '../../theme/app_colors.dart';
 import '../templates/home_template.dart';
 import 'add_goal_screen.dart';
 import 'goal_details_screen.dart';
+import 'study_timer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<StudySession> _getCompletedSessionsForDate(DateTime date) {
     return _sessionRepo
         .getPlannedSessionsByDate(date)
-        .where((session) => session.isCompleted)
+        .where((session) =>
+            session.actualDuration != null &&
+            session.actualDuration! >= session.duration)
         .toList()
       ..sort((a, b) {
         if (a.startTime != null && b.startTime != null) {
@@ -50,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<StudySession> _getPlannedSessionsForDate(DateTime date) {
     return _sessionRepo
         .getPlannedSessionsByDate(date)
-        .where((session) => !session.isCompleted)
+        .where((session) =>
+            session.actualDuration == null ||
+            session.actualDuration! < session.duration)
         .toList()
       ..sort((a, b) {
         if (a.startTime != null && b.startTime != null) {
@@ -78,7 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _getCompletedTasksToday() {
     final today = DateTime.now();
     final completedSessions = _getCompletedSessionsForDate(today);
-    return completedSessions.length;
+    final completedGoals = _goalRepo
+        .getAllGoals()
+        .where((goal) => goal.isCompleted && _isSameDay(goal.date, today))
+        .length;
+    return completedSessions.length + completedGoals;
   }
 
   void _onDateSelected(DateTime date) {
@@ -94,6 +103,21 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) => GoalDetailsScreen(goal: goal),
       ),
     ).then((_) => setState(() {}));
+  }
+
+  void _onSessionTap(StudySession session) {
+    final goal = _goalRepo.getGoalById(session.goalId);
+    if (goal != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StudyTimerScreen(
+            session: session,
+            goal: goal,
+          ),
+        ),
+      ).then((_) => setState(() {}));
+    }
   }
 
   void _onAddPressed() {
@@ -126,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
           completedTasksToday: _getCompletedTasksToday(),
           onDateSelected: _onDateSelected,
           onDeadlineTap: _onDeadlineTap,
+          onSessionTap: _onSessionTap,
           onAddPressed: _onAddPressed,
         ),
       ),

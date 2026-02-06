@@ -1,10 +1,17 @@
 import 'package:hive/hive.dart';
 import '../models/study_session.dart';
 import 'hive_service.dart';
+import 'goal_repository.dart';
 
 /// Repository for managing StudySession CRUD operations
 class StudySessionRepository {
   final Box<StudySession> _box = HiveService.getStudySessionsBox();
+
+  Future<void> _updateGoalStudyTime(String goalId) async {
+    final goalRepo = GoalRepository();
+    final sessions = getSessionsByGoalId(goalId);
+    await goalRepo.updateGoalStudyTime(goalId, sessions);
+  }
 
   /// Get all study sessions
   List<StudySession> getAllSessions() {
@@ -13,10 +20,11 @@ class StudySessionRepository {
 
   /// Get a study session by ID
   StudySession? getSessionById(String id) {
-    return _box.values.firstWhere(
-      (session) => session.id == id,
-      orElse: () => throw Exception('Study session not found'),
-    );
+    try {
+      return _box.values.firstWhere((session) => session.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Get all study sessions for a specific goal
@@ -45,10 +53,17 @@ class StudySessionRepository {
     return getSessionsByDateRange(startOfDay, endOfDay);
   }
 
-  /// Get total study time for a specific goal (in minutes) - only completed sessions
+  /// Get total study time for a specific goal (in minutes) - uses actualDuration if available
   int getTotalStudyTimeForGoal(String goalId) {
-    return getCompletedSessionsByGoalId(goalId)
-        .fold(0, (total, session) => total + session.duration);
+    return getSessionsByGoalId(goalId).fold(0, (total, session) {
+      // Use actualDuration if available, otherwise fall back to duration for completed sessions
+      if (session.actualDuration != null && session.actualDuration! > 0) {
+        return total + session.actualDuration!;
+      } else if (session.isCompleted) {
+        return total + session.duration;
+      }
+      return total;
+    });
   }
 
   /// Get total study time for today (in minutes)
@@ -125,16 +140,22 @@ class StudySessionRepository {
   /// Add a new study session
   Future<void> addSession(StudySession session) async {
     await _box.put(session.id, session);
+    await _updateGoalStudyTime(session.goalId);
   }
 
   /// Update an existing study session
   Future<void> updateSession(StudySession session) async {
     await _box.put(session.id, session);
+    await _updateGoalStudyTime(session.goalId);
   }
 
   /// Delete a study session
   Future<void> deleteSession(String id) async {
+    final session = getSessionById(id);
     await _box.delete(id);
+    if (session != null) {
+      await _updateGoalStudyTime(session.goalId);
+    }
   }
 
   /// Delete all sessions for a specific goal

@@ -24,6 +24,10 @@ class GoalOperationsService {
 
   /// Deletes a goal and all associated study sessions
   Future<void> deleteGoal(String goalId) async {
+    // First delete all associated study sessions
+    await _sessionRepo.deleteSessionsByGoalId(goalId);
+
+    // Then delete the goal itself
     await _goalRepo.deleteGoal(goalId);
   }
 

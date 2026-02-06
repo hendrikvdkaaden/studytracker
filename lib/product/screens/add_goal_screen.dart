@@ -4,7 +4,6 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
-import '../../widgets/add_goal/pickers/study_time_picker_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
 
@@ -24,8 +23,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
   GoalType _selectedType = GoalType.exam;
-  int _studyTimeHours = 0;
-  int _studyTimeMinutes = 0;
   final List<StudySession> _plannedSessions = [];
 
   @override
@@ -60,18 +57,12 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     }
   }
 
-  Future<void> _showStudyTimePicker() async {
-    await showStudyTimePicker(
-      context: context,
-      initialHours: _studyTimeHours,
-      initialMinutes: _studyTimeMinutes,
-      onTimeSelected: (hours, minutes) {
-        setState(() {
-          _studyTimeHours = hours;
-          _studyTimeMinutes = minutes;
-        });
-      },
-    );
+  int _calculateTotalStudyTime() {
+    int totalMinutes = 0;
+    for (var session in _plannedSessions) {
+      totalMinutes += session.duration;
+    }
+    return totalMinutes;
   }
 
   Future<void> _showStudySessionPicker() async {
@@ -93,7 +84,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 
   Future<void> _saveGoal() async {
     if (_formKey.currentState!.validate()) {
-      final totalMinutes = (_studyTimeHours * 60) + _studyTimeMinutes;
+      final totalMinutes = _calculateTotalStudyTime();
 
       final goal = Goal(
         id: const Uuid().v4(),
@@ -141,13 +132,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     return '$month $day, $year';
   }
 
-  String _formatStudyTime() {
-    if (_studyTimeHours == 0 && _studyTimeMinutes == 0) {
-      return 'Select study time';
-    }
-    return '${_studyTimeHours}h ${_studyTimeMinutes}m';
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -162,11 +146,9 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         selectedDate: _selectedDate,
         selectedType: _selectedType,
         formattedDate: _formatDate(_selectedDate),
-        formattedStudyTime: _formatStudyTime(),
         plannedSessions: _plannedSessions,
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
-        onStudyTimeTap: _showStudyTimePicker,
         onSessionTap: _showStudySessionPicker,
         onSessionDelete: _deleteSession,
         onSave: _saveGoal,

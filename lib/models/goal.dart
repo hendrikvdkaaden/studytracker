@@ -45,7 +45,7 @@ class Goal extends HiveObject {
   }
 
   int daysUntilDeadline() {
-    return date.difference(DateTime.now()).inDays;
+    return date.difference(DateTime.now()).inDays + 1;
   }
 
   // Helper methods for study time

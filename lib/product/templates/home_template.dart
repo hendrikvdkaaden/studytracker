@@ -17,6 +17,7 @@ class HomeTemplate extends StatelessWidget {
   final int completedTasksToday;
   final Function(DateTime) onDateSelected;
   final Function(Goal) onDeadlineTap;
+  final Function(StudySession) onSessionTap;
   final VoidCallback onAddPressed;
 
   const HomeTemplate({
@@ -30,6 +31,7 @@ class HomeTemplate extends StatelessWidget {
     required this.completedTasksToday,
     required this.onDateSelected,
     required this.onDeadlineTap,
+    required this.onSessionTap,
     required this.onAddPressed,
   });
 
@@ -145,6 +147,7 @@ class HomeTemplate extends StatelessWidget {
                             session: session,
                             goal: sessionGoals[session.goalId],
                             isCompleted: true,
+                            onTap: () => onSessionTap(session),
                           ),
                         );
                       } else {
@@ -156,6 +159,7 @@ class HomeTemplate extends StatelessWidget {
                             session: session,
                             goal: sessionGoals[session.goalId],
                             isCompleted: false,
+                            onTap: () => onSessionTap(session),
                           ),
                         );
                       }

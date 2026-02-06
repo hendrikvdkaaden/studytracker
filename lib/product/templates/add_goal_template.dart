@@ -15,11 +15,9 @@ class AddGoalTemplate extends StatelessWidget {
   final DateTime selectedDate;
   final GoalType selectedType;
   final String formattedDate;
-  final String formattedStudyTime;
   final List<StudySession> plannedSessions;
   final Function(GoalType) onTypeSelected;
   final VoidCallback onDateTap;
-  final VoidCallback onStudyTimeTap;
   final VoidCallback onSessionTap;
   final Function(int) onSessionDelete;
   final VoidCallback onSave;
@@ -32,11 +30,9 @@ class AddGoalTemplate extends StatelessWidget {
     required this.selectedDate,
     required this.selectedType,
     required this.formattedDate,
-    required this.formattedStudyTime,
     required this.plannedSessions,
     required this.onTypeSelected,
     required this.onDateTap,
-    required this.onStudyTimeTap,
     required this.onSessionTap,
     required this.onSessionDelete,
     required this.onSave,
@@ -59,15 +55,13 @@ class AddGoalTemplate extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         children: [
           _buildTitleField(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 18),
           _buildSubjectField(),
-          const SizedBox(height: 32),
-          _buildTypeSelector(),
-          const SizedBox(height: 32),
+          const SizedBox(height: 18),
           _buildDeadlineField(),
-          const SizedBox(height: 32),
-          _buildStudyTimeField(),
-          const SizedBox(height: 32),
+          const SizedBox(height: 18),
+          _buildTypeSelector(),
+          const SizedBox(height: 18),
           _buildPlannedSessionsField(),
         ],
       ),
@@ -76,8 +70,8 @@ class AddGoalTemplate extends StatelessWidget {
 
   Widget _buildTitleField() {
     return CustomTextField(
-      label: 'Goal Title',
-      hintText: 'e.g., Final Project',
+      label: 'Title',
+      hintText: 'Final Project',
       controller: titleController,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -91,7 +85,7 @@ class AddGoalTemplate extends StatelessWidget {
   Widget _buildSubjectField() {
     return CustomTextField(
       label: 'Subject',
-      hintText: 'e.g., Computer Science',
+      hintText: 'Computer Science',
       controller: subjectController,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -118,27 +112,17 @@ class AddGoalTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildStudyTimeField() {
-    return ClickableField(
-      label: 'Target Study Time',
-      subtitle: 'Total hours planned for this goal',
-      displayText: formattedStudyTime,
-      icon: Icons.access_time,
-      onTap: onStudyTimeTap,
-    );
-  }
-
   Widget _buildPlannedSessionsField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClickableField(
           label: 'Study Sessions',
-          subtitle: 'Plan when you will study for this goal',
+          subtitle: 'Total study time is calculated from your sessions',
           displayText: plannedSessions.isEmpty
               ? 'Add study sessions'
               : '${plannedSessions.length} session${plannedSessions.length != 1 ? 's' : ''} planned',
-          icon: Icons.event_note,
+          icon: Icons.add,
           onTap: onSessionTap,
         ),
         if (plannedSessions.isNotEmpty)

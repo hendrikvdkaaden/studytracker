@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import '../models/goal.dart';
+import '../models/study_session.dart';
 import 'hive_service.dart';
 
 /// Repository for managing Goal CRUD operations
@@ -13,10 +14,11 @@ class GoalRepository {
 
   /// Get a goal by ID
   Goal? getGoalById(String id) {
-    return _box.values.firstWhere(
-      (goal) => goal.id == id,
-      orElse: () => throw Exception('Goal not found'),
-    );
+    try {
+      return _box.values.firstWhere((goal) => goal.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Get all goals for a specific subject
@@ -64,6 +66,7 @@ class GoalRepository {
   }
 
   /// Delete a goal
+  /// Note: Use GoalOperationsService.deleteGoal() to also delete associated sessions
   Future<void> deleteGoal(String id) async {
     await _box.delete(id);
   }
@@ -85,5 +88,19 @@ class GoalRepository {
   /// Get total number of goals
   int getTotalCount() {
     return _box.length;
+  }
+
+  /// Update goal's studyTime based on all its sessions
+  /// Pass sessions from outside to avoid circular dependency
+  Future<void> updateGoalStudyTime(String goalId, List<StudySession> sessions) async {
+    final goal = getGoalById(goalId);
+    if (goal != null) {
+      final totalDuration = sessions.fold<int>(0, (sum, session) => sum + session.duration);
+
+      if (goal.studyTime != totalDuration) {
+        final updatedGoal = goal.copyWith(studyTime: totalDuration);
+        await updateGoal(updatedGoal);
+      }
+    }
   }
 }

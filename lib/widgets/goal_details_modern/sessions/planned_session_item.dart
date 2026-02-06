@@ -62,12 +62,18 @@ class PlannedSessionItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.calendarAccent.withOpacity(0.1),
+              color: (session.actualDuration != null && session.actualDuration! >= session.duration)
+                  ? AppColors.calendarAccent
+                  : AppColors.calendarAccent.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.schedule,
-              color: AppColors.calendarAccent,
+            child: Icon(
+              (session.actualDuration != null && session.actualDuration! >= session.duration)
+                  ? Icons.check
+                  : Icons.schedule,
+              color: (session.actualDuration != null && session.actualDuration! >= session.duration)
+                  ? Colors.white
+                  : AppColors.calendarAccent,
               size: 20,
             ),
           ),
@@ -102,13 +108,24 @@ class PlannedSessionItem extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Text(
-                      session.formattedDuration,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    if (session.actualDuration != null && session.actualDuration! > 0) ...[
+                      Text(
+                        '${session.actualDuration}m / ${session.formattedDuration}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.calendarAccent,
+                        ),
                       ),
-                    ),
+                    ] else ...[
+                      Text(
+                        session.formattedDuration,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                    ],
                     if (session.notes != null && session.notes!.isNotEmpty) ...[
                       const SizedBox(width: 8),
                       Text(

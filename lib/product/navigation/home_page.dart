@@ -3,7 +3,7 @@ import '../../theme/app_colors.dart';
 import '../screens/add_goal_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
-import '../screens/deadlines_screen.dart';
+import '../screens/dashboard_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,14 +18,14 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const PlanScreen(),
-    DeadlinesScreen(),
-    DeadlinesScreen(), // Placeholder for Profile screen
+    DashboardScreen(),
+    DashboardScreen(), // Placeholder for Profile screen
   ];
 
   final List<String> _titles = const [
     'Daily Tasks',
     'Calendar',
-    'Goals',
+    'Dashboard',
     'Stats',
   ];
 
@@ -48,39 +48,6 @@ class _HomePageState extends State<HomePage> {
             : AppColors.lightBackground.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
-        actions: [
-          if (_currentIndex == 2)
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.add, size: 20),
-                  color: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddGoalScreen(),
-                      ),
-                    ).then((_) => setState(() {}));
-                  },
-                ),
-              ),
-            ),
-        ],
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(

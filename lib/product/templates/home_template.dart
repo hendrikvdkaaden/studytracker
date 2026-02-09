@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
-import '../../widgets/home/progress_header.dart';
 import '../../widgets/home/date_selector.dart';
 import '../../widgets/home/home_section_header.dart';
 import '../../widgets/home/deadline_card.dart';
@@ -10,35 +9,33 @@ import '../../widgets/home/session_item.dart';
 class HomeTemplate extends StatelessWidget {
   final DateTime selectedDate;
   final List<Goal> deadlines;
-  final List<StudySession> completedSessions;
-  final List<StudySession> plannedSessions;
+  final List<StudySession> sessions;
   final Map<String, Goal?> sessionGoals;
   final int totalTasksToday;
   final int completedTasksToday;
   final Function(DateTime) onDateSelected;
   final Function(Goal) onDeadlineTap;
   final Function(StudySession) onSessionTap;
-  final VoidCallback onAddPressed;
+  final Function(StudySession) isSessionCompleted;
 
   const HomeTemplate({
     super.key,
     required this.selectedDate,
     required this.deadlines,
-    required this.completedSessions,
-    required this.plannedSessions,
+    required this.sessions,
     required this.sessionGoals,
     required this.totalTasksToday,
     required this.completedTasksToday,
     required this.onDateSelected,
     required this.onDeadlineTap,
     required this.onSessionTap,
-    required this.onAddPressed,
+    required this.isSessionCompleted,
   });
 
   @override
   Widget build(BuildContext context) {
-    final totalSessions = completedSessions.length + plannedSessions.length;
-    final completedSessionsCount = completedSessions.length;
+    final totalSessions = sessions.length;
+    final completedSessionsCount = sessions.where((s) => isSessionCompleted(s)).length;
     final hasAnyItems = deadlines.isNotEmpty || totalSessions > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -46,12 +43,6 @@ class HomeTemplate extends StatelessWidget {
       children: [
         CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: ProgressHeader(
-                completedCount: completedTasksToday,
-                totalCount: totalTasksToday,
-              ),
-            ),
             SliverToBoxAdapter(
               child: DateSelector(
                 selectedDate: selectedDate,
@@ -108,22 +99,19 @@ class HomeTemplate extends StatelessWidget {
               SliverPadding(
                 padding: const EdgeInsets.all(16),
                 sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: HomeDeadlineCard(
-                          goal: deadlines[index],
-                          onTap: () => onDeadlineTap(deadlines[index]),
-                        ),
-                      );
-                    },
-                    childCount: deadlines.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: HomeDeadlineCard(
+                        goal: deadlines[index],
+                        onTap: () => onDeadlineTap(deadlines[index]),
+                      ),
+                    );
+                  }, childCount: deadlines.length),
                 ),
               ),
             ],
-            if (completedSessions.isNotEmpty || plannedSessions.isNotEmpty) ...[
+            if (sessions.isNotEmpty) ...[
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -139,46 +127,23 @@ class HomeTemplate extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      if (index < completedSessions.length) {
-                        final session = completedSessions[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: HomeSessionItem(
-                            session: session,
-                            goal: sessionGoals[session.goalId],
-                            isCompleted: true,
-                            onTap: () => onSessionTap(session),
-                          ),
-                        );
-                      } else {
-                        final plannedIndex = index - completedSessions.length;
-                        final session = plannedSessions[plannedIndex];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: HomeSessionItem(
-                            session: session,
-                            goal: sessionGoals[session.goalId],
-                            isCompleted: false,
-                            onTap: () => onSessionTap(session),
-                          ),
-                        );
-                      }
+                      final session = sessions[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: HomeSessionItem(
+                          session: session,
+                          goal: sessionGoals[session.goalId],
+                          isCompleted: isSessionCompleted(session),
+                          onTap: () => onSessionTap(session),
+                        ),
+                      );
                     },
-                    childCount: completedSessions.length + plannedSessions.length,
+                    childCount: sessions.length,
                   ),
                 ),
               ),
             ],
           ],
-        ),
-        Positioned(
-          bottom: 32,
-          right: 24,
-          child: FloatingActionButton(
-            onPressed: onAddPressed,
-            backgroundColor: const Color(0xFF4f46e5),
-            child: const Icon(Icons.add, size: 28),
-          ),
         ),
       ],
     );

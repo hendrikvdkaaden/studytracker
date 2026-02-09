@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final List<String> _titles = const [
-    'Study Tracker',
+    'Daily Tasks',
     'Calendar',
     'Goals',
     'Stats',

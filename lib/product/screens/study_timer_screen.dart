@@ -140,6 +140,48 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     }
   }
 
+  Future<void> _completeSession() async {
+    // Show confirmation dialog
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Mark as Complete?'),
+        content: const Text(
+          'Mark this session as fully completed? The full session duration will be logged.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Complete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      _timer?.cancel();
+
+      // Mark session as completed with full duration
+      final updatedSession = widget.session.copyWith(
+        actualDuration: widget.session.duration,
+      );
+
+      await _sessionRepo.updateSession(updatedSession);
+      if (!mounted) return;
+      Navigator.pop(context, true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Session completed!'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   String _formatElapsedTime() {
     final hours = _elapsedSeconds ~/ 3600;
     final minutes = (_elapsedSeconds % 3600) ~/ 60;
@@ -168,6 +210,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         onPause: _pauseTimer,
         onResume: _resumeTimer,
         onStop: _stopTimer,
+        onComplete: _completeSession,
       ),
     );
   }

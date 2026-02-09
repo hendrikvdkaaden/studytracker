@@ -15,6 +15,7 @@ class GoalDetailsTemplate extends StatelessWidget {
   final List<StudySession> plannedSessions;
   final VoidCallback onEditProgress;
   final VoidCallback onMarkComplete;
+  final VoidCallback onAddSession;
 
   const GoalDetailsTemplate({
     super.key,
@@ -23,6 +24,7 @@ class GoalDetailsTemplate extends StatelessWidget {
     required this.plannedSessions,
     required this.onEditProgress,
     required this.onMarkComplete,
+    required this.onAddSession,
   });
 
   @override
@@ -39,8 +41,10 @@ class GoalDetailsTemplate extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: DeadlineCard(goal: goal),
           ),
-          if (plannedSessions.isNotEmpty)
-            PlannedSessionsSection(sessions: plannedSessions),
+          PlannedSessionsSection(
+            sessions: plannedSessions,
+            onAddSession: onAddSession,
+          ),
           Column(
             children: [
               Padding(

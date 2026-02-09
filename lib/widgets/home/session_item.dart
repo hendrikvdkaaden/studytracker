@@ -17,9 +17,27 @@ class HomeSessionItem extends StatelessWidget {
     this.onTap,
   });
 
+  String _formatDuration(int minutes) {
+    final hours = minutes ~/ 60;
+    final mins = minutes % 60;
+
+    if (hours > 0 && mins > 0) {
+      return '${hours}h ${mins}m';
+    } else if (hours > 0) {
+      return '${hours}h';
+    } else {
+      return '${mins}m';
+    }
+  }
+
   String _getTimeText() {
+    // If completed, show "Completed" instead of time
+    if (isCompleted) {
+      return 'Completed';
+    }
+
     if (session.actualDuration != null && session.actualDuration! > 0) {
-      return '${session.actualDuration}m / ${session.formattedDuration} logged';
+      return '${_formatDuration(session.actualDuration!)} / ${session.formattedDuration} logged';
     }
 
     if (session.startTime != null) {
@@ -39,10 +57,49 @@ class HomeSessionItem extends StatelessWidget {
     return 'Planned for ${session.formattedDuration}';
   }
 
+  String _getDisplayTitle() {
+    if (session.notes != null && session.notes!.trim().isNotEmpty) {
+      return session.notes!;
+    }
+    return goal?.title ?? 'Unknown Goal';
+  }
+
+  String _getSubtitle() {
+    if (session.notes != null && session.notes!.trim().isNotEmpty) {
+      final goalTitle = goal?.title ?? 'Unknown Goal';
+      final subject = goal?.subject;
+      if (subject != null && subject.isNotEmpty) {
+        return '$subject • $goalTitle';
+      }
+      return goalTitle;
+    }
+
+    final subject = goal?.subject;
+    if (subject != null && subject.isNotEmpty) {
+      return subject;
+    }
+    return _getTimeText();
+  }
+
+  String _getThirdLine() {
+    final hasNotes = session.notes != null && session.notes!.trim().isNotEmpty;
+    if (hasNotes) {
+      return _getTimeText();
+    }
+
+    final subject = goal?.subject;
+    if (subject != null && subject.isNotEmpty) {
+      return _getTimeText();
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final goalTitle = goal?.title ?? 'Unknown Goal';
+    final hasNotes = session.notes != null && session.notes!.trim().isNotEmpty;
+    final hasSubject = goal?.subject != null && goal!.subject.isNotEmpty;
+    final showThirdLine = hasNotes || hasSubject;
 
     return InkWell(
       onTap: onTap,
@@ -104,24 +161,47 @@ class HomeSessionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  goalTitle,
+                  _getDisplayTitle(),
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: isCompleted
+                        ? (isDark ? Colors.grey[500] : Colors.grey[400])
+                        : (isDark ? Colors.white : Colors.black87),
+                    decoration: isCompleted ? TextDecoration.lineThrough : null,
+                    decorationColor: isCompleted
+                        ? (isDark ? Colors.grey[600] : Colors.grey[400])
+                        : null,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  _getTimeText(),
+                  _getSubtitle(),
                   style: TextStyle(
                     fontSize: 11,
-                    fontWeight: isCompleted ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight: FontWeight.normal,
                     color: isCompleted
-                        ? AppColors.primary
+                        ? (isDark ? Colors.grey[600] : Colors.grey[500])
                         : (isDark ? Colors.grey[400] : Colors.grey[600]),
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                if (showThirdLine) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    _getThirdLine(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.normal,
+                      color: isCompleted
+                          ? (isDark ? Colors.grey[600] : Colors.grey[500])
+                          : (isDark ? Colors.grey[500] : Colors.grey[500]),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

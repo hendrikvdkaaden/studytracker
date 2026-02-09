@@ -5,7 +5,6 @@ import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import '../templates/home_template.dart';
-import 'add_goal_screen.dart';
 import 'goal_details_screen.dart';
 import 'study_timer_screen.dart';
 
@@ -35,12 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ..sort((a, b) => a.date.compareTo(b.date));
   }
 
-  List<StudySession> _getCompletedSessionsForDate(DateTime date) {
+  List<StudySession> _getAllSessionsForDate(DateTime date) {
     return _sessionRepo
         .getPlannedSessionsByDate(date)
-        .where((session) =>
-            session.actualDuration != null &&
-            session.actualDuration! >= session.duration)
         .toList()
       ..sort((a, b) {
         if (a.startTime != null && b.startTime != null) {
@@ -50,19 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
       });
   }
 
-  List<StudySession> _getPlannedSessionsForDate(DateTime date) {
-    return _sessionRepo
-        .getPlannedSessionsByDate(date)
-        .where((session) =>
-            session.actualDuration == null ||
-            session.actualDuration! < session.duration)
-        .toList()
-      ..sort((a, b) {
-        if (a.startTime != null && b.startTime != null) {
-          return a.startTime!.compareTo(b.startTime!);
-        }
-        return 0;
-      });
+  bool _isSessionCompleted(StudySession session) {
+    return session.actualDuration != null &&
+        session.actualDuration! >= session.duration;
   }
 
   Map<String, Goal?> _getSessionGoals(List<StudySession> sessions) {
@@ -82,12 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _getCompletedTasksToday() {
     final today = DateTime.now();
-    final completedSessions = _getCompletedSessionsForDate(today);
+    final sessions = _getAllSessionsForDate(today);
+    final completedSessions = sessions.where(_isSessionCompleted).length;
     final completedGoals = _goalRepo
         .getAllGoals()
         .where((goal) => goal.isCompleted && _isSameDay(goal.date, today))
         .length;
-    return completedSessions.length + completedGoals;
+    return completedSessions + completedGoals;
   }
 
   void _onDateSelected(DateTime date) {
@@ -120,21 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _onAddPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AddGoalScreen(),
-      ),
-    ).then((_) => setState(() {}));
-  }
-
   @override
   Widget build(BuildContext context) {
     final deadlines = _getDeadlinesForDate(_selectedDate);
-    final completedSessions = _getCompletedSessionsForDate(_selectedDate);
-    final plannedSessions = _getPlannedSessionsForDate(_selectedDate);
-    final allSessions = [...completedSessions, ...plannedSessions];
+    final allSessions = _getAllSessionsForDate(_selectedDate);
     final sessionGoals = _getSessionGoals(allSessions);
 
     return Scaffold(
@@ -143,15 +119,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: HomeTemplate(
           selectedDate: _selectedDate,
           deadlines: deadlines,
-          completedSessions: completedSessions,
-          plannedSessions: plannedSessions,
+          sessions: allSessions,
           sessionGoals: sessionGoals,
           totalTasksToday: _getTotalTasksToday(),
           completedTasksToday: _getCompletedTasksToday(),
           onDateSelected: _onDateSelected,
           onDeadlineTap: _onDeadlineTap,
           onSessionTap: _onSessionTap,
-          onAddPressed: _onAddPressed,
+          isSessionCompleted: _isSessionCompleted,
         ),
       ),
     );

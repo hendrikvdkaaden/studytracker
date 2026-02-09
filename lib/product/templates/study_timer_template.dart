@@ -15,6 +15,7 @@ class StudyTimerTemplate extends StatelessWidget {
   final VoidCallback onPause;
   final VoidCallback onResume;
   final VoidCallback onStop;
+  final VoidCallback onComplete;
 
   const StudyTimerTemplate({
     super.key,
@@ -28,6 +29,7 @@ class StudyTimerTemplate extends StatelessWidget {
     required this.onPause,
     required this.onResume,
     required this.onStop,
+    required this.onComplete,
   });
 
   String _getPhaseLabel() {
@@ -66,7 +68,7 @@ class StudyTimerTemplate extends StatelessWidget {
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(18),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -105,13 +107,9 @@ class StudyTimerTemplate extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings_outlined),
-                    style: IconButton.styleFrom(
-                      backgroundColor: isDark
-                          ? Colors.grey[800]?.withOpacity(0.5)
-                          : Colors.grey[200]?.withOpacity(0.5),
-                    ),
+                    onPressed: onComplete,
+                    icon: const Icon(Icons.check_circle_outline),
+                    iconSize: 30,
                   ),
                 ],
               ),

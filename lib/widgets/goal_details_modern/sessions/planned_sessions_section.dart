@@ -5,10 +5,12 @@ import 'planned_session_item.dart';
 
 class PlannedSessionsSection extends StatelessWidget {
   final List<StudySession> sessions;
+  final VoidCallback onAddSession;
 
   const PlannedSessionsSection({
     super.key,
     required this.sessions,
+    required this.onAddSession,
   });
 
   @override
@@ -52,10 +54,56 @@ class PlannedSessionsSection extends StatelessWidget {
                   ),
                 ),
               ),
+              const Spacer(),
+              IconButton(
+                onPressed: onAddSession,
+                icon: const Icon(Icons.add_circle_outline),
+                color: AppColors.calendarAccent,
+                iconSize: 24,
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          ...sessions.map((session) => PlannedSessionItem(session: session)),
+          if (sessions.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.calendarDarkCard : AppColors.calendarLightBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.calendarAccent.withOpacity(0.2),
+                ),
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.event_available_outlined,
+                      size: 48,
+                      color: isDark ? Colors.grey[600] : Colors.grey[400],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'No sessions planned yet',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey[500] : Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Tap + to add a study session',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.grey[600] : Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            ...sessions.map((session) => PlannedSessionItem(session: session)),
         ],
       ),
     );

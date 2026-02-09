@@ -58,20 +58,31 @@ class SessionProgressBar extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Container(
-          height: 8,
-          decoration: BoxDecoration(
-            color: isDark ? Colors.grey[800] : Colors.grey[200]?.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: FractionallySizedBox(
-            widthFactor: _progressPercentage,
-            alignment: Alignment.centerLeft,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.calendarAccent,
-                borderRadius: BorderRadius.circular(4),
-              ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            height: 8,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : Colors.grey[200],
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: constraints.maxWidth * _progressPercentage,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.calendarAccent,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

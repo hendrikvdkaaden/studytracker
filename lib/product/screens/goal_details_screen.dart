@@ -6,6 +6,7 @@ import '../../services/goal_operations_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
 import '../../widgets/goal_details_modern/progress/edit_progress_dialog.dart';
+import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/goal_details_template.dart';
 
 class GoalDetailsScreen extends StatefulWidget {
@@ -73,6 +74,28 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     Navigator.pop(context, true);
   }
 
+  Future<void> _addSession() async {
+    await showStudySessionPicker(
+      context: context,
+      onSessionAdded: (session) async {
+        // Add goalId to the session and save it
+        final sessionWithGoalId = session.copyWith(goalId: _goal.id);
+        await _sessionRepo.addSession(sessionWithGoalId);
+
+        // Refresh the screen
+        setState(() {});
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Study session added!'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -88,6 +111,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
         plannedSessions: plannedSessions,
         onEditProgress: _showEditProgressDialog,
         onMarkComplete: _toggleComplete,
+        onAddSession: _addSession,
       ),
     );
   }

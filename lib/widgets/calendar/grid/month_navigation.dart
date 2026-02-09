@@ -70,11 +70,6 @@ class MonthNavigation extends StatelessWidget {
     return IconButton(
       icon: Icon(icon),
       onPressed: onPressed,
-      style: IconButton.styleFrom(
-        backgroundColor: isDark
-            ? Colors.white.withValues(alpha: 0.05)
-            : Colors.black.withValues(alpha: 0.05),
-      ),
     );
   }
 

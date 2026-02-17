@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import '../models/study_session.dart';
+import '../utils/calendar_helpers.dart';
 import 'hive_service.dart';
 import 'goal_repository.dart';
 
@@ -75,11 +76,10 @@ class StudySessionRepository {
   /// Get total study time for this week (in minutes)
   int getTotalStudyTimeThisWeek() {
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final startOfWeekDay = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    final endOfWeek = startOfWeekDay.add(const Duration(days: 7));
+    final startOfWeek = CalendarHelpers.getStartOfWeek(now);
+    final endOfWeek = startOfWeek.add(const Duration(days: 7));
 
-    return getSessionsByDateRange(startOfWeekDay, endOfWeek)
+    return getSessionsByDateRange(startOfWeek, endOfWeek)
         .fold(0, (total, session) => total + session.duration);
   }
 
@@ -106,8 +106,6 @@ class StudySessionRepository {
 
     return _box.values
         .where((session) {
-          if (session.isCompleted) return false;
-
           // Check if session.date is on the same day
           final sessionDay = DateTime(
             session.date.year,

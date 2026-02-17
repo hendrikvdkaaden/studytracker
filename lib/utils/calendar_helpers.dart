@@ -50,9 +50,17 @@ class CalendarHelpers {
     return DateTime(month.year, month.month, 0);
   }
 
+  /// Calculates which column (0-6) the first day of the month falls in.
+  /// Returns: Monday = 0, Tuesday = 1, ..., Sunday = 6
+  /// Dart's DateTime.weekday uses 1-7 (Mon-Sun), so we subtract 1 for 0-indexed grid.
   static int _calculateStartingWeekday(DateTime firstDay) {
-    // Sunday = 0, Monday = 1, Tuesday = 2, ..., Saturday = 6
-    return firstDay.weekday % 7;
+    return firstDay.weekday - 1;
+  }
+
+  /// Returns the Monday of the week containing the given date.
+  static DateTime getStartOfWeek(DateTime date) {
+    return DateTime(date.year, date.month, date.day)
+        .subtract(Duration(days: date.weekday - 1));
   }
 }
 

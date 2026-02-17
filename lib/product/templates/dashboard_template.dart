@@ -3,11 +3,12 @@ import '../../models/goal.dart';
 import '../../widgets/deadlines/cards/overdue_goal_card.dart';
 import '../../widgets/deadlines/cards/upcoming_goal_card.dart';
 import '../../widgets/deadlines/cards/completed_goal_card.dart';
-import '../../widgets/deadlines/cards/weekly_progress_card.dart';
+import '../../models/day_status.dart';
+import '../../widgets/deadlines/cards/study_consistency_card.dart';
 
 class DashboardTemplate extends StatelessWidget {
-  final int completedHoursThisWeek;
-  final int targetHoursThisWeek;
+  final Map<int, DayStatus> weeklyConsistency;
+  final int missedSessionsCount;
   final List<Goal> overdueGoals;
   final List<Goal> upcomingGoals;
   final List<Goal> completedGoals;
@@ -16,8 +17,8 @@ class DashboardTemplate extends StatelessWidget {
 
   const DashboardTemplate({
     super.key,
-    required this.completedHoursThisWeek,
-    required this.targetHoursThisWeek,
+    required this.weeklyConsistency,
+    required this.missedSessionsCount,
     required this.overdueGoals,
     required this.upcomingGoals,
     required this.completedGoals,
@@ -32,12 +33,12 @@ class DashboardTemplate extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 100),
       children: [
-        // Weekly Progress
+        // Study Consistency
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-          child: WeeklyProgressCard(
-            completedHours: completedHoursThisWeek,
-            targetHours: targetHoursThisWeek,
+          child: StudyConsistencyCard(
+            weeklyConsistency: weeklyConsistency,
+            missedSessionsCount: missedSessionsCount,
           ),
         ),
         // Overdue section

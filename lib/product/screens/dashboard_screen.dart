@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
+import '../../models/day_status.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
+import '../../utils/calendar_helpers.dart';
 import '../templates/dashboard_template.dart';
 import 'add_goal_screen.dart';
 import 'goal_details_screen.dart';
@@ -17,24 +19,76 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GoalRepository _goalRepo = GoalRepository();
   final StudySessionRepository _sessionRepo = StudySessionRepository();
 
-  int _getCompletedHoursThisWeek() {
-    final totalMinutes = _sessionRepo.getTotalStudyTimeThisWeek();
-    return totalMinutes ~/ 60;
+  Map<int, DayStatus> _getWeeklyConsistency() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final startOfWeek = CalendarHelpers.getStartOfWeek(now);
+
+    Map<int, DayStatus> weekData = {};
+
+    for (int i = 0; i < 7; i++) {
+      final date = DateTime(
+        startOfWeek.year,
+        startOfWeek.month,
+        startOfWeek.day + i,
+      );
+      final weekday = i + 1; // 1=Monday, 7=Sunday
+
+      // Get all sessions for this date
+      final allSessions = _sessionRepo.getSessionsByDateRange(
+        date,
+        date.add(const Duration(days: 1)),
+      );
+
+      final hasCompleted = allSessions.any((s) => s.isCompleted);
+      final hasPlanned = allSessions.any((s) => !s.isCompleted);
+      final isPast = date.isBefore(today);
+
+      if (hasCompleted) {
+        weekData[weekday] = DayStatus.completed;
+      } else if (hasPlanned && isPast) {
+        weekData[weekday] = DayStatus.missed;
+      } else if (isPast) {
+        weekData[weekday] = DayStatus.pastNoSession;
+      } else {
+        weekData[weekday] = DayStatus.notPlanned;
+      }
+    }
+
+    return weekData;
   }
 
-  int _getTargetHoursThisWeek() {
-    // Calculate target as sum of all incomplete goals this week
+  int _getMissedSessionsCount() {
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+    final today = DateTime(now.year, now.month, now.day);
+    final startOfWeek = CalendarHelpers.getStartOfWeek(now);
 
-    final goals = _goalRepo.getAllGoals().where((goal) {
-      if (goal.isCompleted) return false;
-      return goal.date.isAfter(startOfWeek) && goal.date.isBefore(endOfWeek);
-    });
+    int missedCount = 0;
 
-    final totalMinutes = goals.fold(0, (sum, goal) => sum + goal.studyTime);
-    return totalMinutes ~/ 60;
+    for (int i = 0; i < 7; i++) {
+      final date = DateTime(
+        startOfWeek.year,
+        startOfWeek.month,
+        startOfWeek.day + i,
+      );
+
+      final isPast = date.isBefore(today);
+      if (!isPast) continue;
+
+      final allSessions = _sessionRepo.getSessionsByDateRange(
+        date,
+        date.add(const Duration(days: 1)),
+      );
+
+      final hasCompleted = allSessions.any((s) => s.isCompleted);
+      final plannedSessions = allSessions.where((s) => !s.isCompleted).toList();
+
+      if (!hasCompleted && plannedSessions.isNotEmpty) {
+        missedCount += plannedSessions.length;
+      }
+    }
+
+    return missedCount;
   }
 
   Map<String, int> _getGoalsTimeSpent() {
@@ -55,8 +109,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: DashboardTemplate(
-        completedHoursThisWeek: _getCompletedHoursThisWeek(),
-        targetHoursThisWeek: _getTargetHoursThisWeek(),
+        weeklyConsistency: _getWeeklyConsistency(),
+        missedSessionsCount: _getMissedSessionsCount(),
         overdueGoals: _goalRepo.getOverdueGoals(),
         upcomingGoals: _goalRepo.getUpcomingGoals(30),
         completedGoals: _goalRepo.getCompletedGoals(),

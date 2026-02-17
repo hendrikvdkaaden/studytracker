@@ -52,21 +52,21 @@ class OverdueGoalCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  height: 48,
-                  width: 48,
+                  height: 40,
+                  width: 40,
                   decoration: BoxDecoration(
                     color: isDark
                         ? Colors.red.shade900.withValues(alpha: 0.3)
                         : Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     GoalHelpers.getGoalIcon(goal.type),
                     color: Colors.red.shade600,
-                    size: 24,
+                    size: 20,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +94,7 @@ class OverdueGoalCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(

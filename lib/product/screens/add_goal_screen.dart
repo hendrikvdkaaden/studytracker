@@ -66,6 +66,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   }
 
   Future<void> _showStudySessionPicker() async {
+    FocusScope.of(context).unfocus();
     await showStudySessionPicker(
       context: context,
       onSessionAdded: (session) {
@@ -74,6 +75,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         });
       },
     );
+    if (mounted) FocusScope.of(context).unfocus();
   }
 
   void _deleteSession(int index) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../../../models/study_session.dart';
 import 'package:uuid/uuid.dart';
+import 'duration_picker_modal.dart';
+import 'time_picker_modal.dart';
 
 class StudySessionPickerModal extends StatefulWidget {
   final Function(StudySession session) onSessionAdded;
@@ -23,377 +24,81 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   int durationHours = 1;
   int durationMinutes = 0;
   final TextEditingController notesController = TextEditingController();
+  final FocusNode _notesFocusNode = FocusNode();
+  final GlobalKey _notesKey = GlobalKey();
 
   @override
   void dispose() {
     notesController.dispose();
+    _notesFocusNode.dispose();
     super.dispose();
   }
 
-  void _showDurationPicker(BuildContext context, bool isDark) {
-    int tempHours = durationHours;
-    int tempMinutes = durationMinutes;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Container(
-          height: 300,
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1F2937) : Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFE5E7EB),
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      'Select Duration',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          durationHours = tempHours;
-                          durationMinutes = tempMinutes;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
-                          color: Color(0xFF135BEC),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Picker
-              Expanded(
-                child: Row(
-                  children: [
-                    // Hours
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'HOURS',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: CupertinoPicker(
-                              scrollController: FixedExtentScrollController(
-                                initialItem: tempHours,
-                              ),
-                              itemExtent: 32,
-                              onSelectedItemChanged: (int index) {
-                                tempHours = index;
-                              },
-                              children: List<Widget>.generate(25, (int index) {
-                                return Center(
-                                  child: Text(
-                                    index.toString().padLeft(2, '0'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Divider
-                    Container(
-                      width: 1,
-                      height: 150,
-                      color: isDark
-                          ? const Color(0xFF4B5563)
-                          : const Color(0xFFD1D5DB),
-                    ),
-                    // Minutes
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'MINUTES',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: CupertinoPicker(
-                              scrollController: FixedExtentScrollController(
-                                initialItem: tempMinutes ~/ 15,
-                              ),
-                              itemExtent: 32,
-                              onSelectedItemChanged: (int index) {
-                                tempMinutes = index * 15;
-                              },
-                              children: List<Widget>.generate(4, (int index) {
-                                return Center(
-                                  child: Text(
-                                    (index * 15).toString().padLeft(2, '0'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+  void _scrollToNotes() {
+    Future.delayed(const Duration(milliseconds: 400), () {
+      final context = _notesKey.currentContext;
+      if (context != null) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
         );
-      },
-    );
+      }
+    });
   }
 
-  void _showTimePicker(BuildContext context, bool isDark) {
-    int tempHour = selectedHour;
-    int tempMinute = selectedMinute;
-
-    showModalBottomSheet(
+  Future<void> _pickDuration() async {
+    final result = await showDurationPickerModal(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Container(
-          height: 300,
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1F2937) : Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
+      initialHours: durationHours,
+      initialMinutes: durationMinutes,
+    );
+    if (result != null) {
+      setState(() {
+        durationHours = result.hours;
+        durationMinutes = result.minutes;
+      });
+    }
+  }
+
+  Future<void> _pickTime() async {
+    final result = await showTimePickerModal(
+      context: context,
+      initialHour: selectedHour,
+      initialMinute: selectedMinute,
+    );
+    if (result != null) {
+      setState(() {
+        selectedHour = result.hour;
+        selectedMinute = result.minute;
+      });
+    }
+  }
+
+  Future<void> _pickDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: const Color(0xFF135BEC),
             ),
           ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFE5E7EB),
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      'Select Time',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedHour = tempHour;
-                          selectedMinute = tempMinute;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
-                          color: Color(0xFF135BEC),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Picker
-              Expanded(
-                child: Row(
-                  children: [
-                    // Hours
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'HOUR',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: CupertinoPicker(
-                              scrollController: FixedExtentScrollController(
-                                initialItem: tempHour,
-                              ),
-                              itemExtent: 32,
-                              onSelectedItemChanged: (int index) {
-                                tempHour = index;
-                              },
-                              children: List<Widget>.generate(24, (int index) {
-                                return Center(
-                                  child: Text(
-                                    index.toString().padLeft(2, '0'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Divider
-                    Container(
-                      width: 1,
-                      height: 150,
-                      color: isDark
-                          ? const Color(0xFF4B5563)
-                          : const Color(0xFFD1D5DB),
-                    ),
-                    // Minutes
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'MINUTE',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: CupertinoPicker(
-                              scrollController: FixedExtentScrollController(
-                                initialItem: tempMinute ~/ 5,
-                              ),
-                              itemExtent: 32,
-                              onSelectedItemChanged: (int index) {
-                                tempMinute = index * 5;
-                              },
-                              children: List<Widget>.generate(12, (int index) {
-                                return Center(
-                                  child: Text(
-                                    (index * 5).toString().padLeft(2, '0'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child: child!,
         );
       },
     );
+    if (date != null) {
+      setState(() => selectedDate = date);
+    }
   }
 
   void _addSession() {
-    // Combine date and time
-    final sessionDateTime = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      selectedHour,
-      selectedMinute,
-    );
-
     final totalDuration = (durationHours * 60) + durationMinutes;
 
     if (totalDuration == 0) {
@@ -412,16 +117,21 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       date: selectedDate,
       duration: totalDuration,
       isCompleted: false,
-      startTime: sessionDateTime,
+      startTime: DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedHour,
+        selectedMinute,
+      ),
       notes: notesController.text.isEmpty ? null : notesController.text,
     );
 
     widget.onSessionAdded(session);
 
-    // Close the modal
+    FocusManager.instance.primaryFocus?.unfocus();
     Navigator.pop(context);
 
-    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Session added!'),
@@ -452,8 +162,9 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color:
-                      isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                  color: isDark
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFE5E7EB),
                 ),
               ),
             ),
@@ -478,102 +189,46 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 60), // Balance the layout
+                const SizedBox(width: 60),
               ],
             ),
           ),
           // Content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(
+                16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Date Picker
                   _buildSectionTitle('Date', isDark),
                   const SizedBox(height: 8),
-                  InkWell(
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                        builder: (context, child) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: ColorScheme.light(
-                                primary: const Color(0xFF135BEC),
-                              ),
-                            ),
-                            child: child!,
-                          );
-                        },
-                      );
-                      if (date != null) {
-                        setState(() => selectedDate = date);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFF6F6F8),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Icon(Icons.calendar_today, size: 20),
-                        ],
-                      ),
-                    ),
+                  _buildSelectableField(
+                    onTap: _pickDate,
+                    label:
+                        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                    icon: Icons.calendar_today,
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 18),
-
-                  // Time Picker
                   _buildSectionTitle('Start Time', isDark),
                   const SizedBox(height: 8),
-                  InkWell(
-                    onTap: () => _showTimePicker(context, isDark),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFF6F6F8),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${selectedHour.toString().padLeft(2, '0')}:${selectedMinute.toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Icon(Icons.access_time, size: 20),
-                        ],
-                      ),
-                    ),
+                  _buildSelectableField(
+                    onTap: _pickTime,
+                    label:
+                        '${selectedHour.toString().padLeft(2, '0')}:${selectedMinute.toString().padLeft(2, '0')}',
+                    icon: Icons.access_time,
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 18),
-
-                  // Notes Field
                   _buildSectionTitle('Notes (Optional)', isDark),
                   const SizedBox(height: 8),
                   TextField(
+                    key: _notesKey,
                     controller: notesController,
+                    focusNode: _notesFocusNode,
+                    onTap: _scrollToNotes,
                     maxLines: 3,
                     decoration: InputDecoration(
                       hintText: 'What will you study?',
@@ -589,36 +244,15 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   ),
                   const SizedBox(height: 18),
 
-                  // Duration Picker
                   _buildSectionTitle('Duration', isDark),
                   const SizedBox(height: 8),
-                  InkWell(
-                    onTap: () => _showDurationPicker(context, isDark),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFF6F6F8),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${durationHours}h ${durationMinutes}m',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Icon(Icons.schedule, size: 20),
-                        ],
-                      ),
-                    ),
+                  _buildSelectableField(
+                    onTap: _pickDuration,
+                    label: '${durationHours}h ${durationMinutes}m',
+                    icon: Icons.schedule,
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 24),
-
                   // Add Session Button
                   SizedBox(
                     width: double.infinity,
@@ -658,6 +292,34 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: isDark ? Colors.grey[300] : Colors.grey[800],
+      ),
+    );
+  }
+
+  Widget _buildSelectableField({
+    required VoidCallback onTap,
+    required String label,
+    required IconData icon,
+    required bool isDark,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF374151) : const Color(0xFFF6F6F8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            Icon(icon, size: 20),
+          ],
+        ),
       ),
     );
   }

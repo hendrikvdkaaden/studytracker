@@ -168,6 +168,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
       // Mark session as completed with full duration
       final updatedSession = widget.session.copyWith(
         actualDuration: widget.session.duration,
+        isCompleted: true
       );
 
       await _sessionRepo.updateSession(updatedSession);

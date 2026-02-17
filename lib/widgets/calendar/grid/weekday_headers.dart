@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Displays the weekday abbreviations (S M T W T F S) at the top of the calendar
 class WeekdayHeaders extends StatelessWidget {
   static const _accentColor = Color(0xFF0DF2DF);
-  static const _weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  static const _weekdayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   const WeekdayHeaders({super.key});
 

@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Goal> _getDeadlinesForDate(DateTime date) {
     return _goalRepo
         .getAllGoals()
-        .where((goal) => !goal.isCompleted && _isSameDay(goal.date, date))
+        .where((goal) => _isSameDay(goal.date, date))
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
   }

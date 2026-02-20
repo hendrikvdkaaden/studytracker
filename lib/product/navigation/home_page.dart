@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../services/notification_service.dart';
 import '../../theme/app_colors.dart';
-import '../screens/add_goal_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -14,6 +14,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.requestPermission();
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),

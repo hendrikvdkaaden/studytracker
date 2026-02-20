@@ -184,7 +184,7 @@ class DashboardTemplate extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 150,
+            height: 90,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               scrollDirection: Axis.horizontal,
@@ -194,7 +194,6 @@ class DashboardTemplate extends StatelessWidget {
                 final goal = completedGoals[index];
                 return CompletedGoalCard(
                   goal: goal,
-                  timeSpent: goalsTimeSpent[goal.id] ?? 0,
                   onTap: () => onGoalTap(goal),
                 );
               },

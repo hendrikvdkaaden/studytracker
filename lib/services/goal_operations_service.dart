@@ -2,6 +2,7 @@ import 'package:uuid/uuid.dart';
 import '../models/goal.dart';
 import '../models/study_session.dart';
 import 'goal_repository.dart';
+import 'notification_service.dart';
 import 'study_session_repository.dart';
 
 /// Service for handling goal operations (update, delete, progress adjustments)
@@ -19,12 +20,31 @@ class GoalOperationsService {
   Future<Goal> toggleComplete(Goal goal) async {
     final updatedGoal = goal.copyWith(isCompleted: !goal.isCompleted);
     await _goalRepo.updateGoal(updatedGoal);
+
+    if (updatedGoal.isCompleted) {
+      // Cancel notifications when marking as completed
+      final sessions = _sessionRepo.getPlannedSessionsByGoalId(goal.id);
+      await NotificationService.cancelGoalNotifications(goal.id, sessions);
+    } else {
+      // Re-schedule notifications when un-completing
+      await NotificationService.scheduleDeadlineReminder(updatedGoal);
+      final sessions = _sessionRepo.getPlannedSessionsByGoalId(goal.id);
+      for (final session in sessions) {
+        await NotificationService.scheduleSessionReminder(
+            session, updatedGoal.title);
+      }
+    }
+
     return updatedGoal;
   }
 
   /// Deletes a goal and all associated study sessions
   Future<void> deleteGoal(String goalId) async {
-    // First delete all associated study sessions
+    // Cancel notifications first
+    final sessions = _sessionRepo.getPlannedSessionsByGoalId(goalId);
+    await NotificationService.cancelGoalNotifications(goalId, sessions);
+
+    // Delete all associated study sessions
     await _sessionRepo.deleteSessionsByGoalId(goalId);
 
     // Then delete the goal itself

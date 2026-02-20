@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
 import '../../widgets/goal_details_modern/progress/edit_progress_dialog.dart';
@@ -68,6 +69,8 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
 
     if (!confirmed) return;
 
+    final sessions = _sessionRepo.getPlannedSessionsByGoalId(_goal.id);
+    await NotificationService.cancelGoalNotifications(_goal.id, sessions);
     await _operationsService.deleteGoal(_goal.id);
 
     if (!mounted) return;
@@ -81,6 +84,10 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
         // Add goalId to the session and save it
         final sessionWithGoalId = session.copyWith(goalId: _goal.id);
         await _sessionRepo.addSession(sessionWithGoalId);
+        await NotificationService.scheduleSessionReminder(
+          sessionWithGoalId,
+          _goal.title,
+        );
 
         // Refresh the screen
         setState(() {});

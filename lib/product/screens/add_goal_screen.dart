@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
+import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
@@ -105,7 +106,14 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       for (var session in _plannedSessions) {
         final sessionWithGoalId = session.copyWith(goalId: goal.id);
         await _sessionRepo.addSession(sessionWithGoalId);
+        await NotificationService.scheduleSessionReminder(
+          sessionWithGoalId,
+          goal.title,
+        );
       }
+
+      // Schedule deadline reminder
+      await NotificationService.scheduleDeadlineReminder(goal);
 
       if (!mounted) return;
 

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'product/navigation/home_page.dart';
 import 'services/hive_service.dart';
+import 'services/notification_service.dart';
 import 'theme/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
+  await NotificationService.init();
   runApp(const MyApp());
 }
 

@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../utils/goal_helpers.dart';
-import '../../../utils/format_helpers.dart';
-
 class CompletedGoalCard extends StatelessWidget {
   final Goal goal;
-  final int timeSpent; // in minutes
   final VoidCallback onTap;
 
   const CompletedGoalCard({
     super.key,
     required this.goal,
-    required this.timeSpent,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final formatTime = FormatHelpers.formatTime;
 
     return GestureDetector(
       onTap: onTap,
@@ -87,41 +82,17 @@ class CompletedGoalCard extends StatelessWidget {
                     ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.grey[100],
-                ),
-                child: Container(
+                Container(
+                  height: 24,
+                  width: 24,
                   decoration: const BoxDecoration(
                     color: Colors.green,
+                    shape: BoxShape.circle,
                   ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${formatTime(timeSpent)} / ${formatTime(goal.studyTime)}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade600,
-                  ),
-                ),
-                Text(
-                  'Done',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.grey[400] : Colors.grey[500],
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 16,
                   ),
                 ),
               ],

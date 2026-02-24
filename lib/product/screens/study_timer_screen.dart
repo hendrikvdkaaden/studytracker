@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/study_session_repository.dart';
@@ -22,33 +24,60 @@ class StudyTimerScreen extends StatefulWidget {
 
 class _StudyTimerScreenState extends State<StudyTimerScreen> {
   final StudySessionRepository _sessionRepo = StudySessionRepository();
+  late final ConfettiController _confettiController;
   Timer? _timer;
   int _elapsedSeconds = 0;
   TimerState _timerState = TimerState.initial;
+  bool _hasTriggeredCompletion = false;
+
+  int get _targetSeconds => widget.session.duration * 60;
+  int get _remainingSeconds => (_targetSeconds - _elapsedSeconds).clamp(0, _targetSeconds);
 
   @override
   void initState() {
     super.initState();
-    // Load existing actualDuration if available
-    if (widget.session.actualDuration != null) {
-      _elapsedSeconds = widget.session.actualDuration! * 60;
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    if (widget.session.elapsedSeconds != null) {
+      _elapsedSeconds = widget.session.elapsedSeconds!;
     }
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _confettiController.dispose();
     super.dispose();
   }
 
   void _startTimer() {
     setState(() {
+      if (_timerState == TimerState.completed) {
+        _elapsedSeconds = 0;
+        _hasTriggeredCompletion = false;
+      }
       _timerState = TimerState.running;
     });
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _elapsedSeconds++;
+        if (_elapsedSeconds % 30 == 0) {
+          _persistElapsedSeconds();
+        }
+        if (_remainingSeconds <= 0) {
+          _timer?.cancel();
+          _timerState = TimerState.completed;
+        }
       });
+      if (_remainingSeconds <= 0) {
+        _persistElapsedSeconds();
+        if (!_hasTriggeredCompletion) {
+          _hasTriggeredCompletion = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _confettiController.play();
+            _triggerHapticPattern();
+          });
+        }
+      }
     });
   }
 
@@ -57,14 +86,19 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     setState(() {
       _timerState = TimerState.paused;
     });
+    _persistElapsedSeconds();
   }
 
   void _resumeTimer() {
     _startTimer();
   }
 
+  Future<void> _persistElapsedSeconds() async {
+    final updated = widget.session.copyWith(elapsedSeconds: _elapsedSeconds);
+    await _sessionRepo.updateSession(updated);
+  }
+
   Future<void> _stopTimer() async {
-    // Show confirmation dialog
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -87,11 +121,10 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
 
     if (confirm == true) {
       _timer?.cancel();
-      // Update session with actual time spent
-      // Only mark as completed if time was actually logged
       final actualMinutes = _elapsedSeconds ~/ 60;
       final updatedSession = widget.session.copyWith(
         actualDuration: actualMinutes,
+        elapsedSeconds: _elapsedSeconds,
       );
 
       await _sessionRepo.updateSession(updatedSession);
@@ -109,14 +142,14 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     }
   }
 
-  void _handleBack() async {
-    if (_timerState == TimerState.running || _timerState == TimerState.paused) {
+  Future<void> _handleBack() async {
+    if (_timerState != TimerState.initial) {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Exit Timer?'),
           content: const Text(
-            'Your session is still running. Are you sure you want to exit?',
+            'Your progress will be saved. You can continue later.',
           ),
           actions: [
             TextButton(
@@ -133,6 +166,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
 
       if (confirm == true) {
         _timer?.cancel();
+        await _persistElapsedSeconds();
         if (mounted) Navigator.pop(context);
       }
     } else {
@@ -141,7 +175,6 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
   }
 
   Future<void> _completeSession() async {
-    // Show confirmation dialog
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -165,22 +198,32 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     if (confirm == true) {
       _timer?.cancel();
 
-      // Mark session as completed with full duration
       final updatedSession = widget.session.copyWith(
         actualDuration: widget.session.duration,
-        isCompleted: true
+        elapsedSeconds: _targetSeconds,
+        isCompleted: true,
       );
 
       await _sessionRepo.updateSession(updatedSession);
       if (!mounted) return;
       Navigator.pop(context, true);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Session completed!'),
           behavior: SnackBarBehavior.floating,
         ),
       );
     }
+  }
+
+  void _triggerHapticPattern() {
+    HapticFeedback.heavyImpact();
+    Future.delayed(const Duration(milliseconds: 200), () {
+      HapticFeedback.heavyImpact();
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      HapticFeedback.heavyImpact();
+    });
   }
 
   String _formatElapsedTime() {
@@ -195,10 +238,10 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _handleBack();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _handleBack();
       },
       child: StudyTimerTemplate(
         goalTitle: widget.goal.title,
@@ -212,6 +255,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         onResume: _resumeTimer,
         onStop: _stopTimer,
         onComplete: _completeSession,
+        confettiController: _confettiController,
       ),
     );
   }

@@ -23,9 +23,12 @@ class DeadlineCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final daysLeft = goal.daysUntilDeadline();
     final isOverdue = goal.isOverdue();
+    final isCompleted = goal.isCompleted;
 
     String daysLeftText;
-    if (isOverdue) {
+    if (isCompleted) {
+      daysLeftText = 'Completed';
+    } else if (isOverdue) {
       daysLeftText = '${daysLeft.abs()} day${daysLeft.abs() == 1 ? '' : 's'} overdue';
     } else if (daysLeft == 0) {
       daysLeftText = 'Due today';
@@ -59,8 +62,10 @@ class DeadlineCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
-              Icons.calendar_today,
-              color: isDark ? const Color(0xFF0DF2DF) : const Color(0xFF0D1C1B),
+              isCompleted ? Icons.check_circle : Icons.calendar_today,
+              color: isCompleted
+                  ? Colors.green
+                  : isDark ? const Color(0xFF0DF2DF) : const Color(0xFF0D1C1B),
               size: 24,
             ),
           ),
@@ -84,14 +89,16 @@ class DeadlineCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: isOverdue ? const Color(0xFFFF5C5C) : const Color(0xFF499C95),
+                    color: isCompleted
+                        ? Colors.green
+                        : isOverdue ? const Color(0xFFFF5C5C) : const Color(0xFF499C95),
                   ),
                 ),
               ],
             ),
           ),
-          // Warning icon if overdue or soon
-          if (isOverdue || daysLeft <= 2)
+          // Warning icon if overdue or soon (not when completed)
+          if (!isCompleted && (isOverdue || daysLeft <= 2))
             Container(
               width: 28,
               height: 28,

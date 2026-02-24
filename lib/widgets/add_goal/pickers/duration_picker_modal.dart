@@ -54,11 +54,11 @@ Future<({int hours, int minutes})?> showDurationPickerModal({
                   _PickerColumn(
                     label: 'MINUTES',
                     isDark: isDark,
-                    itemCount: 4,
-                    initialItem: tempMinutes ~/ 15,
-                    onChanged: (index) => tempMinutes = index * 15,
+                    itemCount: 60,
+                    initialItem: tempMinutes ~/ 1,
+                    onChanged: (index) => tempMinutes = index * 1,
                     labelBuilder: (index) =>
-                        (index * 15).toString().padLeft(2, '0'),
+                        (index * 1).toString().padLeft(2, '0'),
                   ),
                 ],
               ),

@@ -2,23 +2,25 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 
 class TimerDisplay extends StatelessWidget {
-  final int elapsedSeconds;
+  final int remainingSeconds;
   final String phaseLabel;
 
   const TimerDisplay({
     super.key,
-    required this.elapsedSeconds,
+    required this.remainingSeconds,
     required this.phaseLabel,
   });
 
   String _formatTime() {
-    final minutes = elapsedSeconds ~/ 60;
-    final seconds = elapsedSeconds % 60;
+    final minutes = remainingSeconds ~/ 60;
+    final seconds = remainingSeconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         Text(
@@ -35,10 +37,10 @@ class TimerDisplay extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.calendarAccent.withOpacity(0.1),
+            color: AppColors.calendarAccent.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: AppColors.calendarAccent.withOpacity(0.2),
+              color: AppColors.calendarAccent.withValues(alpha: 0.2),
             ),
           ),
           child: Row(
@@ -55,7 +57,7 @@ class TimerDisplay extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
+                  color: isDark ? Colors.grey[300] : Colors.grey[800],
                 ),
               ),
             ],

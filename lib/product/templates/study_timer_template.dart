@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/study_timer/timer_display.dart';
 import '../../widgets/study_timer/session_info_card.dart';
@@ -16,6 +17,7 @@ class StudyTimerTemplate extends StatelessWidget {
   final VoidCallback onResume;
   final VoidCallback onStop;
   final VoidCallback onComplete;
+  final ConfettiController confettiController;
 
   const StudyTimerTemplate({
     super.key,
@@ -30,11 +32,15 @@ class StudyTimerTemplate extends StatelessWidget {
     required this.onResume,
     required this.onStop,
     required this.onComplete,
+    required this.confettiController,
   });
 
   String _getPhaseLabel() {
     if (timerState == TimerState.initial) {
       return 'Ready to Focus';
+    }
+    if (timerState == TimerState.completed) {
+      return 'Completed';
     }
     if (timerState == TimerState.paused) {
       return 'Paused';
@@ -50,10 +56,8 @@ class StudyTimerTemplate extends StatelessWidget {
       return 'Getting Started';
     } else if (progress < 0.75) {
       return 'Deep Focus Phase';
-    } else if (progress < 1.0) {
-      return 'Final Push';
     } else {
-      return 'Overtime';
+      return 'Final Push';
     }
   }
 
@@ -63,101 +67,118 @@ class StudyTimerTemplate extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF101622) : const Color(0xFFF9FAFB),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(18),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    onPressed: onBack,
-                    icon: const Icon(Icons.arrow_back_ios_new),
-                    style: IconButton.styleFrom(
-                      backgroundColor: isDark
-                          ? Colors.grey[800]?.withOpacity(0.5)
-                          : Colors.grey[200]?.withOpacity(0.5),
-                    ),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                // Header
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: onBack,
+                        icon: const Icon(Icons.arrow_back_ios_new),
+                        style: IconButton.styleFrom(
+                          backgroundColor: isDark
+                              ? Colors.grey[800]?.withValues(alpha: 0.5)
+                              : Colors.grey[200]?.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              'CURRENTLY STUDYING',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[500],
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              subject,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : Colors.grey[900],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: onComplete,
+                        icon: const Icon(Icons.check_circle_outline),
+                        iconSize: 30,
+                      ),
+                    ],
                   ),
-                  Expanded(
+                ),
+
+                // Main Content
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
-                        Text(
-                          'CURRENTLY STUDYING',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[500],
-                            letterSpacing: 2,
-                          ),
+                        const SizedBox(height: 40),
+                        // Timer Display
+                        TimerDisplay(
+                          remainingSeconds: ((targetMinutes * 60) - elapsedSeconds).clamp(0, targetMinutes * 60),
+                          phaseLabel: _getPhaseLabel(),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          subject,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Colors.grey[900],
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        const SizedBox(height: 64),
+                        // Session Info
+                        SessionInfoCard(
+                          targetMinutes: targetMinutes,
+                          elapsedSeconds: elapsedSeconds,
                         ),
+                        const SizedBox(height: 32),
+                        // Progress Bar
+                        SessionProgressBar(
+                          elapsedSeconds: elapsedSeconds,
+                          targetMinutes: targetMinutes,
+                        ),
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: onComplete,
-                    icon: const Icon(Icons.check_circle_outline),
-                    iconSize: 30,
-                  ),
-                ],
-              ),
-            ),
-
-            // Main Content
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    // Timer Display
-                    TimerDisplay(
-                      elapsedSeconds: elapsedSeconds,
-                      phaseLabel: _getPhaseLabel(),
-                    ),
-                    const SizedBox(height: 64),
-                    // Session Info
-                    SessionInfoCard(
-                      targetMinutes: targetMinutes,
-                      elapsedSeconds: elapsedSeconds,
-                    ),
-                    const SizedBox(height: 32),
-                    // Progress Bar
-                    SessionProgressBar(
-                      elapsedSeconds: elapsedSeconds,
-                      targetMinutes: targetMinutes,
-                    ),
-                    const SizedBox(height: 100),
-                  ],
                 ),
-              ),
-            ),
 
-            // Controls
-            Container(
-              padding: const EdgeInsets.all(24),
-              child: TimerControls(
-                state: timerState,
-                onStart: onStart,
-                onPause: onPause,
-                onResume: onResume,
-                onStop: onStop,
-              ),
+                // Controls
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  child: TimerControls(
+                    state: timerState,
+                    onStart: onStart,
+                    onPause: onPause,
+                    onResume: onResume,
+                    onStop: onStop,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              emissionFrequency: 0.08,
+              numberOfParticles: 80,
+              maxBlastForce: 30,
+              minBlastForce: 10,
+              gravity: 0.2,
+            ),
+          ),
+        ],
       ),
     );
   }

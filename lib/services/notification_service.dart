@@ -6,6 +6,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 
 import '../models/goal.dart';
 import '../models/study_session.dart';
+import 'settings_service.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
@@ -54,8 +55,9 @@ class NotificationService {
       final tz.TZDateTime scheduledDate;
 
       if (session.startTime != null) {
+        final minutesBefore = SettingsService.sessionReminderMinutes;
         scheduledDate = tz.TZDateTime.from(
-          session.startTime!.subtract(const Duration(minutes: 15)),
+          session.startTime!.subtract(Duration(minutes: minutesBefore)),
           tz.local,
         );
       } else {
@@ -94,14 +96,16 @@ class NotificationService {
     }
   }
 
-  /// Schedule a deadline reminder: 09:00, 1 day before goal.date
+  /// Schedule a deadline reminder: 09:00, N days before goal.date
   static Future<void> scheduleDeadlineReminder(Goal goal) async {
     try {
+      final daysBefore = SettingsService.deadlineReminderDays;
+      final reminderDate = goal.date.subtract(Duration(days: daysBefore));
       final scheduledDate = tz.TZDateTime(
         tz.local,
-        goal.date.year,
-        goal.date.month,
-        goal.date.day - 1,
+        reminderDate.year,
+        reminderDate.month,
+        reminderDate.day,
         9, // 09:00
       );
 

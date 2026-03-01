@@ -23,6 +23,7 @@ class HiveService {
     // Open all boxes
     await Hive.openBox<Goal>(goalsBoxName);
     await Hive.openBox<StudySession>(studySessionsBoxName);
+    await Hive.openBox('settings');
 
     // Run migration for existing study sessions
     await _migrateStudySessions();

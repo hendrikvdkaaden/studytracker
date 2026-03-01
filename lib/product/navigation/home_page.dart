@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../main.dart';
 import '../../services/notification_service.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
 import '../screens/dashboard_screen.dart';
+import '../screens/profile_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,18 +24,22 @@ class _HomePageState extends State<HomePage> {
     NotificationService.requestPermission();
   }
 
-  final List<Widget> _screens = [
+  void _onThemeChanged() {
+    themeModeNotifier.value = SettingsService.themeMode;
+  }
+
+  List<Widget> get _screens => [
     const HomeScreen(),
     const PlanScreen(),
     DashboardScreen(),
-    DashboardScreen(), // Placeholder for Profile screen
+    ProfileScreen(onThemeChanged: _onThemeChanged),
   ];
 
   final List<String> _titles = const [
     'Daily Tasks',
     'Calendar',
     'Dashboard',
-    'Stats',
+    'Profile',
   ];
 
   @override
@@ -43,19 +50,22 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(
           _titles[_currentIndex],
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
             letterSpacing: -0.3,
           ),
         ),
         backgroundColor: isDark
-            ? AppColors.darkBackground.withOpacity(0.8)
-            : AppColors.lightBackground.withOpacity(0.8),
+            ? AppColors.darkBackground.withValues(alpha: 0.8)
+            : AppColors.lightBackground.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
-      body: _screens[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -74,8 +84,8 @@ class _HomePageState extends State<HomePage> {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: isDark
-              ? AppColors.darkCard.withOpacity(0.8)
-              : AppColors.lightCard.withOpacity(0.8),
+              ? AppColors.darkCard.withValues(alpha: 0.8)
+              : AppColors.lightCard.withValues(alpha: 0.8),
           selectedItemColor: AppColors.primary,
           unselectedItemColor: Colors.grey,
           selectedFontSize: 10,

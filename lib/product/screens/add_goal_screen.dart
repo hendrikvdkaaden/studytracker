@@ -70,6 +70,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     FocusScope.of(context).unfocus();
     await showStudySessionPicker(
       context: context,
+      existingSessions: _plannedSessions,
       onSessionAdded: (session) {
         setState(() {
           _plannedSessions.add(session);

@@ -9,6 +9,7 @@ import '../../widgets/deadlines/cards/study_consistency_card.dart';
 class DashboardTemplate extends StatelessWidget {
   final Map<int, DayStatus> weeklyConsistency;
   final int missedSessionsCount;
+  final int studyStreak;
   final List<Goal> overdueGoals;
   final List<Goal> upcomingGoals;
   final List<Goal> completedGoals;
@@ -19,6 +20,7 @@ class DashboardTemplate extends StatelessWidget {
     super.key,
     required this.weeklyConsistency,
     required this.missedSessionsCount,
+    required this.studyStreak,
     required this.overdueGoals,
     required this.upcomingGoals,
     required this.completedGoals,
@@ -39,6 +41,7 @@ class DashboardTemplate extends StatelessWidget {
           child: StudyConsistencyCard(
             weeklyConsistency: weeklyConsistency,
             missedSessionsCount: missedSessionsCount,
+            studyStreak: studyStreak,
           ),
         ),
         // Overdue section

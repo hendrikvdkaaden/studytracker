@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/day_status.dart';
+import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/calendar_helpers.dart';
@@ -19,6 +20,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GoalRepository _goalRepo = GoalRepository();
   final StudySessionRepository _sessionRepo = StudySessionRepository();
 
+  /// Returns the midnight at the end of the day a session was planned on.
+  DateTime _endOfDay(StudySession s) =>
+      DateTime(s.date.year, s.date.month, s.date.day + 1);
+
+  /// A session is completed on time when completedAt is on the same day or earlier
+  /// than the planned date. Falls back to isCompleted for sessions without completedAt.
+  bool _isCompletedOnTime(StudySession s) {
+    if (s.completedAt != null) {
+      return !s.completedAt!.isAfter(_endOfDay(s));
+    }
+    // Legacy sessions without completedAt: trust isCompleted flag.
+    return s.isCompleted;
+  }
+
+  /// A session is missed when the planned day is over and it was not completed on time.
+  bool _isMissed(StudySession s, DateTime now) {
+    if (_isCompletedOnTime(s)) return false;
+    return _endOfDay(s).isBefore(now) || _endOfDay(s).isAtSameMomentAs(now);
+  }
+
   Map<int, DayStatus> _getWeeklyConsistency() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -34,21 +55,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
       final weekday = i + 1; // 1=Monday, 7=Sunday
 
-      // Get all sessions for this date
       final allSessions = _sessionRepo.getSessionsByDateRange(
         date,
         date.add(const Duration(days: 1)),
       );
 
-      final hasCompleted = allSessions.any((s) => s.isCompleted);
-      final hasPlanned = allSessions.any((s) => !s.isCompleted);
-      final isPast = date.isBefore(today);
+      final isPastDay = date.isBefore(today);
+      final allCompletedOnTime = allSessions.isNotEmpty &&
+          allSessions.every(_isCompletedOnTime);
+      final hasMissed = allSessions.any((s) => _isMissed(s, now));
 
-      if (hasCompleted) {
+      if (allCompletedOnTime) {
         weekData[weekday] = DayStatus.completed;
-      } else if (hasPlanned && isPast) {
+      } else if (hasMissed) {
         weekData[weekday] = DayStatus.missed;
-      } else if (isPast) {
+      } else if (isPastDay) {
         weekData[weekday] = DayStatus.pastNoSession;
       } else {
         weekData[weekday] = DayStatus.notPlanned;
@@ -60,7 +81,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   int _getMissedSessionsCount() {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
     final startOfWeek = CalendarHelpers.getStartOfWeek(now);
 
     int missedCount = 0;
@@ -72,23 +92,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
         startOfWeek.day + i,
       );
 
-      final isPast = date.isBefore(today);
-      if (!isPast) continue;
-
       final allSessions = _sessionRepo.getSessionsByDateRange(
         date,
         date.add(const Duration(days: 1)),
       );
 
-      final hasCompleted = allSessions.any((s) => s.isCompleted);
-      final plannedSessions = allSessions.where((s) => !s.isCompleted).toList();
-
-      if (!hasCompleted && plannedSessions.isNotEmpty) {
-        missedCount += plannedSessions.length;
-      }
+      missedCount += allSessions.where((s) => _isMissed(s, now)).length;
     }
 
     return missedCount;
+  }
+
+  /// Returns the current streak: the number of consecutive days (going back from
+  /// today) on which at least one session was completed on time.
+  /// Days with no planned sessions are skipped — they don't break the streak.
+  /// The streak only counts days that had at least one planned session.
+  int _getStudyStreak() {
+    final now = DateTime.now();
+    int streak = 0;
+
+    // Check up to 365 days back
+    for (int i = 0; i < 365; i++) {
+      final day = DateTime(now.year, now.month, now.day - i);
+      final dayEnd = DateTime(day.year, day.month, day.day + 1);
+
+      final sessions = _sessionRepo.getSessionsByDateRange(day, dayEnd);
+
+      // Skip days with no planned sessions — don't break the streak
+      if (sessions.isEmpty) continue;
+
+      final hasCompletedOnTime = sessions.any(
+        (s) => s.completedAt != null
+            ? !s.completedAt!.isAfter(DateTime(s.date.year, s.date.month, s.date.day + 1))
+            : s.isCompleted,
+      );
+
+      if (hasCompletedOnTime) {
+        streak++;
+      } else {
+        // A planned session that was missed — streak is broken
+        break;
+      }
+    }
+
+    return streak;
   }
 
   Map<String, int> _getGoalsTimeSpent() {
@@ -111,6 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: DashboardTemplate(
         weeklyConsistency: _getWeeklyConsistency(),
         missedSessionsCount: _getMissedSessionsCount(),
+        studyStreak: _getStudyStreak(),
         overdueGoals: _goalRepo.getOverdueGoals(),
         upcomingGoals: _goalRepo.getUpcomingGoals(30),
         completedGoals: _goalRepo.getCompletedGoals(),

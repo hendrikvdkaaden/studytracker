@@ -36,11 +36,11 @@ class StudySessionRepository {
       ..sort((a, b) => b.date.compareTo(a.date)); // Most recent first
   }
 
-  /// Get study sessions within a date range
+  /// Get study sessions within a date range (start inclusive, end exclusive)
   List<StudySession> getSessionsByDateRange(DateTime start, DateTime end) {
     return _box.values
         .where((session) =>
-            session.date.isAfter(start) && session.date.isBefore(end))
+            !session.date.isBefore(start) && session.date.isBefore(end))
         .toList()
       ..sort((a, b) => b.date.compareTo(a.date));
   }

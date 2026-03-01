@@ -5,11 +5,13 @@ import 'day_status_circle.dart';
 class StudyConsistencyCard extends StatelessWidget {
   final Map<int, DayStatus> weeklyConsistency; // weekday (1-7) -> status
   final int missedSessionsCount;
+  final int studyStreak;
 
   const StudyConsistencyCard({
     super.key,
     required this.weeklyConsistency,
     required this.missedSessionsCount,
+    required this.studyStreak,
   });
 
   static const _dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -130,6 +132,38 @@ class StudyConsistencyCard extends StatelessWidget {
               ),
             ],
           ),
+
+          // Streak badge — top right
+          if (studyStreak >= 2)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.orange.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('🔥', style: TextStyle(fontSize: 14)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$studyStreak',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

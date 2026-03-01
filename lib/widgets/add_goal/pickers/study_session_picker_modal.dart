@@ -6,10 +6,12 @@ import 'time_picker_modal.dart';
 
 class StudySessionPickerModal extends StatefulWidget {
   final Function(StudySession session) onSessionAdded;
+  final List<StudySession> existingSessions;
 
   const StudySessionPickerModal({
     super.key,
     required this.onSessionAdded,
+    this.existingSessions = const [],
   });
 
   @override
@@ -26,6 +28,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   final TextEditingController notesController = TextEditingController();
   final FocusNode _notesFocusNode = FocusNode();
   final GlobalKey _notesKey = GlobalKey();
+  String? _overlapError;
 
   @override
   void dispose() {
@@ -58,6 +61,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       setState(() {
         durationHours = result.hours;
         durationMinutes = result.minutes;
+        _overlapError = null;
       });
     }
   }
@@ -72,6 +76,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       setState(() {
         selectedHour = result.hour;
         selectedMinute = result.minute;
+        _overlapError = null;
       });
     }
   }
@@ -94,8 +99,25 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       },
     );
     if (date != null) {
-      setState(() => selectedDate = date);
+      setState(() {
+        selectedDate = date;
+        _overlapError = null;
+      });
     }
+  }
+
+  bool _hasOverlap(DateTime newStart, int durationMinutes) {
+    final newEnd = newStart.add(Duration(minutes: durationMinutes));
+    for (final existing in widget.existingSessions) {
+      if (existing.startTime == null) continue;
+      final existingStart = existing.startTime!;
+      final existingEnd = existingStart.add(Duration(minutes: existing.duration));
+      // Overlap when one starts before the other ends
+      if (newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void _addSession() {
@@ -111,19 +133,28 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       return;
     }
 
+    final newStart = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedHour,
+      selectedMinute,
+    );
+
+    if (_hasOverlap(newStart, totalDuration)) {
+      setState(() {
+        _overlapError = 'This session overlaps with an existing session.';
+      });
+      return;
+    }
+
     final session = StudySession(
       id: const Uuid().v4(),
       goalId: '', // Will be set when goal is created
       date: selectedDate,
       duration: totalDuration,
       isCompleted: false,
-      startTime: DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        selectedHour,
-        selectedMinute,
-      ),
+      startTime: newStart,
       notes: notesController.text.isEmpty ? null : notesController.text,
     );
 
@@ -214,13 +245,68 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   const SizedBox(height: 18),
                   _buildSectionTitle('Start Time', isDark),
                   const SizedBox(height: 8),
-                  _buildSelectableField(
+                  InkWell(
                     onTap: _pickTime,
-                    label:
-                        '${selectedHour.toString().padLeft(2, '0')}:${selectedMinute.toString().padLeft(2, '0')}',
-                    icon: Icons.access_time,
-                    isDark: isDark,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF374151)
+                            : const Color(0xFFF6F6F8),
+                        borderRadius: BorderRadius.circular(12),
+                        border: _overlapError != null
+                            ? Border.all(
+                                color: const Color(0xFFFF5252),
+                                width: 1.5,
+                              )
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${selectedHour.toString().padLeft(2, '0')}:${selectedMinute.toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: _overlapError != null
+                                  ? const Color(0xFFFF5252)
+                                  : null,
+                            ),
+                          ),
+                          Icon(
+                            Icons.access_time,
+                            size: 20,
+                            color: _overlapError != null
+                                ? const Color(0xFFFF5252)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                  if (_overlapError != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 14,
+                          color: Color(0xFFFF5252),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          _overlapError!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFFFF5252),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 18),
                   _buildSectionTitle('Notes (Optional)', isDark),
                   const SizedBox(height: 8),
@@ -328,6 +414,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 Future<void> showStudySessionPicker({
   required BuildContext context,
   required Function(StudySession session) onSessionAdded,
+  List<StudySession> existingSessions = const [],
 }) async {
   await showModalBottomSheet(
     context: context,
@@ -337,6 +424,7 @@ Future<void> showStudySessionPicker({
     builder: (BuildContext context) {
       return StudySessionPickerModal(
         onSessionAdded: onSessionAdded,
+        existingSessions: existingSessions,
       );
     },
   );

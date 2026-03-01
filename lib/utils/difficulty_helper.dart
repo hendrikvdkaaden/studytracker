@@ -31,13 +31,13 @@ class DifficultyHelper {
   static Color getAccentColor(Difficulty difficulty) {
     switch (difficulty) {
       case Difficulty.easy:
-        return Colors.green;
+        return const Color(0xFF078830);
       case Difficulty.medium:
-        return Colors.yellow;
+        return const Color(0xFFF59E0B);
       case Difficulty.hard:
-        return Colors.orange;
+        return const Color(0xFFEF4444);
       case Difficulty.veryHard:
-        return Colors.red;
+        return const Color(0xFF7C3AED);
     }
   }
 }

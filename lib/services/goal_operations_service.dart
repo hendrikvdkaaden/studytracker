@@ -79,6 +79,15 @@ class GoalOperationsService {
     return updatedGoal;
   }
 
+  /// Updates a goal's basic data (title, subject, type, difficulty, date, etc.)
+  /// Also reschedules the deadline reminder notification if the goal is not completed.
+  Future<void> updateGoalData(Goal goal) async {
+    await _goalRepo.updateGoal(goal);
+    if (!goal.isCompleted) {
+      await NotificationService.scheduleDeadlineReminder(goal);
+    }
+  }
+
   /// Gets the total study time spent on a goal
   int getTotalStudyTime(String goalId) {
     return _sessionRepo.getTotalStudyTimeForGoal(goalId);

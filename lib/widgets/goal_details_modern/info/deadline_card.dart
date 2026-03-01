@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/goal.dart';
+import '../../../theme/app_colors.dart';
 
 class DeadlineCard extends StatelessWidget {
   final Goal goal;
+  final VoidCallback? onTap;
 
   const DeadlineCard({
     super.key,
     required this.goal,
+    this.onTap,
   });
 
   String _formatDate(DateTime date) {
@@ -24,6 +27,7 @@ class DeadlineCard extends StatelessWidget {
     final daysLeft = goal.daysUntilDeadline();
     final isOverdue = goal.isOverdue();
     final isCompleted = goal.isCompleted;
+    final showWarning = !isCompleted && (isOverdue || daysLeft <= 2);
 
     String daysLeftText;
     if (isCompleted) {
@@ -38,80 +42,97 @@ class DeadlineCard extends StatelessWidget {
       daysLeftText = '$daysLeft days left';
     }
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A2E2D) : Colors.white,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.calendarDarkCard : AppColors.lightCard,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Icon
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFF0DF2DF).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              isCompleted ? Icons.check_circle : Icons.calendar_today,
-              color: isCompleted
-                  ? Colors.green
-                  : isDark ? const Color(0xFF0DF2DF) : const Color(0xFF0D1C1B),
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Deadline info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                Text(
-                  'Deadline: ${_formatDate(goal.date)}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                // Icon
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.calendarAccent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    isCompleted ? Icons.check_circle : Icons.calendar_today,
+                    color: isCompleted
+                        ? AppColors.completed
+                        : isDark ? AppColors.calendarAccent : AppColors.darkText,
+                    size: 24,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  daysLeftText,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isCompleted
-                        ? Colors.green
-                        : isOverdue ? const Color(0xFFFF5C5C) : const Color(0xFF499C95),
+                const SizedBox(width: 16),
+                // Deadline info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Deadline: ${_formatDate(goal.date)}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? AppColors.lightText : AppColors.darkText,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        daysLeftText,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isCompleted
+                              ? AppColors.completed
+                              : isOverdue
+                                  ? AppColors.overdue
+                                  : AppColors.upcoming,
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                // Trailing icons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (showWarning)
+                      const Icon(
+                        Icons.error,
+                        color: AppColors.overdue,
+                        size: 22,
+                      ),
+                    if (onTap != null && !isCompleted) ...[
+                      if (showWarning) const SizedBox(width: 4),
+                      const Icon(
+                        Icons.edit_outlined,
+                        size: 18,
+                        color: AppColors.upcoming,
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
           ),
-          // Warning icon if overdue or soon (not when completed)
-          if (!isCompleted && (isOverdue || daysLeft <= 2))
-            Container(
-              width: 28,
-              height: 28,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.error,
-                color: Color(0xFFFF5C5C),
-                size: 28,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

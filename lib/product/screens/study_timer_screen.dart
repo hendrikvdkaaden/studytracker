@@ -125,6 +125,8 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
       final updatedSession = widget.session.copyWith(
         actualDuration: actualMinutes,
         elapsedSeconds: _elapsedSeconds,
+        isCompleted: true,
+        completedAt: DateTime.now(),
       );
 
       await _sessionRepo.updateSession(updatedSession);
@@ -166,7 +168,17 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
 
       if (confirm == true) {
         _timer?.cancel();
-        await _persistElapsedSeconds();
+        if (_timerState == TimerState.completed) {
+          final updatedSession = widget.session.copyWith(
+            actualDuration: widget.session.duration,
+            elapsedSeconds: _targetSeconds,
+            isCompleted: true,
+            completedAt: DateTime.now(),
+          );
+          await _sessionRepo.updateSession(updatedSession);
+        } else {
+          await _persistElapsedSeconds();
+        }
         if (mounted) Navigator.pop(context);
       }
     } else {
@@ -202,6 +214,7 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
         actualDuration: widget.session.duration,
         elapsedSeconds: _targetSeconds,
         isCompleted: true,
+        completedAt: DateTime.now(),
       );
 
       await _sessionRepo.updateSession(updatedSession);

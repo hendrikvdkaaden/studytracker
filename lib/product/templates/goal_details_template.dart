@@ -16,6 +16,8 @@ class GoalDetailsTemplate extends StatelessWidget {
   final VoidCallback onEditProgress;
   final VoidCallback onMarkComplete;
   final VoidCallback onAddSession;
+  final VoidCallback onEditInfo;
+  final VoidCallback onEditDeadline;
 
   const GoalDetailsTemplate({
     super.key,
@@ -25,6 +27,8 @@ class GoalDetailsTemplate extends StatelessWidget {
     required this.onEditProgress,
     required this.onMarkComplete,
     required this.onAddSession,
+    required this.onEditInfo,
+    required this.onEditDeadline,
   });
 
   @override
@@ -35,32 +39,28 @@ class GoalDetailsTemplate extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: GoalInfoCard(goal: goal),
+            child: GoalInfoCard(goal: goal, onTap: onEditInfo),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: DeadlineCard(goal: goal),
+            child: DeadlineCard(goal: goal, onTap: onEditDeadline),
           ),
           PlannedSessionsSection(
             sessions: plannedSessions,
             onAddSession: onAddSession,
           ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                child: ProgressSectionHeader(onEdit: onEditProgress),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ProgressCircle(
-                  timeSpent: timeSpent,
-                  targetTime: goal.studyTime,
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+            child: ProgressSectionHeader(onEdit: onEditProgress),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ProgressCircle(
+              timeSpent: timeSpent,
+              targetTime: goal.studyTime,
+            ),
+          ),
+          const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             child: ActionButtons(

@@ -24,6 +24,8 @@ class StudySession extends HiveObject {
   int? actualDuration;
   @HiveField(8)
   int? elapsedSeconds;
+  @HiveField(9)
+  DateTime? completedAt;
 
   StudySession({
     required this.id,
@@ -35,6 +37,7 @@ class StudySession extends HiveObject {
     this.notes,
     this.actualDuration,
     this.elapsedSeconds,
+    this.completedAt,
   });
 
   /// Returns the duration as a formatted string (e.g., "1h 30m")
@@ -61,6 +64,7 @@ class StudySession extends HiveObject {
     String? notes,
     int? actualDuration,
     int? elapsedSeconds,
+    DateTime? completedAt,
   }) {
     return StudySession(
       id: id ?? this.id,
@@ -72,6 +76,7 @@ class StudySession extends HiveObject {
       notes: notes ?? this.notes,
       actualDuration: actualDuration ?? this.actualDuration,
       elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+      completedAt: completedAt ?? this.completedAt,
     );
   }
 }

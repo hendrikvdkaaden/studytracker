@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../services/settings_service.dart';
 import '../../widgets/add_goal/fields/clickable_field.dart';
 import '../../widgets/add_goal/fields/custom_text_field.dart';
 import '../../widgets/add_goal/buttons/fixed_footer_button.dart';
 import '../../widgets/add_goal/fields/goal_type_selector.dart';
 import '../../widgets/add_goal/sessions/planned_sessions_list.dart';
+import '../../widgets/common/subject_selector_field.dart';
 
 /// Layout template for the add goal screen
 class AddGoalTemplate extends StatelessWidget {
@@ -16,6 +18,9 @@ class AddGoalTemplate extends StatelessWidget {
   final GoalType selectedType;
   final String formattedDate;
   final List<StudySession> plannedSessions;
+  final List<SubjectData> subjects;
+  final String? selectedSubject;
+  final ValueChanged<String> onSubjectSelected;
   final Function(GoalType) onTypeSelected;
   final VoidCallback onDateTap;
   final VoidCallback onSessionTap;
@@ -31,11 +36,14 @@ class AddGoalTemplate extends StatelessWidget {
     required this.selectedType,
     required this.formattedDate,
     required this.plannedSessions,
+    required this.subjects,
+    required this.onSubjectSelected,
     required this.onTypeSelected,
     required this.onDateTap,
     required this.onSessionTap,
     required this.onSessionDelete,
     required this.onSave,
+    this.selectedSubject,
   });
 
   @override
@@ -83,13 +91,20 @@ class AddGoalTemplate extends StatelessWidget {
   }
 
   Widget _buildSubjectField() {
-    return CustomTextField(
-      label: 'Subject',
-      hintText: 'Computer Science',
+    return SubjectSelectorField(
+      subjects: subjects,
+      selectedSubject: selectedSubject,
       controller: subjectController,
+      onSubjectSelected: onSubjectSelected,
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter a subject';
+        if (subjects.isNotEmpty) {
+          if (value == null || value.isEmpty) {
+            return 'Please select a subject';
+          }
+        } else {
+          if (subjectController.text.isEmpty) {
+            return 'Please enter a subject';
+          }
         }
         return null;
       },

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/difficulty_helper.dart';
 import '../../../utils/goal_type_helper.dart';
+import '../../common/subject_selector_field.dart';
 
 Future<Goal?> showGoalInfoEditModal(
   BuildContext context,
@@ -30,6 +32,8 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
   late TextEditingController _subjectController;
   late GoalType _selectedType;
   late Difficulty _selectedDifficulty;
+  late List<SubjectData> _subjects;
+  String? _selectedSubject;
 
   @override
   void initState() {
@@ -38,6 +42,10 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
     _subjectController = TextEditingController(text: widget.goal.subject);
     _selectedType = widget.goal.type;
     _selectedDifficulty = widget.goal.difficulty;
+    _subjects = SettingsService.subjectData;
+    // Only pre-select if the goal's subject still exists in the list
+    final subjectExists = _subjects.any((s) => s.name == widget.goal.subject);
+    _selectedSubject = subjectExists ? widget.goal.subject : null;
   }
 
   @override
@@ -49,8 +57,22 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
   void _save() {
     final title = _titleController.text.trim();
-    final subject = _subjectController.text.trim();
-    if (title.isEmpty || subject.isEmpty) return;
+    final subject = _subjects.isNotEmpty
+        ? (_selectedSubject ?? '')
+        : _subjectController.text.trim();
+
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a title')),
+      );
+      return;
+    }
+    if (subject.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a subject')),
+      );
+      return;
+    }
 
     final updated = widget.goal.copyWith(
       title: title,
@@ -172,43 +194,12 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                   const SizedBox(height: 16),
 
                   // Subject field
-                  Text(
-                    'Subject',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: subTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
+                  SubjectSelectorField(
+                    subjects: _subjects,
+                    selectedSubject: _selectedSubject,
                     controller: _subjectController,
-                    style: TextStyle(color: textColor),
-                    decoration: InputDecoration(
-                      hintText: 'Subject',
-                      hintStyle: TextStyle(color: subTextColor),
-                      filled: true,
-                      fillColor: fieldFill,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: borderColor),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: borderColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColors.calendarAccent,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                    ),
+                    onSubjectSelected: (s) =>
+                        setState(() => _selectedSubject = s),
                   ),
                   const SizedBox(height: 20),
 
@@ -291,9 +282,10 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                     children: Difficulty.values.map((diff) {
                       final isSelected = _selectedDifficulty == diff;
                       final color = DifficultyHelper.getAccentColor(diff);
+                      final isLast = diff == Difficulty.values.last;
                       return Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 8),
+                          padding: EdgeInsets.only(right: isLast ? 0 : 8),
                           child: InkWell(
                             onTap: () =>
                                 setState(() => _selectedDifficulty = diff),

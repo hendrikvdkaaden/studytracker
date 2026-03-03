@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../services/settings_service.dart';
 import '../../widgets/goal_details_modern/info/goal_info_card.dart';
 import '../../widgets/goal_details_modern/info/deadline_card.dart';
 import '../../widgets/goal_details_modern/progress/progress_section_header.dart';
@@ -33,13 +34,15 @@ class GoalDetailsTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subjectColor = SettingsService.colorForSubject(goal.subject);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: GoalInfoCard(goal: goal, onTap: onEditInfo),
+            child: GoalInfoCard(goal: goal, onTap: onEditInfo, accentColor: subjectColor),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -58,6 +61,7 @@ class GoalDetailsTemplate extends StatelessWidget {
             child: ProgressCircle(
               timeSpent: timeSpent,
               targetTime: goal.studyTime,
+              accentColor: subjectColor,
             ),
           ),
           const SizedBox(height: 24),

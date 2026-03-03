@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class GoalInfoCard extends StatelessWidget {
   final Goal goal;
   final VoidCallback? onTap;
+  final Color? accentColor;
 
   const GoalInfoCard({
     super.key,
     required this.goal,
     this.onTap,
+    this.accentColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Use provided color, fall back to lookup, fall back to default
+    final color = accentColor
+        ?? SettingsService.colorForSubject(goal.subject)
+        ?? AppColors.calendarAccent;
 
     return Material(
       color: Colors.transparent,
@@ -43,12 +50,12 @@ class GoalInfoCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: AppColors.calendarAccent.withValues(alpha: 0.2),
+                    color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     GoalTypeHelper.getIconForType(goal.type),
-                    color: isDark ? AppColors.calendarAccent : AppColors.darkText,
+                    color: color,
                     size: 30,
                   ),
                 ),
@@ -69,20 +76,20 @@ class GoalInfoCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '${goal.subject} • ${GoalTypeHelper.getLabel(goal.type)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.upcoming,
+                          color: color,
                         ),
                       ),
                     ],
                   ),
                 ),
                 if (onTap != null)
-                  const Icon(
+                  Icon(
                     Icons.edit_outlined,
                     size: 18,
-                    color: AppColors.upcoming,
+                    color: color,
                   ),
               ],
             ),

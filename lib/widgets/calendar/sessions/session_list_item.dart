@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../models/goal.dart';
 import '../../../models/study_session.dart';
-import '../../../services/goal_repository.dart';
+import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 
 class SessionListItem extends StatelessWidget {
   final StudySession session;
+  final Goal goal;
 
   const SessionListItem({
     super.key,
     required this.session,
+    required this.goal,
   });
 
   String _formatTime(DateTime? startTime) {
@@ -24,15 +27,9 @@ class SessionListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final goalRepo = GoalRepository();
-    final goal = goalRepo.getGoalById(session.goalId);
-
-    // Don't render if goal doesn't exist
-    if (goal == null) {
-      return const SizedBox.shrink();
-    }
-
     final timeText = _formatTime(session.startTime);
+    final subjectColor = SettingsService.colorForSubject(goal.subject);
+    final accentColor = subjectColor ?? AppColors.calendarAccent;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -40,7 +37,7 @@ class SessionListItem extends StatelessWidget {
         color: isDark ? AppColors.calendarDarkCard : AppColors.lightCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.calendarAccent.withOpacity(0.3),
+          color: accentColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -50,12 +47,12 @@ class SessionListItem extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.calendarAccent.withOpacity(0.1),
+            color: accentColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.school,
-            color: AppColors.calendarAccent,
+            color: accentColor,
             size: 24,
           ),
         ),

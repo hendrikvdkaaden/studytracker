@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../services/settings_service.dart';
 import '../../../utils/goal_helpers.dart';
 import '../../../utils/format_helpers.dart';
 
@@ -31,10 +32,18 @@ class UpcomingGoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final daysLeft = _getDaysLeft();
-    final percentage = (_progressPercentage * 100).toInt();
-    final iconColor = GoalHelpers.getGoalColor(goal.type);
+    final progress = _progressPercentage;
+    final percentage = (progress * 100).toInt();
+    final typeColor = GoalHelpers.getGoalColor(goal.type);
+    final subjectColor = SettingsService.colorForSubject(goal.subject);
     final formatTime = FormatHelpers.formatTime;
     final formatDate = FormatHelpers.formatDate;
+
+    // Use subject color when available, otherwise fall back to goal-type MaterialColor
+    final accentColor = subjectColor ?? typeColor.shade600;
+    final iconBg = subjectColor != null
+        ? subjectColor.withValues(alpha: 0.15)
+        : (isDark ? typeColor.shade900.withValues(alpha: 0.3) : typeColor.shade50);
 
     return GestureDetector(
       onTap: onTap,
@@ -49,7 +58,7 @@ class UpcomingGoalCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -66,14 +75,12 @@ class UpcomingGoalCard extends StatelessWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? iconColor.shade900.withOpacity(0.3)
-                        : iconColor.shade50,
+                    color: iconBg,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     GoalHelpers.getGoalIcon(goal.type),
-                    color: iconColor.shade600,
+                    color: accentColor,
                     size: 20,
                   ),
                 ),
@@ -119,13 +126,7 @@ class UpcomingGoalCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: daysLeft <= 2
-                        ? (isDark
-                            ? Colors.orange.shade900.withOpacity(0.3)
-                            : Colors.orange.shade50)
-                        : (isDark
-                            ? Colors.blue.shade900.withOpacity(0.3)
-                            : Colors.blue.shade50),
+                    color: accentColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Row(
@@ -134,9 +135,7 @@ class UpcomingGoalCard extends StatelessWidget {
                       Icon(
                         daysLeft <= 2 ? Icons.timer : Icons.event,
                         size: 12,
-                        color: daysLeft <= 2
-                            ? Colors.orange.shade600
-                            : Colors.blue.shade600,
+                        color: accentColor,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -144,9 +143,7 @@ class UpcomingGoalCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: daysLeft <= 2
-                              ? Colors.orange.shade600
-                              : Colors.blue.shade600,
+                          color: accentColor,
                         ),
                       ),
                     ],
@@ -171,10 +168,10 @@ class UpcomingGoalCard extends StatelessWidget {
                           left: 0,
                           top: 0,
                           bottom: 0,
-                          width: constraints.maxWidth * _progressPercentage,
+                          width: constraints.maxWidth * progress,
                           child: Container(
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF0DF2DF),
+                            decoration: BoxDecoration(
+                              color: accentColor,
                             ),
                           ),
                         ),
@@ -190,10 +187,10 @@ class UpcomingGoalCard extends StatelessWidget {
               children: [
                 Text(
                   '${formatTime(timeSpent)} / ${formatTime(goal.studyTime)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0DF2DF),
+                    color: accentColor,
                   ),
                 ),
                 Text(

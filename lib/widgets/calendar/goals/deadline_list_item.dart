@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../services/settings_service.dart';
+import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../grid/calendar_day_cell.dart';
 
@@ -23,11 +25,11 @@ class DeadlineListItem extends StatelessWidget {
     final status = _getGoalStatus();
     switch (status) {
       case GoalStatus.overdue:
-        return const Color(0xFFFF5252);
+        return AppColors.overdue;
       case GoalStatus.upcoming:
-        return const Color(0xFF499C95);
+        return AppColors.upcoming;
       case GoalStatus.completed:
-        return const Color(0xFF078830);
+        return AppColors.completed;
     }
   }
 
@@ -35,10 +37,10 @@ class DeadlineListItem extends StatelessWidget {
     final status = _getGoalStatus();
     switch (status) {
       case GoalStatus.overdue:
-        return const Color(0xFFFF5252).withValues(alpha: 0.1);
+        return AppColors.overdue.withValues(alpha: 0.1);
       case GoalStatus.upcoming:
       case GoalStatus.completed:
-        return const Color(0xFF0DF2DF).withValues(alpha: 0.2);
+        return AppColors.calendarAccent.withValues(alpha: 0.2);
     }
   }
 
@@ -62,6 +64,7 @@ class DeadlineListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final status = _getGoalStatus();
+    final subjectColor = SettingsService.colorForSubject(goal.subject);
 
     return InkWell(
       onTap: onTap,
@@ -70,10 +73,10 @@ class DeadlineListItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF102221) : Colors.white,
+          color: isDark ? AppColors.calendarDarkBackground : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F4F6),
+            color: AppColors.getBorderColor(context),
           ),
           boxShadow: [
             BoxShadow(
@@ -90,14 +93,19 @@ class DeadlineListItem extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getIconBackgroundColor(),
+                color: subjectColor != null
+                    ? subjectColor.withValues(alpha: 0.15)
+                    : _getIconBackgroundColor(),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 GoalTypeHelper.getIconForType(goal.type),
-                color: status == GoalStatus.overdue
-                    ? const Color(0xFFFF5252)
-                    : (isDark ? const Color(0xFF0DF2DF) : const Color(0xFF499C95)),
+                color: subjectColor ??
+                    (status == GoalStatus.overdue
+                        ? AppColors.overdue
+                        : (isDark
+                            ? AppColors.calendarAccent
+                            : AppColors.upcoming)),
                 size: 24,
               ),
             ),
@@ -123,8 +131,10 @@ class DeadlineListItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       color: status == GoalStatus.overdue
-                          ? const Color(0xFFFF5252)
-                          : (isDark ? const Color(0xFF0DF2DF).withValues(alpha: 0.7) : const Color(0xFF499C95)),
+                          ? AppColors.overdue
+                          : (isDark
+                              ? AppColors.calendarAccent.withValues(alpha: 0.7)
+                              : AppColors.upcoming),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

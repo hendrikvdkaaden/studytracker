@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../product/screens/goal_details_screen.dart';
+import '../../services/goal_repository.dart';
 import 'goals/deadline_list_item.dart';
 import 'sessions/session_list_item.dart';
 import 'calendar_section_header.dart';
@@ -23,6 +24,7 @@ class CalendarDayContent extends StatefulWidget {
 }
 
 class _CalendarDayContentState extends State<CalendarDayContent> {
+  final _goalRepo = GoalRepository();
   Widget _buildEmptyState() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -83,9 +85,12 @@ class _CalendarDayContentState extends State<CalendarDayContent> {
             title: 'Study Sessions',
             count: widget.sessions.length,
           ),
-          ...widget.sessions.map((session) => SessionListItem(
-                session: session,
-              )),
+          ...widget.sessions
+              .map((session) {
+                final goal = _goalRepo.getGoalById(session.goalId);
+                if (goal == null) return const SizedBox.shrink();
+                return SessionListItem(session: session, goal: goal);
+              }),
         ],
       ],
     );

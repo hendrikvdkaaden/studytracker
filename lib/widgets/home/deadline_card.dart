@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 
 class HomeDeadlineCard extends StatelessWidget {
@@ -44,7 +45,8 @@ class HomeDeadlineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = _getBorderColor();
+    final subjectColor = SettingsService.colorForSubject(goal.subject);
+    final borderColor = subjectColor ?? _getBorderColor();
 
     return GestureDetector(
       onTap: onTap,
@@ -61,7 +63,7 @@ class HomeDeadlineCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

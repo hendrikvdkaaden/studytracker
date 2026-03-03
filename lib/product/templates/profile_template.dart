@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/profile/subjects_section.dart';
 
 class ProfileTemplate extends StatelessWidget {
   final String userName;
@@ -7,6 +9,8 @@ class ProfileTemplate extends StatelessWidget {
   final int deadlineReminderDays;
   final int themeModeIndex;
   final String appVersion;
+  final List<SubjectData> subjects;
+  final String schoolName;
 
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
@@ -14,6 +18,8 @@ class ProfileTemplate extends StatelessWidget {
   final VoidCallback onThemeTap;
   final VoidCallback onDeleteSessions;
   final VoidCallback onDeleteEverything;
+  final VoidCallback onAddSubject;
+  final ValueChanged<SubjectData> onDeleteSubject;
 
   const ProfileTemplate({
     super.key,
@@ -22,12 +28,16 @@ class ProfileTemplate extends StatelessWidget {
     required this.deadlineReminderDays,
     required this.themeModeIndex,
     required this.appVersion,
+    required this.subjects,
+    required this.schoolName,
     required this.onEditName,
     required this.onSessionReminderTap,
     required this.onDeadlineReminderTap,
     required this.onThemeTap,
     required this.onDeleteSessions,
     required this.onDeleteEverything,
+    required this.onAddSubject,
+    required this.onDeleteSubject,
   });
 
   String get _initials {
@@ -73,6 +83,16 @@ class ProfileTemplate extends StatelessWidget {
       children: [
         // Profile Header
         _buildProfileHeader(context, isDark),
+        const SizedBox(height: 24),
+
+        // Subjects Section
+        _buildSectionLabel('SUBJECTS', isDark),
+        const SizedBox(height: 8),
+        SubjectsSection(
+          subjects: subjects,
+          onAddSubject: onAddSubject,
+          onDeleteSubject: onDeleteSubject,
+        ),
         const SizedBox(height: 24),
 
         // Notifications Section
@@ -216,11 +236,14 @@ class ProfileTemplate extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  'Study Tracker',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: isDark ? Colors.grey[500] : Colors.grey[400],
+                GestureDetector(
+                  onTap: onEditName,
+                  child: Text(
+                    schoolName.isEmpty ? 'Tap to set school name' : schoolName,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isDark ? Colors.grey[500] : Colors.grey[400],
+                    ),
                   ),
                 ),
               ],

@@ -70,6 +70,7 @@ class _PlanScreenState extends State<PlanScreen> {
         onGoalUpdated: () => setState(() {}),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'plan_fab',
         onPressed: _goToToday,
         backgroundColor: AppColors.calendarAccent,
         foregroundColor: AppColors.calendarDarkBackground,

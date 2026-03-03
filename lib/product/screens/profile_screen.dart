@@ -3,6 +3,7 @@ import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/profile/add_subject_modal.dart';
 import '../../widgets/profile/edit_name_dialog.dart';
 import '../templates/profile_template.dart';
 
@@ -20,6 +21,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
   int _themeModeIndex = 0;
+  List<SubjectData> _subjects = [];
+  String _schoolName = '';
   static const String _appVersion = 'v1.0.0';
 
   @override
@@ -29,17 +32,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _sessionReminderMinutes = SettingsService.sessionReminderMinutes;
     _deadlineReminderDays = SettingsService.deadlineReminderDays;
     _themeModeIndex = SettingsService.themeModeIndex;
+    _subjects = SettingsService.subjectData;
+    _schoolName = SettingsService.schoolName;
   }
 
-  Future<void> _editName() async {
-    final result = await showDialog<String>(
+  Future<void> _editProfile() async {
+    final result = await showDialog<EditProfileResult>(
       context: context,
-      builder: (ctx) => EditNameDialog(initialName: _userName),
+      builder: (ctx) => EditNameDialog(
+        initialName: _userName,
+        initialSchoolName: _schoolName,
+      ),
     );
 
     if (result != null && mounted) {
-      await SettingsService.setUserName(result);
-      setState(() => _userName = result);
+      await SettingsService.setUserName(result.name);
+      await SettingsService.setSchoolName(result.schoolName);
+      setState(() {
+        _userName = result.name;
+        _schoolName = result.schoolName;
+      });
+    }
+  }
+
+  Future<void> _addSubject() async {
+    final result = await showModalBottomSheet<SubjectData>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const AddSubjectModal(),
+    );
+    if (result != null && mounted) {
+      final updated = [..._subjects, result];
+      await SettingsService.setSubjectData(updated);
+      setState(() => _subjects = updated);
+    }
+  }
+
+  Future<void> _deleteSubject(SubjectData subject) async {
+    final confirmed = await _showDestructiveConfirmation(
+      title: 'Remove subject?',
+      body: '"${subject.name}" will be removed from your subjects list. Goals using this subject are not affected.',
+      confirmLabel: 'Remove',
+    );
+    if (confirmed == true && mounted) {
+      final updated = _subjects.where((s) => s.name != subject.name).toList();
+      await SettingsService.setSubjectData(updated);
+      setState(() => _subjects = updated);
     }
   }
 
@@ -242,12 +281,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       deadlineReminderDays: _deadlineReminderDays,
       themeModeIndex: _themeModeIndex,
       appVersion: _appVersion,
-      onEditName: _editName,
+      subjects: _subjects,
+      schoolName: _schoolName,
+      onEditName: _editProfile,
       onSessionReminderTap: _pickSessionReminder,
       onDeadlineReminderTap: _pickDeadlineReminder,
       onThemeTap: _pickTheme,
       onDeleteSessions: _confirmDeleteSessions,
       onDeleteEverything: _confirmDeleteEverything,
+      onAddSubject: _addSubject,
+      onDeleteSubject: _deleteSubject,
     );
   }
 }
+

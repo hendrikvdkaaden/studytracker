@@ -4,7 +4,9 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
 import '../../services/notification_service.dart';
+import '../../services/settings_service.dart'; // also imports SubjectData
 import '../../services/study_session_repository.dart';
+import '../../theme/app_colors.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
 
@@ -25,6 +27,14 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
   GoalType _selectedType = GoalType.exam;
   final List<StudySession> _plannedSessions = [];
+  List<SubjectData> _subjects = [];
+  String? _selectedSubject;
+
+  @override
+  void initState() {
+    super.initState();
+    _subjects = SettingsService.subjectData;
+  }
 
   @override
   void dispose() {
@@ -42,8 +52,8 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: const Color(0xFF135BEC),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: AppColors.primary,
             ),
           ),
           child: child!,
@@ -86,14 +96,21 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     });
   }
 
+  void _onSubjectSelected(String subject) {
+    setState(() => _selectedSubject = subject);
+  }
+
   Future<void> _saveGoal() async {
     if (_formKey.currentState!.validate()) {
       final totalMinutes = _calculateTotalStudyTime();
+      final subjectValue = _subjects.isNotEmpty
+          ? (_selectedSubject ?? '')
+          : _subjectController.text;
 
       final goal = Goal(
         id: const Uuid().v4(),
         title: _titleController.text,
-        subject: _subjectController.text,
+        subject: subjectValue,
         date: _selectedDate,
         type: _selectedType,
         difficulty: Difficulty.medium,
@@ -158,6 +175,9 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         selectedType: _selectedType,
         formattedDate: _formatDate(_selectedDate),
         plannedSessions: _plannedSessions,
+        subjects: _subjects,
+        selectedSubject: _selectedSubject,
+        onSubjectSelected: _onSubjectSelected,
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
         onSessionTap: _showStudySessionPicker,

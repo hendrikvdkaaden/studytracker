@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../../../theme/app_colors.dart';
+import '../../../utils/format_helpers.dart';
 
 class ProgressCircle extends StatelessWidget {
   final int timeSpent; // in minutes
   final int targetTime; // in minutes
+  final Color? accentColor;
 
   const ProgressCircle({
     super.key,
     required this.timeSpent,
     required this.targetTime,
+    this.accentColor,
   });
-
-  String _formatTime(int minutes) {
-    final hours = minutes ~/ 60;
-    final mins = minutes % 60;
-    return '${hours}h ${mins.toString().padLeft(2, '0')}m';
-  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final progress = targetTime > 0 ? (timeSpent / targetTime).clamp(0.0, 1.0) : 0.0;
     final percentage = (progress * 100).toInt();
+    final color = accentColor ?? AppColors.calendarAccent;
+    final formatTime = FormatHelpers.formatTime;
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A2E2D) : Colors.white,
+        color: isDark ? AppColors.calendarDarkCard : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -46,6 +46,7 @@ class ProgressCircle extends StatelessWidget {
               painter: CircularProgressPainter(
                 progress: progress,
                 isDark: isDark,
+                color: color,
               ),
               child: Center(
                 child: Column(
@@ -56,7 +57,7 @@ class ProgressCircle extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                        color: isDark ? Colors.white : AppColors.darkText,
                       ),
                     ),
                     Text(
@@ -64,7 +65,7 @@ class ProgressCircle extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: const Color(0xFF499C95),
+                        color: color,
                       ),
                     ),
                   ],
@@ -83,7 +84,7 @@ class ProgressCircle extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(
                       right: BorderSide(
-                        color: isDark ? const Color(0xFF2D4A48) : const Color(0xFFCEE8E6),
+                        color: color.withValues(alpha: isDark ? 0.3 : 0.2),
                       ),
                     ),
                   ),
@@ -95,16 +96,16 @@ class ProgressCircle extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
-                          color: const Color(0xFF499C95),
+                          color: color,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _formatTime(timeSpent),
+                        formatTime(timeSpent),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                          color: isDark ? Colors.white : AppColors.darkText,
                         ),
                       ),
                     ],
@@ -123,16 +124,16 @@ class ProgressCircle extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
-                          color: const Color(0xFF499C95),
+                          color: color,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _formatTime(targetTime),
+                        formatTime(targetTime),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                          color: isDark ? Colors.white : AppColors.darkText,
                         ),
                       ),
                     ],
@@ -148,23 +149,26 @@ class ProgressCircle extends StatelessWidget {
 }
 
 class CircularProgressPainter extends CustomPainter {
+  static const double strokeWidth = 16.0;
+
   final double progress;
   final bool isDark;
+  final Color color;
 
   CircularProgressPainter({
     required this.progress,
     required this.isDark,
+    required this.color,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
-    final strokeWidth = 16.0;
 
-    // Background circle
+    // Background circle — tinted version of the accent color
     final backgroundPaint = Paint()
-      ..color = isDark ? const Color(0xFFCEE8E6).withValues(alpha: 0.2) : const Color(0xFFCEE8E6)
+      ..color = color.withValues(alpha: isDark ? 0.2 : 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -173,7 +177,7 @@ class CircularProgressPainter extends CustomPainter {
 
     // Progress arc
     final progressPaint = Paint()
-      ..color = const Color(0xFF0DF2DF)
+      ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -192,6 +196,8 @@ class CircularProgressPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CircularProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.isDark != isDark;
+    return oldDelegate.progress != progress ||
+        oldDelegate.isDark != isDark ||
+        oldDelegate.color != color;
   }
 }

@@ -151,6 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,
         backgroundColor: const Color(0xFF6750A4),
         child: const Icon(Icons.add, color: Colors.white),

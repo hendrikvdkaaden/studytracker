@@ -37,11 +37,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _editProfile() async {
-    final result = await showDialog<EditProfileResult>(
+    final result = await showModalBottomSheet<EditProfileResult>(
       context: context,
-      builder: (ctx) => EditNameDialog(
-        initialName: _userName,
-        initialSchoolName: _schoolName,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        child: EditNameDialog(
+          initialName: _userName,
+          initialSchoolName: _schoolName,
+        ),
       ),
     );
 
@@ -72,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _deleteSubject(SubjectData subject) async {
     final confirmed = await _showDestructiveConfirmation(
       title: 'Remove subject?',
-      body: '"${subject.name}" will be removed from your subjects list. Goals using this subject are not affected.',
+      body: '"${subject.name}" will be removed from your subjects list. Deadlines using this subject are not affected.',
       confirmLabel: 'Remove',
     );
     if (confirmed == true && mounted) {
@@ -211,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _confirmDeleteSessions() async {
     final confirmed = await _showDestructiveConfirmation(
       title: 'Delete all study sessions?',
-      body: 'This will permanently delete all your study sessions. Your goals will remain intact.',
+      body: 'This will permanently delete all your study sessions. Your deadlines will remain intact.',
       confirmLabel: 'Delete sessions',
     );
     if (confirmed == true && mounted) {
@@ -230,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _confirmDeleteEverything() async {
     final confirmed = await _showDestructiveConfirmation(
       title: 'Delete everything?',
-      body: 'This will permanently delete all your goals and study sessions. This action cannot be undone.',
+      body: 'This will permanently delete all your deadlines and study sessions. This action cannot be undone.',
       confirmLabel: 'Delete everything',
     );
     if (confirmed == true && mounted) {

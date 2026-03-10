@@ -219,7 +219,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'No goals yet',
+                  'No deadlines yet',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -228,7 +228,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tap + to create your first goal',
+                  'Tap + to create your first deadline',
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.grey[700] : Colors.grey[400],

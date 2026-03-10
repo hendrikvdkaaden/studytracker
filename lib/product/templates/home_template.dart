@@ -16,7 +16,7 @@ class HomeTemplate extends StatelessWidget {
   final Function(DateTime) onDateSelected;
   final Function(Goal) onDeadlineTap;
   final Function(StudySession) onSessionTap;
-  final Function(StudySession) isSessionCompleted;
+  final bool Function(StudySession) isSessionCompleted;
 
   const HomeTemplate({
     super.key,
@@ -39,112 +39,106 @@ class HomeTemplate extends StatelessWidget {
     final hasAnyItems = deadlines.isNotEmpty || totalSessions > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Stack(
-      children: [
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: DateSelector(
-                selectedDate: selectedDate,
-                onDateSelected: onDateSelected,
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: DateSelector(
+            selectedDate: selectedDate,
+            onDateSelected: onDateSelected,
+          ),
+        ),
+        if (!hasAnyItems)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.event_available,
+                      size: 64,
+                      color: isDark ? Colors.grey[700] : Colors.grey[300],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No tasks for this day',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.grey[600] : Colors.grey[400],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Select another day or add a new deadline',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey[700] : Colors.grey[400],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            if (!hasAnyItems)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.event_available,
-                          size: 64,
-                          color: isDark ? Colors.grey[700] : Colors.grey[300],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No tasks for this day',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.grey[600] : Colors.grey[400],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Select another day or add a new goal',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDark ? Colors.grey[700] : Colors.grey[400],
-                          ),
-                        ),
-                      ],
-                    ),
+          ),
+        if (deadlines.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: HomeSectionHeader(
+                title: 'Deadlines Today',
+                remainingCount: deadlines.length,
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: HomeDeadlineCard(
+                    goal: deadlines[index],
+                    onTap: () => onDeadlineTap(deadlines[index]),
                   ),
-                ),
+                );
+              }, childCount: deadlines.length),
+            ),
+          ),
+        ],
+        if (sessions.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: HomeSectionHeader(
+                title: 'Study Sessions',
+                completedCount: completedSessionsCount,
+                totalCount: totalSessions,
               ),
-            if (deadlines.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: HomeSectionHeader(
-                    title: 'Deadlines Today',
-                    remainingCount: deadlines.length,
-                  ),
-                ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final session = sessions[index];
+                  return HomeSessionItem(
+                    session: session,
+                    goal: sessionGoals[session.goalId],
+                    isCompleted: isSessionCompleted(session),
+                    isLast: index == sessions.length - 1,
+                    onTap: () => onSessionTap(session),
+                  );
+                },
+                childCount: sessions.length,
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: HomeDeadlineCard(
-                        goal: deadlines[index],
-                        onTap: () => onDeadlineTap(deadlines[index]),
-                      ),
-                    );
-                  }, childCount: deadlines.length),
-                ),
-              ),
-            ],
-            if (sessions.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: HomeSectionHeader(
-                    title: 'Study Sessions',
-                    completedCount: completedSessionsCount,
-                    totalCount: totalSessions,
-                  ),
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final session = sessions[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: HomeSessionItem(
-                          session: session,
-                          goal: sessionGoals[session.goalId],
-                          isCompleted: isSessionCompleted(session),
-                          onTap: () => onSessionTap(session),
-                        ),
-                      );
-                    },
-                    childCount: sessions.length,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       ],
     );
   }

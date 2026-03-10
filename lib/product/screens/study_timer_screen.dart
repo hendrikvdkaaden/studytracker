@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../widgets/study_timer/timer_controls.dart';
 import '../templates/study_timer_template.dart';
@@ -22,7 +23,8 @@ class StudyTimerScreen extends StatefulWidget {
   State<StudyTimerScreen> createState() => _StudyTimerScreenState();
 }
 
-class _StudyTimerScreenState extends State<StudyTimerScreen> {
+class _StudyTimerScreenState extends State<StudyTimerScreen>
+    with WidgetsBindingObserver {
   final StudySessionRepository _sessionRepo = StudySessionRepository();
   late final ConfettiController _confettiController;
   Timer? _timer;
@@ -40,13 +42,25 @@ class _StudyTimerScreenState extends State<StudyTimerScreen> {
     if (widget.session.elapsedSeconds != null) {
       _elapsedSeconds = widget.session.elapsedSeconds!;
     }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _confettiController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused &&
+        _timerState == TimerState.running) {
+      NotificationService.showResumeSessionNotification(widget.goal.title);
+    } else if (state == AppLifecycleState.resumed) {
+      NotificationService.cancelResumeSessionNotification();
+    }
   }
 
   void _startTimer() {

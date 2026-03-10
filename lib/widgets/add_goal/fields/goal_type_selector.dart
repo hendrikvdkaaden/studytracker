@@ -19,7 +19,7 @@ class GoalTypeSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Goal Type',
+          'Deadline Type',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,

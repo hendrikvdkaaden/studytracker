@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   final List<String> _titles = const [
     'Daily Tasks',
     'Calendar',
-    'Dashboard',
+    'Deadlines',
     'Profile',
   ];
 
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart),
-              label: 'Goals',
+              label: 'Deadlines',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

@@ -37,7 +37,7 @@ class DeadlineCard extends StatelessWidget {
     } else if (daysLeft == 0) {
       daysLeftText = 'Due today';
     } else if (daysLeft == 1) {
-      daysLeftText = '1 day left';
+      daysLeftText = 'Due today';
     } else {
       daysLeftText = '$daysLeft days left';
     }

@@ -141,8 +141,8 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         SnackBar(
           content: Text(
             _plannedSessions.isEmpty
-                ? 'Goal added successfully!'
-                : 'Goal and ${_plannedSessions.length} session${_plannedSessions.length != 1 ? 's' : ''} added!',
+                ? 'Deadline added successfully!'
+                : 'Deadline and ${_plannedSessions.length} session${_plannedSessions.length != 1 ? 's' : ''} added!',
           ),
         ),
       );
@@ -196,7 +196,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         onPressed: () => Navigator.pop(context),
       ),
       title: const Text(
-        'Create Goal',
+        'Create Deadline',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,

@@ -83,7 +83,7 @@ class AddGoalTemplate extends StatelessWidget {
       controller: titleController,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a goal title';
+          return 'Please enter a deadline title';
         }
         return null;
       },
@@ -151,7 +151,7 @@ class AddGoalTemplate extends StatelessWidget {
 
   Widget _buildFooter() {
     return FixedFooterButton(
-      text: 'Add Goal',
+      text: 'Add Deadline',
       onPressed: onSave,
     );
   }

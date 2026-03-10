@@ -35,4 +35,13 @@ class FormatHelpers {
   static String formatTimeOfDay(int hour, int minute) {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
+
+  /// Formats a DateTime to a 12-hour AM/PM string (e.g., "9:30 AM")
+  static String formatTimeAmPm(DateTime time) {
+    final hour = time.hour;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    return '$displayHour:$minute $period';
+  }
 }

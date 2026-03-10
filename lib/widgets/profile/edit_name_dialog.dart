@@ -71,26 +71,22 @@ class _EditNameDialogState extends State<EditNameDialog> {
         ? const Color(0xFF475569)
         : const Color(0xFFCBD5E1);
 
-    return Dialog(
-      insetPadding: EdgeInsets.zero,
-      alignment: Alignment.bottomCenter,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 16,
-          bottom: 24,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 16,
+        bottom: 24,
+      ),
+      decoration: BoxDecoration(
+        color: sheetBackground,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(32),
         ),
-        decoration: BoxDecoration(
-          color: sheetBackground,
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(32),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
+      ),
+      child: SingleChildScrollView(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -215,7 +211,6 @@ class _EditNameDialogState extends State<EditNameDialog> {
               ],
             ),
           ],
-        ),
         ),
       ),
     );

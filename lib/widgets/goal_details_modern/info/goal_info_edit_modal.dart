@@ -126,7 +126,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
             child: Row(
               children: [
                 Text(
-                  'Edit Goal Info',
+                  'Edit Deadline Info',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                     controller: _titleController,
                     style: TextStyle(color: textColor),
                     decoration: InputDecoration(
-                      hintText: 'Goal title',
+                      hintText: 'Deadline title',
                       hintStyle: TextStyle(color: subTextColor),
                       filled: true,
                       fillColor: fieldFill,
@@ -205,7 +205,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
                   // Goal type
                   Text(
-                    'Goal Type',
+                    'Deadline Type',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

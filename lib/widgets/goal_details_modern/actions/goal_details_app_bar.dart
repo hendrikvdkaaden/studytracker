@@ -21,7 +21,7 @@ class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Navigator.pop(context),
       ),
       title: const Text(
-        'Goal Details',
+        'Deadline Details',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,

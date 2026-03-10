@@ -159,4 +159,37 @@ class NotificationService {
       debugPrint('Failed to cancel session notification: $e');
     }
   }
+
+  /// Show an immediate notification to remind the user to finish their active session
+  static Future<void> showResumeSessionNotification(String goalTitle) async {
+    try {
+      await _plugin.show(
+        'resume_session'.hashCode,
+        'Don\'t forget your study session! 📚',
+        'You\'re still studying "$goalTitle". Tap to continue.',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'study_timer',
+            'Study Timer',
+            channelDescription: 'Notifications for active study timer sessions',
+            importance: Importance.high,
+            priority: Priority.high,
+            ongoing: false,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Failed to show resume session notification: $e');
+    }
+  }
+
+  /// Cancel the resume session notification
+  static Future<void> cancelResumeSessionNotification() async {
+    try {
+      await _plugin.cancel('resume_session'.hashCode);
+    } catch (e) {
+      debugPrint('Failed to cancel resume session notification: $e');
+    }
+  }
 }

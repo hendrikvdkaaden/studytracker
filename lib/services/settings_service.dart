@@ -36,6 +36,7 @@ class SubjectData {
   int get hashCode => Object.hash(name, color);
 }
 
+
 class SettingsService {
   static const String _boxName = 'settings';
 

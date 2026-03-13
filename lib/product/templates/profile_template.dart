@@ -11,7 +11,6 @@ class ProfileTemplate extends StatelessWidget {
   final String appVersion;
   final List<SubjectData> subjects;
   final String schoolName;
-
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
   final VoidCallback onDeadlineReminderTap;

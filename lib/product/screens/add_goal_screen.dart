@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../services/auto_planner_service.dart';
 import '../../services/goal_repository.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart'; // also imports SubjectData
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
 
@@ -100,6 +102,53 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     setState(() => _selectedSubject = subject);
   }
 
+  Future<void> _autoplanSessions() async {
+    final result = await showAutoPlanWizard(context: context);
+    if (result == null || !mounted) return;
+
+    // Overlap check only against DB sessions (form sessions are replaced)
+    final existing = _sessionRepo.getAllPlannedSessions();
+
+    final generated = AutoPlannerService.generateSessions(
+      goalId: '',
+      deadline: _selectedDate,
+      totalMinutes: result.totalMinutes,
+      weekdays: result.weekdays,
+      startHour: result.startHour,
+      startMinute: result.startMinute,
+      endHour: result.endHour,
+      endMinute: result.endMinute,
+      sessionDuration: result.sessionDuration,
+      existingSessions: existing,
+    );
+
+    if (!mounted) return;
+
+    if (generated.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Geen beschikbare dagen gevonden voor deze deadline.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _plannedSessions.clear();
+      _plannedSessions.addAll(generated);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${generated.length} sessie${generated.length != 1 ? 's' : ''} gepland!',
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   Future<void> _saveGoal() async {
     if (_formKey.currentState!.validate()) {
       final totalMinutes = _calculateTotalStudyTime();
@@ -165,7 +214,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF101622) : const Color(0xFFF6F6F8),
+      backgroundColor: AppColors.getBackground(context),
       appBar: _buildAppBar(isDark),
       body: AddGoalTemplate(
         formKey: _formKey,
@@ -181,6 +230,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
         onSessionTap: _showStudySessionPicker,
+        onAutoplan: _autoplanSessions,
         onSessionDelete: _deleteSession,
         onSave: _saveGoal,
       ),
@@ -189,23 +239,29 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 
   AppBar _buildAppBar(bool isDark) {
     return AppBar(
-      backgroundColor: isDark ? const Color(0xFF101622) : const Color(0xFFF6F6F8),
+      backgroundColor: AppColors.getBackground(context),
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: Icon(
+          Icons.arrow_back,
+          color: isDark ? Colors.white : const Color(0xFF111827),
+        ),
         onPressed: () => Navigator.pop(context),
       ),
-      title: const Text(
-        'Create Deadline',
+      title: Text(
+        'Deadline aanmaken',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
+          color: isDark ? Colors.white : const Color(0xFF111827),
         ),
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(
-          color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : const Color(0xFFE5E7EB),
           height: 1,
         ),
       ),

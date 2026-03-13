@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
+import '../../../theme/app_colors.dart';
 import 'package:uuid/uuid.dart';
 import 'duration_picker_modal.dart';
-import 'time_picker_modal.dart';
 
 class StudySessionPickerModal extends StatefulWidget {
-  final Function(StudySession session) onSessionAdded;
+  final void Function(StudySession session) onSessionAdded;
   final List<StudySession> existingSessions;
 
   const StudySessionPickerModal({
@@ -39,10 +39,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
   void _scrollToNotes() {
     Future.delayed(const Duration(milliseconds: 400), () {
-      final context = _notesKey.currentContext;
-      if (context != null) {
+      final ctx = _notesKey.currentContext;
+      if (ctx != null) {
         Scrollable.ensureVisible(
-          context,
+          ctx,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           alignment: 0.2,
@@ -66,21 +66,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     }
   }
 
-  Future<void> _pickTime() async {
-    final result = await showTimePickerModal(
-      context: context,
-      initialHour: selectedHour,
-      initialMinute: selectedMinute,
-    );
-    if (result != null) {
-      setState(() {
-        selectedHour = result.hour;
-        selectedMinute = result.minute;
-        _overlapError = null;
-      });
-    }
-  }
-
   Future<void> _pickDate() async {
     final date = await showDatePicker(
       context: context,
@@ -90,9 +75,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: const Color(0xFF135BEC),
-            ),
+            colorScheme: ColorScheme.light(primary: AppColors.primary),
           ),
           child: child!,
         );
@@ -106,14 +89,14 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     }
   }
 
-  bool _hasOverlap(DateTime newStart, int durationMinutes) {
-    final newEnd = newStart.add(Duration(minutes: durationMinutes));
+  bool _hasOverlap(DateTime newStart, int durationMins) {
+    final newEnd = newStart.add(Duration(minutes: durationMins));
     for (final existing in widget.existingSessions) {
       if (existing.startTime == null) continue;
-      final existingStart = existing.startTime!;
-      final existingEnd = existingStart.add(Duration(minutes: existing.duration));
-      // Overlap when one starts before the other ends
-      if (newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)) {
+      final existingEnd =
+          existing.startTime!.add(Duration(minutes: existing.duration));
+      if (newStart.isBefore(existingEnd) &&
+          newEnd.isAfter(existing.startTime!)) {
         return true;
       }
     }
@@ -126,7 +109,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     if (totalDuration == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Duration must be greater than 0'),
+          content: Text('Sessieduur moet groter zijn dan 0'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -143,14 +126,14 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
     if (_hasOverlap(newStart, totalDuration)) {
       setState(() {
-        _overlapError = 'This session overlaps with an existing session.';
+        _overlapError = 'Deze sessie overlapt met een bestaande sessie.';
       });
       return;
     }
 
     final session = StudySession(
       id: const Uuid().v4(),
-      goalId: '', // Will be set when goal is created
+      goalId: '',
       date: selectedDate,
       duration: totalDuration,
       isCompleted: false,
@@ -159,142 +142,196 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     );
 
     widget.onSessionAdded(session);
-
     FocusManager.instance.primaryFocus?.unfocus();
+
+    final messenger = ScaffoldMessenger.of(context);
     Navigator.pop(context);
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       const SnackBar(
-        content: Text('Session added!'),
+        content: Text('Sessie toegevoegd!'),
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: 1),
       ),
     );
   }
 
+  String _formatDate(DateTime d) {
+    const months = [
+      'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+      'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
+    ];
+    return '${d.day} ${months[d.month - 1]} ${d.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? AppColors.darkBackground : AppColors.lightCard;
+    final sectionBg =
+        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
+    final textColor = isDark ? Colors.white : const Color(0xFF111827);
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: Column(
         children: [
-          // Header
+          // Drag handle
+          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(16),
+            width: 40,
+            height: 6,
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: isDark
-                      ? const Color(0xFF374151)
-                      : const Color(0xFFE5E7EB),
-                ),
-              ),
+              color: isDark ? Colors.grey[700] : Colors.grey[300],
+              borderRadius: BorderRadius.circular(3),
             ),
+          ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'Done',
+                Expanded(
+                  child: Text(
+                    'Sessie inplannen',
                     style: TextStyle(
-                      color: Color(0xFF135BEC),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
                     ),
                   ),
                 ),
-                const Text(
-                  'Plan Study Session',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                IconButton(
+                  icon: Icon(Icons.close, color: subtleText),
+                  onPressed: () => Navigator.pop(context),
+                  style: IconButton.styleFrom(
+                    backgroundColor: isDark
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.grey[100],
+                    shape: const CircleBorder(),
                   ),
                 ),
-                const SizedBox(width: 60),
               ],
             ),
           ),
-          // Content
+          const SizedBox(height: 12),
+          Divider(
+            height: 1,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.08)
+                : Colors.grey[100],
+          ),
+          // Scrollable content
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom,
-              ),
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 16 + keyboardInset),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('Date', isDark),
-                  const SizedBox(height: 8),
-                  _buildSelectableField(
-                    onTap: _pickDate,
-                    label:
-                        '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                    icon: Icons.calendar_today,
+                  // Date
+                  _buildSectionHeader(
+                    label: 'Datum',
+                    icon: Icons.calendar_month,
+                    iconBg: const Color(0xFFEFF6FF),
+                    iconColor: const Color(0xFF135BEC),
                     isDark: isDark,
                   ),
-                  const SizedBox(height: 18),
-                  _buildSectionTitle('Start Time', isDark),
-                  const SizedBox(height: 8),
-                  InkWell(
-                    onTap: _pickTime,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFF6F6F8),
-                        borderRadius: BorderRadius.circular(12),
-                        border: _overlapError != null
-                            ? Border.all(
-                                color: const Color(0xFFFF5252),
-                                width: 1.5,
-                              )
-                            : null,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${selectedHour.toString().padLeft(2, '0')}:${selectedMinute.toString().padLeft(2, '0')}',
+                  const SizedBox(height: 12),
+                  _buildTappableCard(
+                    onTap: _pickDate,
+                    isDark: isDark,
+                    sectionBg: sectionBg,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _formatDate(selectedDate),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: _overlapError != null
-                                  ? const Color(0xFFFF5252)
-                                  : null,
+                              color: textColor,
                             ),
                           ),
-                          Icon(
-                            Icons.access_time,
-                            size: 20,
-                            color: _overlapError != null
-                                ? const Color(0xFFFF5252)
-                                : null,
-                          ),
-                        ],
+                        ),
+                        Icon(Icons.chevron_right, color: subtleText, size: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Start time
+                  _buildSectionHeader(
+                    label: 'Starttijd',
+                    icon: Icons.access_time,
+                    iconBg: const Color(0xFFFFF3E0),
+                    iconColor: const Color(0xFFEA6C0A),
+                    isDark: isDark,
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: sectionBg,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: _overlapError != null
+                            ? const Color(0xFFFF5252)
+                            : (isDark
+                                ? Colors.white.withValues(alpha: 0.06)
+                                : const Color(0xFFE5E7EB)),
+                        width: _overlapError != null ? 1.5 : 1,
                       ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildStepper(
+                          isDark: isDark,
+                          label: 'Uren',
+                          value: selectedHour,
+                          max: 23,
+                          onChanged: (v) => setState(() {
+                            selectedHour = v;
+                            _overlapError = null;
+                          }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            ' : ',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                        _buildStepper(
+                          isDark: isDark,
+                          label: 'Minuten',
+                          value: selectedMinute,
+                          max: 59,
+                          onChanged: (v) => setState(() {
+                            selectedMinute = v;
+                            _overlapError = null;
+                          }),
+                        ),
+                      ],
                     ),
                   ),
                   if (_overlapError != null) ...[
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.error_outline,
-                          size: 14,
-                          color: Color(0xFFFF5252),
-                        ),
+                        const Icon(Icons.error_outline,
+                            size: 14, color: Color(0xFFFF5252)),
                         const SizedBox(width: 4),
                         Text(
                           _overlapError!,
@@ -307,61 +344,116 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       ],
                     ),
                   ],
-                  const SizedBox(height: 18),
-                  _buildSectionTitle('Notes (Optional)', isDark),
-                  const SizedBox(height: 8),
-                  TextField(
-                    key: _notesKey,
-                    controller: notesController,
-                    focusNode: _notesFocusNode,
-                    onTap: _scrollToNotes,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: 'What will you study?',
-                      filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF6F6F8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-
-                  _buildSectionTitle('Duration', isDark),
-                  const SizedBox(height: 8),
-                  _buildSelectableField(
-                    onTap: _pickDuration,
-                    label: '${durationHours}h ${durationMinutes}m',
-                    icon: Icons.schedule,
+                  const SizedBox(height: 24),
+                  // Notes
+                  _buildSectionHeader(
+                    label: 'Notities (optioneel)',
+                    icon: Icons.edit_note,
+                    iconBg: const Color(0xFFF5F3FF),
+                    iconColor: const Color(0xFF7C3AED),
                     isDark: isDark,
                   ),
-                  const SizedBox(height: 24),
-                  // Add Session Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _addSession,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF135BEC),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0,
+                  const SizedBox(height: 12),
+                  Container(
+                    key: _notesKey,
+                    decoration: BoxDecoration(
+                      color: sectionBg,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.06)
+                            : const Color(0xFFE5E7EB),
                       ),
-                      child: const Text(
-                        'Add Session',
+                    ),
+                    child: TextField(
+                      controller: notesController,
+                      focusNode: _notesFocusNode,
+                      onTap: _scrollToNotes,
+                      maxLines: 3,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: textColor,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Wat ga je bestuderen?',
+                        hintStyle: TextStyle(color: subtleText),
+                        filled: false,
+                        contentPadding: const EdgeInsets.all(16),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Duration
+                  _buildSectionHeader(
+                    label: 'Duur',
+                    icon: Icons.bolt,
+                    iconBg: const Color(0xFFECFDF5),
+                    iconColor: const Color(0xFF059669),
+                    isDark: isDark,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTappableCard(
+                    onTap: _pickDuration,
+                    isDark: isDark,
+                    sectionBg: sectionBg,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${durationHours}u ${durationMinutes}m',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.chevron_right, color: subtleText, size: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Add button
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF135BEC), Color(0xFF4489FF)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton.icon(
+                      onPressed: _addSession,
+                      icon: const Icon(Icons.add, size: 18),
+                      label: const Text(
+                        'Sessie toevoegen',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shadowColor: Colors.transparent,
+                        minimumSize: const Size(double.infinity, 54),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                     ),
                   ),
+                  SizedBox(height: bottomInset),
                 ],
               ),
             ),
@@ -371,41 +463,160 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     );
   }
 
-  Widget _buildSectionTitle(String title, bool isDark) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: isDark ? Colors.grey[300] : Colors.grey[800],
+  Widget _buildSectionHeader({
+    required String label,
+    required IconData icon,
+    required Color iconBg,
+    required Color iconColor,
+    required bool isDark,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: isDark ? iconColor.withValues(alpha: 0.15) : iconBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 17, color: iconColor),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.1,
+            color: isDark ? Colors.grey[400] : Colors.grey[500],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepper({
+    required bool isDark,
+    required String label,
+    required int value,
+    required int max,
+    required ValueChanged<int> onChanged,
+  }) {
+    final cardColor = isDark ? AppColors.darkCard : Colors.white;
+    final valueColor = isDark ? Colors.white : const Color(0xFF1F2937);
+
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+            color: isDark ? Colors.grey[500] : Colors.grey[400],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.grey[100]!,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Text(
+            value.toString().padLeft(2, '0'),
+            style: TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.w300,
+              color: valueColor,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _stepButton(
+              icon: Icons.remove,
+              onTap: () {
+                if (value > 0) onChanged(value - 1);
+              },
+              isDark: isDark,
+            ),
+            const SizedBox(width: 8),
+            _stepButton(
+              icon: Icons.add,
+              onTap: () {
+                if (value < max) onChanged(value + 1);
+              },
+              isDark: isDark,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _stepButton({
+    required IconData icon,
+    required VoidCallback onTap,
+    required bool isDark,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: isDark ? Colors.grey[300] : Colors.grey[600],
+        ),
       ),
     );
   }
 
-  Widget _buildSelectableField({
+  Widget _buildTappableCard({
     required VoidCallback onTap,
-    required String label,
-    required IconData icon,
     required bool isDark,
+    required Color sectionBg,
+    required Widget child,
+    bool hasError = false,
   }) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF374151) : const Color(0xFFF6F6F8),
-          borderRadius: BorderRadius.circular(12),
+          color: sectionBg,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: hasError
+                ? const Color(0xFFFF5252)
+                : (isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : const Color(0xFFE5E7EB)),
+            width: hasError ? 1.5 : 1,
+          ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            Icon(icon, size: 20),
-          ],
-        ),
+        child: child,
       ),
     );
   }
@@ -413,7 +624,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
 Future<void> showStudySessionPicker({
   required BuildContext context,
-  required Function(StudySession session) onSessionAdded,
+  required void Function(StudySession session) onSessionAdded,
   List<StudySession> existingSessions = const [],
 }) async {
   await showModalBottomSheet(

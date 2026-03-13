@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../theme/app_colors.dart';
+import '../../../utils/goal_type_helper.dart';
 
 class GoalTypeSelector extends StatelessWidget {
   final GoalType selectedType;
@@ -14,18 +16,38 @@ class GoalTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Deadline Type',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+        Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF7C3AED).withValues(alpha: 0.15)
+                    : const Color(0xFFF5F3FF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.category_outlined,
+                  size: 17, color: Color(0xFF7C3AED)),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'TYPE',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.1,
+                color: subtleText,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -33,40 +55,53 @@ class GoalTypeSelector extends StatelessWidget {
             final isSelected = selectedType == type;
             return GestureDetector(
               onTap: () => onTypeSelected(type),
-              child: Container(
-                height: 40,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                height: 36,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF135BEC)
-                      : isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFE5E7EB),
+                      ? AppColors.primary
+                      : (isDark
+                          ? Colors.white.withValues(alpha: 0.06)
+                          : Colors.white),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.primary
+                        : (isDark
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : const Color(0xFFE5E7EB)),
+                  ),
+                  boxShadow: isSelected
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      _getIconForType(type),
-                      size: 20,
+                      GoalTypeHelper.getIconForType(type),
+                      size: 15,
                       color: isSelected
                           ? Colors.white
-                          : isDark
-                              ? Colors.white
-                              : Colors.black87,
+                          : (isDark ? Colors.grey[300] : Colors.grey[600]),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Text(
-                      _getDisplayNameForType(type),
+                      GoalTypeHelper.getLabel(type),
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                         color: isSelected
                             ? Colors.white
-                            : isDark
-                                ? Colors.white
-                                : Colors.black87,
+                            : (isDark ? Colors.grey[300] : Colors.grey[700]),
                       ),
                     ),
                   ],
@@ -79,45 +114,4 @@ class GoalTypeSelector extends StatelessWidget {
     );
   }
 
-  IconData _getIconForType(GoalType type) {
-    switch (type) {
-      case GoalType.exam:
-        return Icons.school;
-      case GoalType.test:
-        return Icons.track_changes;
-      case GoalType.assignment:
-        return Icons.description;
-      case GoalType.presentation:
-        return Icons.show_chart;
-      case GoalType.project:
-        return Icons.code;
-      case GoalType.paper:
-        return Icons.note;
-      case GoalType.quiz:
-        return Icons.quiz;
-      case GoalType.other:
-        return Icons.book;
-    }
-  }
-
-  String _getDisplayNameForType(GoalType type) {
-    switch (type) {
-      case GoalType.exam:
-        return 'Exam';
-      case GoalType.test:
-        return 'Test';
-      case GoalType.assignment:
-        return 'Assignment';
-      case GoalType.presentation:
-        return 'Presentation';
-      case GoalType.project:
-        return 'Project';
-      case GoalType.paper:
-        return 'Paper';
-      case GoalType.quiz:
-        return 'Quiz';
-      case GoalType.other:
-        return 'Book';
-    }
-  }
 }

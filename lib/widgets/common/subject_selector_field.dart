@@ -87,7 +87,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Select Subject',
+                    'Kies een vak',
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -152,8 +152,11 @@ class _SubjectSelectorWithList extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasSelection = selectedSubject?.isNotEmpty == true;
-    final displayText = hasSelection ? selectedSubject! : 'Select a subject';
+    final displayText = hasSelection ? selectedSubject! : 'Kies een vak';
     final subjectColor = _selectedColor;
+
+    final sectionBg =
+        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
 
     return FormField<String>(
       validator: _validate,
@@ -162,29 +165,21 @@ class _SubjectSelectorWithList extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Subject',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            InkWell(
+            GestureDetector(
               onTap: () => _openSheet(context, field),
-              borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkCard : AppColors.lightCard,
-                  borderRadius: BorderRadius.circular(12),
+                  color: sectionBg,
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: hasError
-                        ? Colors.red
-                        : isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFCFD7E7),
+                        ? const Color(0xFFFF5252)
+                        : (isDark
+                            ? Colors.white.withValues(alpha: 0.06)
+                            : const Color(0xFFE5E7EB)),
+                    width: hasError ? 1.5 : 1,
                   ),
                 ),
                 child: Row(
@@ -204,16 +199,20 @@ class _SubjectSelectorWithList extends StatelessWidget {
                       child: Text(
                         displayText,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
                           color: !hasSelection
                               ? (isDark ? Colors.grey[500] : Colors.grey[400])
-                              : (isDark ? Colors.white : Colors.black87),
+                              : (isDark
+                                  ? Colors.white
+                                  : const Color(0xFF111827)),
                         ),
                       ),
                     ),
                     Icon(
-                      Icons.expand_more,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      Icons.chevron_right,
+                      color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      size: 20,
                     ),
                   ],
                 ),
@@ -225,7 +224,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                 field.errorText!,
                 style: const TextStyle(
                   fontSize: 12,
-                  color: Colors.red,
+                  color: Color(0xFFFF5252),
                 ),
               ),
             ],

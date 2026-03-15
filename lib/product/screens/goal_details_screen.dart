@@ -39,7 +39,10 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
 
   void _refreshData() {
     _timeSpent = _operationsService.getTotalStudyTime(_goal.id);
-    _plannedSessions = _sessionRepo.getPlannedSessionsByGoalId(_goal.id);
+    final planned = _sessionRepo.getPlannedSessionsByGoalId(_goal.id);
+    final completed = _sessionRepo.getCompletedSessionsByGoalId(_goal.id);
+    _plannedSessions = [...planned, ...completed]
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 
   Future<void> _toggleComplete() async {

@@ -102,7 +102,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     setState(() => _selectedSubject = subject);
   }
 
-  Future<void> _autoplanSessions() async {
+  Future<void> _autoPlanSessions() async {
     final result = await showAutoPlanWizard(context: context);
     if (result == null || !mounted) return;
 
@@ -230,7 +230,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
         onSessionTap: _showStudySessionPicker,
-        onAutoplan: _autoplanSessions,
+        onAutoplan: _autoPlanSessions,
         onSessionDelete: _deleteSession,
         onSave: _saveGoal,
       ),
@@ -249,7 +249,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        'Deadline aanmaken',
+        'Create Deadline',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,

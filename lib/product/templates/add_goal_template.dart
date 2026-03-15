@@ -60,15 +60,15 @@ class AddGoalTemplate extends StatelessWidget {
         children: [
           // Title
           CustomTextField(
-            label: 'Titel',
-            hintText: 'Eindproject',
+            label: 'Title',
+            hintText: 'Final Project',
             controller: titleController,
             icon: Icons.edit_outlined,
             iconBg: const Color(0xFFEFF6FF),
             iconColor: AppColors.primary,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Voer een titel in';
+                return 'Please enter a title';
               }
               return null;
             },
@@ -122,7 +122,7 @@ class AddGoalTemplate extends StatelessWidget {
               onPressed: onSave,
               icon: const Icon(Icons.check, size: 18),
               label: const Text(
-                'Deadline toevoegen',
+                'Add Deadline',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
@@ -162,7 +162,7 @@ class AddGoalTemplate extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              'VAK',
+              'SUBJECT',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -181,11 +181,11 @@ class AddGoalTemplate extends StatelessWidget {
           validator: (value) {
             if (subjects.isNotEmpty) {
               if (value == null || value.isEmpty) {
-                return 'Selecteer een vak';
+                return 'Please select a subject';
               }
             } else {
               if (subjectController.text.isEmpty) {
-                return 'Voer een vak in';
+                return 'Please enter a subject';
               }
             }
             return null;
@@ -218,7 +218,7 @@ class AddGoalTemplate extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'STUDIESESSIES',
+                'STUDY SESSIONS',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
@@ -254,7 +254,7 @@ class AddGoalTemplate extends StatelessWidget {
                             : AppColors.primary),
                     const SizedBox(width: 4),
                     Text(
-                      'Plan voor mij',
+                      'Plan for me',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -290,7 +290,7 @@ class AddGoalTemplate extends StatelessWidget {
                 Expanded(
                   child: Text(
                     plannedSessions.isEmpty
-                        ? 'Sessie toevoegen'
+                        ? 'Add study session'
                         : '${plannedSessions.length} sessie${plannedSessions.length != 1 ? 's' : ''} gepland',
                     style: TextStyle(
                       fontSize: 15,

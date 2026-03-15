@@ -87,7 +87,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Kies een vak',
+                    'Select a subject',
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasSelection = selectedSubject?.isNotEmpty == true;
-    final displayText = hasSelection ? selectedSubject! : 'Kies een vak';
+    final displayText = hasSelection ? selectedSubject! : 'Select a subject';
     final subjectColor = _selectedColor;
 
     final sectionBg =

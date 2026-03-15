@@ -109,7 +109,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     if (totalDuration == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Sessieduur moet groter zijn dan 0'),
+          content: Text('Duration must be greater than 0'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -126,7 +126,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
     if (_hasOverlap(newStart, totalDuration)) {
       setState(() {
-        _overlapError = 'Deze sessie overlapt met een bestaande sessie.';
+        _overlapError = 'This session overlaps with an existing session.';
       });
       return;
     }
@@ -149,7 +149,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
     messenger.showSnackBar(
       const SnackBar(
-        content: Text('Sessie toegevoegd!'),
+        content: Text('Session added!'),
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: 1),
       ),
@@ -200,7 +200,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
               children: [
                 Expanded(
                   child: Text(
-                    'Sessie inplannen',
+                    'Plan Study Session',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -237,7 +237,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                 children: [
                   // Date
                   _buildSectionHeader(
-                    label: 'Datum',
+                    label: 'Date',
                     icon: Icons.calendar_month,
                     iconBg: const Color(0xFFEFF6FF),
                     iconColor: const Color(0xFF135BEC),
@@ -268,7 +268,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
                   // Start time
                   _buildSectionHeader(
-                    label: 'Starttijd',
+                    label: 'Start Time',
                     icon: Icons.access_time,
                     iconBg: const Color(0xFFFFF3E0),
                     iconColor: const Color(0xFFEA6C0A),
@@ -347,7 +347,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   const SizedBox(height: 24),
                   // Notes
                   _buildSectionHeader(
-                    label: 'Notities (optioneel)',
+                    label: 'Notes (Optional)',
                     icon: Icons.edit_note,
                     iconBg: const Color(0xFFF5F3FF),
                     iconColor: const Color(0xFF7C3AED),
@@ -375,7 +375,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                         color: textColor,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Wat ga je bestuderen?',
+                        hintText: 'What will you study?',
                         hintStyle: TextStyle(color: subtleText),
                         filled: false,
                         contentPadding: const EdgeInsets.all(16),
@@ -386,7 +386,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   const SizedBox(height: 24),
                   // Duration
                   _buildSectionHeader(
-                    label: 'Duur',
+                    label: 'Duration',
                     icon: Icons.bolt,
                     iconBg: const Color(0xFFECFDF5),
                     iconColor: const Color(0xFF059669),
@@ -436,7 +436,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       onPressed: _addSession,
                       icon: const Icon(Icons.add, size: 18),
                       label: const Text(
-                        'Sessie toevoegen',
+                        'Add Session',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,

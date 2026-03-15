@@ -50,6 +50,7 @@ class GoalDetailsTemplate extends StatelessWidget {
           ),
           PlannedSessionsSection(
             sessions: plannedSessions,
+            goalTitle: goal.title,
             onAddSession: onAddSession,
           ),
           Padding(

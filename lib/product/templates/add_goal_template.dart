@@ -291,7 +291,7 @@ class AddGoalTemplate extends StatelessWidget {
                   child: Text(
                     plannedSessions.isEmpty
                         ? 'Add study session'
-                        : '${plannedSessions.length} sessie${plannedSessions.length != 1 ? 's' : ''} gepland',
+                        : '${plannedSessions.length} session${plannedSessions.length != 1 ? 's' : ''} planned',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,

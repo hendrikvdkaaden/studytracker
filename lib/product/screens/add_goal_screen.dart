@@ -127,7 +127,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     if (generated.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Geen beschikbare dagen gevonden voor deze deadline.'),
+          content: Text('No available days found before the deadline.'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -142,7 +142,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${generated.length} sessie${generated.length != 1 ? 's' : ''} gepland!',
+          '${generated.length} session${generated.length != 1 ? 's' : ''} planned!',
         ),
         behavior: SnackBarBehavior.floating,
       ),

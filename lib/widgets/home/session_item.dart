@@ -37,7 +37,7 @@ class HomeSessionItem extends StatelessWidget {
     if (session.startTime != null) {
       final start = session.startTime!;
       final end = start.add(Duration(minutes: session.duration));
-      return '${FormatHelpers.formatTimeAmPm(start)} - ${FormatHelpers.formatTimeAmPm(end)}';
+      return '${FormatHelpers.formatTimeOfDay(start.hour, start.minute)} - ${FormatHelpers.formatTimeOfDay(end.hour, end.minute)}';
     }
     return 'Planned for ${session.formattedDuration}';
   }

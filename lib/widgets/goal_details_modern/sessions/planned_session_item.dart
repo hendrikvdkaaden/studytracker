@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/format_helpers.dart';
 
 class PlannedSessionItem extends StatelessWidget {
   final StudySession session;
@@ -14,9 +15,7 @@ class PlannedSessionItem extends StatelessWidget {
 
   bool get _isCompleted => session.isCompleted;
 
-  String _getDateText() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+  String _getDateText(DateTime today) {
     final tomorrow = today.add(const Duration(days: 1));
     final sessionDate =
         DateTime(session.date.year, session.date.month, session.date.day);
@@ -33,17 +32,16 @@ class PlannedSessionItem extends StatelessWidget {
 
   String _getTimeText() {
     if (session.startTime == null) return '';
-    final hour = session.startTime!.hour;
-    final minute = session.startTime!.minute.toString().padLeft(2, '0');
-    final period = hour >= 12 ? 'PM' : 'AM';
-    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-    return '$displayHour:$minute $period';
+    return FormatHelpers.formatTimeOfDay(
+        session.startTime!.hour, session.startTime!.minute);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dateText = _getDateText();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final dateText = _getDateText(today);
     final timeText = _getTimeText();
     final subtleColor = isDark
         ? const Color(0xFFa0cbc8)
@@ -74,7 +72,7 @@ class PlannedSessionItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                _buildStatusBadge(isDark),
+                _buildStatusBadge(isDark, today),
               ],
             ),
             const SizedBox(height: 8),
@@ -114,7 +112,7 @@ class PlannedSessionItem extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(bool isDark) {
+  Widget _buildStatusBadge(bool isDark, DateTime today) {
     if (_isCompleted) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -143,10 +141,8 @@ class PlannedSessionItem extends StatelessWidget {
     }
 
     // Upcoming / active
-    final now = DateTime.now();
     final sessionDate =
         DateTime(session.date.year, session.date.month, session.date.day);
-    final today = DateTime(now.year, now.month, now.day);
     final isToday = sessionDate == today;
 
     return Container(

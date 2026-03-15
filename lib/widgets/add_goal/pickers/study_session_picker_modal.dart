@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/format_helpers.dart';
 import 'package:uuid/uuid.dart';
 import 'duration_picker_modal.dart';
 
@@ -20,15 +21,24 @@ class StudySessionPickerModal extends StatefulWidget {
 }
 
 class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
-  DateTime selectedDate = DateTime.now();
-  int selectedHour = DateTime.now().hour;
-  int selectedMinute = DateTime.now().minute;
+  late DateTime selectedDate;
+  late int selectedHour;
+  late int selectedMinute;
   int durationHours = 1;
   int durationMinutes = 0;
   final TextEditingController notesController = TextEditingController();
   final FocusNode _notesFocusNode = FocusNode();
   final GlobalKey _notesKey = GlobalKey();
   String? _overlapError;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    selectedDate = now;
+    selectedHour = now.hour;
+    selectedMinute = now.minute;
+  }
 
   @override
   void dispose() {
@@ -156,13 +166,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     );
   }
 
-  String _formatDate(DateTime d) {
-    const months = [
-      'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-      'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
-    ];
-    return '${d.day} ${months[d.month - 1]} ${d.year}';
-  }
+  String _formatDate(DateTime d) => FormatHelpers.formatDate(d);
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +286,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: _overlapError != null
-                            ? const Color(0xFFFF5252)
+                            ? AppColors.overdue
                             : (isDark
                                 ? Colors.white.withValues(alpha: 0.06)
                                 : const Color(0xFFE5E7EB)),
@@ -294,7 +298,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       children: [
                         _buildStepper(
                           isDark: isDark,
-                          label: 'Uren',
+                          label: 'Hours',
                           value: selectedHour,
                           max: 23,
                           onChanged: (v) => setState(() {
@@ -315,7 +319,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                         ),
                         _buildStepper(
                           isDark: isDark,
-                          label: 'Minuten',
+                          label: 'Minutes',
                           value: selectedMinute,
                           max: 59,
                           onChanged: (v) => setState(() {
@@ -609,7 +613,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: hasError
-                ? const Color(0xFFFF5252)
+                ? AppColors.overdue
                 : (isDark
                     ? Colors.white.withValues(alpha: 0.06)
                     : const Color(0xFFE5E7EB)),

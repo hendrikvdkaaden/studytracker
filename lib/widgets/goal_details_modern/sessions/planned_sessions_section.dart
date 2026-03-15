@@ -26,10 +26,9 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final completedCount = widget.sessions.where((s) => s.isCompleted).length;
-    final visibleSessions = _showCompleted
-        ? widget.sessions
-        : widget.sessions.where((s) => !s.isCompleted).toList();
+    final incomplete = widget.sessions.where((s) => !s.isCompleted).toList();
+    final completedCount = widget.sessions.length - incomplete.length;
+    final visibleSessions = _showCompleted ? widget.sessions : incomplete;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

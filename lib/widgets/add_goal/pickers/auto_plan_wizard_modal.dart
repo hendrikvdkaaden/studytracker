@@ -48,7 +48,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _sessionDurationHours = 0;
   int _sessionDurationMinutes = 45;
 
-  static const _dayLabels = ['MA', 'DI', 'WO', 'DO', 'VR', 'ZA', 'ZO'];
+  static const _dayLabels = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   static const _dayValues = [1, 2, 3, 4, 5, 6, 7];
 
   void _toggleDay(int day) {
@@ -67,24 +67,24 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     final sessionMins = _sessionDurationHours * 60 + _sessionDurationMinutes;
 
     if (totalMins <= 0) {
-      _showSnack('Stel een totale studietijd in.');
+      _showSnack('Set a total study time.');
       return;
     }
     if (sessionMins <= 0) {
-      _showSnack('Stel een sessieduur in.');
+      _showSnack('Set a session duration.');
       return;
     }
     if (_weekdays.isEmpty) {
-      _showSnack('Selecteer minimaal één studiedag.');
+      _showSnack('Select at least one study day.');
       return;
     }
     final windowMins = (_endHour - _startHour) * 60;
     if (windowMins <= 0) {
-      _showSnack('Eindtijd moet na de starttijd liggen.');
+      _showSnack('End time must be after start time.');
       return;
     }
     if (sessionMins > windowMins) {
-      _showSnack('Sessieduur past niet binnen het studievenster.');
+      _showSnack('Session duration does not fit within the study window.');
       return;
     }
 
@@ -143,7 +143,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    'Sessies plannen',
+                    'Plan Sessions',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
               children: [
                 // 1. Totale studietijd
                 _buildSectionHeader(
-                  label: 'Totale studietijd',
+                  label: 'Total Study Time',
                   icon: Icons.schedule,
                   iconBg: const Color(0xFFFFF3E0),
                   iconColor: const Color(0xFFEA6C0A),
@@ -198,7 +198,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 
                 // 2. Studiedagen
                 _buildSectionHeader(
-                  label: 'Studiedagen',
+                  label: 'Study Days',
                   icon: Icons.calendar_month,
                   iconBg: const Color(0xFFEFF6FF),
                   iconColor: const Color(0xFF135BEC),
@@ -262,7 +262,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 
                 // 3. Studievenster
                 _buildSectionHeader(
-                  label: 'Studievenster',
+                  label: 'Study Window',
                   icon: Icons.wb_sunny_outlined,
                   iconBg: const Color(0xFFF5F3FF),
                   iconColor: const Color(0xFF7C3AED),
@@ -274,7 +274,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 
                 // 4. Sessieduur
                 _buildSectionHeader(
-                  label: 'Sessieduur',
+                  label: 'Session Duration',
                   icon: Icons.bolt,
                   iconBg: const Color(0xFFECFDF5),
                   iconColor: const Color(0xFF059669),
@@ -311,7 +311,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Annuleer',
+                      'Cancel',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -343,7 +343,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                       onPressed: _confirm,
                       icon: const Icon(Icons.arrow_forward, size: 18),
                       label: const Text(
-                        'Plan sessies',
+                        'Plan Sessions',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -427,7 +427,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         children: [
           _buildStepper(
             isDark: isDark,
-            label: 'Uren',
+            label: 'Hours',
             value: hours,
             max: maxHours,
             onChanged: onHoursChanged,
@@ -445,7 +445,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           ),
           _buildStepper(
             isDark: isDark,
-            label: 'Minuten',
+            label: 'Minutes',
             value: minutes,
             max: 59,
             onChanged: onMinutesChanged,
@@ -651,7 +651,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           const SizedBox(height: 4),
           // Selected range label
           Text(
-            'Geselecteerd: $startLabel — $endLabel',
+            'Selected: $startLabel — $endLabel',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,

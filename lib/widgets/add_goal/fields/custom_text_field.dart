@@ -25,7 +25,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final sectionBg =
-        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
+        isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
 
     return Column(
@@ -71,12 +71,12 @@ class CustomTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: Color(0xFFFF5252)),
+              borderSide: const BorderSide(color: AppColors.overdue),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide:
-                  const BorderSide(color: Color(0xFFFF5252), width: 1.5),
+                  const BorderSide(color: AppColors.overdue, width: 1.5),
             ),
           ),
           validator: validator,

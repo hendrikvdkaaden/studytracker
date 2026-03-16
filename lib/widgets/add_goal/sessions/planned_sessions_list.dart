@@ -1,94 +1,66 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
-import 'planned_session_item.dart';
+import '../../../theme/app_colors.dart';
+import '../../common/planned_session_item.dart';
 
 class PlannedSessionsList extends StatelessWidget {
   final List<StudySession> sessions;
   final Function(int index) onDelete;
+  final Function(int index) onEdit;
 
   const PlannedSessionsList({
     super.key,
     required this.sessions,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (sessions.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (sessions.isEmpty) return const SizedBox.shrink();
 
-    // Calculate total planned time
-    final totalMinutes = sessions.fold<int>(
-      0,
-      (sum, session) => sum + session.duration,
-    );
-    final totalHours = totalMinutes ~/ 60;
-    final remainingMinutes = totalMinutes % 60;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    String totalTimeText = '';
-    if (totalHours > 0 && remainingMinutes > 0) {
-      totalTimeText = '${totalHours}h ${remainingMinutes}m';
-    } else if (totalHours > 0) {
-      totalTimeText = '${totalHours}h';
-    } else {
-      totalTimeText = '${remainingMinutes}m';
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF135BEC).withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF135BEC).withOpacity(0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Planned Sessions',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF135BEC),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${sessions.length} session${sessions.length != 1 ? 's' : ''} • $totalTimeText',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Card list with dividers — same style as goal details screen
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          ...sessions.asMap().entries.map((entry) {
-            final index = entry.key;
-            final session = entry.value;
-            return PlannedSessionItem(
-              session: session,
-              onDelete: () => onDelete(index),
-            );
-          }),
-        ],
-      ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                for (int i = 0; i < sessions.length; i++) ...[
+                  if (i > 0)
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: isDark
+                          ? const Color(0xFF2d4a48)
+                          : const Color(0xFFcee8e6),
+                    ),
+                  PlannedSessionItem(
+                    session: sessions[i],
+                    index: i,
+                    onDelete: () => onDelete(i),
+                    onEdit: () => onEdit(i),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

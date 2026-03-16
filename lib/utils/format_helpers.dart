@@ -13,22 +13,29 @@ class FormatHelpers {
     }
   }
 
+  static const _shortMonths = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
   /// Format a DateTime into a short date string (e.g., "9 Feb 2026")
   static String formatDate(DateTime date) {
-    final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
+    return '${date.day} ${_shortMonths[date.month - 1]} ${date.year}';
   }
+
+  /// Format a DateTime into a short date without year (e.g., "9 Feb")
+  static String formatDateShort(DateTime date) {
+    return '${date.day} ${_shortMonths[date.month - 1]}';
+  }
+
+  static const _fullMonths = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   /// Format a DateTime into a full date string (e.g., "9 February 2026")
   static String formatDateFull(DateTime date) {
-    final months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
+    return '${date.day} ${_fullMonths[date.month - 1]} ${date.year}';
   }
 
   /// Format a TimeOfDay into a 24-hour time string (e.g., "14:30")

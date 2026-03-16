@@ -175,7 +175,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: hasError
-                        ? const Color(0xFFFF5252)
+                        ? AppColors.overdue
                         : (isDark
                             ? Colors.white.withValues(alpha: 0.06)
                             : const Color(0xFFE5E7EB)),
@@ -224,7 +224,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                 field.errorText!,
                 style: const TextStyle(
                   fontSize: 12,
-                  color: Color(0xFFFF5252),
+                  color: AppColors.overdue,
                 ),
               ),
             ],

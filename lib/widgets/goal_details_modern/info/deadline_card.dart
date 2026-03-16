@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/format_helpers.dart';
 
 class DeadlineCard extends StatelessWidget {
   final Goal goal;
@@ -13,130 +14,118 @@ class DeadlineCard extends StatelessWidget {
     this.onTap,
   });
 
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final daysLeft = goal.daysUntilDeadline();
     final isOverdue = goal.isOverdue();
     final isCompleted = goal.isCompleted;
-    final showWarning = !isCompleted && (isOverdue || daysLeft <= 2);
 
-    String daysLeftText;
+    final sectionBg = isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final textColor = isDark ? Colors.white : const Color(0xFF111827);
+
+    String statusText;
+    Color statusColor;
     if (isCompleted) {
-      daysLeftText = 'Completed';
+      statusText = 'Completed';
+      statusColor = AppColors.completed;
     } else if (isOverdue) {
-      daysLeftText = '${daysLeft.abs()} day${daysLeft.abs() == 1 ? '' : 's'} overdue';
+      final days = daysLeft.abs();
+      statusText = '$days day${days == 1 ? '' : 's'} overdue';
+      statusColor = AppColors.overdue;
     } else if (daysLeft == 0) {
-      daysLeftText = 'Due today';
+      statusText = 'Today';
+      statusColor = AppColors.upcoming;
     } else if (daysLeft == 1) {
-      daysLeftText = 'Due today';
+      statusText = 'Tomorrow';
+      statusColor = AppColors.upcoming;
     } else {
-      daysLeftText = '$daysLeft days left';
+      statusText = '$daysLeft days left';
+      statusColor = AppColors.upcoming;
     }
 
-    final cardColor = isDark ? AppColors.calendarDarkCard : AppColors.lightCard;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header row
+        Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFFEA6C0A).withValues(alpha: 0.15)
+                    : const Color(0xFFFFF3E0),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.calendar_month,
+                size: 17,
+                color: Color(0xFFEA6C0A),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'DEADLINE',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.1,
+                color: subtleText,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Clickable field
+        GestureDetector(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              color: sectionBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : const Color(0xFFE5E7EB),
+              ),
+            ),
             child: Row(
               children: [
-                // Icon
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: AppColors.calendarAccent.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    isCompleted ? Icons.check_circle : Icons.calendar_today,
-                    color: isCompleted
-                        ? AppColors.completed
-                        : isDark ? AppColors.calendarAccent : AppColors.darkText,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Deadline info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Deadline: ${_formatDate(goal.date)}',
+                        FormatHelpers.formatDate(goal.date),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? AppColors.lightText : AppColors.darkText,
+                          color: textColor,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        daysLeftText,
+                        statusText,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: isCompleted
-                              ? AppColors.completed
-                              : isOverdue
-                                  ? AppColors.overdue
-                                  : AppColors.upcoming,
+                          color: statusColor,
                         ),
                       ),
                     ],
                   ),
                 ),
-                // Trailing icons
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (showWarning)
-                      const Icon(
-                        Icons.error,
-                        color: AppColors.overdue,
-                        size: 22,
-                      ),
-                    if (onTap != null && !isCompleted) ...[
-                      if (showWarning) const SizedBox(width: 4),
-                      const Icon(
-                        Icons.edit_outlined,
-                        size: 18,
-                        color: AppColors.upcoming,
-                      ),
-                    ],
-                  ],
-                ),
+                if (onTap != null && !isCompleted)
+                  Icon(Icons.chevron_right, color: subtleText, size: 20),
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -25,7 +25,7 @@ class ClickableField extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final sectionBg =
-        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
+        isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
 

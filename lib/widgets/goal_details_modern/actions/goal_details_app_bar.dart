@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
 /// AppBar for the goal details screen
 class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,7 +15,7 @@ class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AppBar(
-      backgroundColor: isDark ? const Color(0xFF102221) : const Color(0xFFF5F8F8),
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
@@ -33,7 +34,7 @@ class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.delete_outline),
           onPressed: onDelete,
-          color: Colors.red,
+          color: AppColors.overdue,
         ),
       ],
     );

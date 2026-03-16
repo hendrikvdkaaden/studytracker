@@ -48,16 +48,14 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   Future<void> _toggleComplete() async {
     final updatedGoal = await _operationsService.toggleComplete(_goal);
     if (!mounted) return;
-    setState(() {
-      _goal = updatedGoal;
-      _refreshData();
-    });
+    _goal = updatedGoal;
+    _refreshData();
+    setState(() {});
   }
 
   Future<void> _showEditProgressDialog() async {
-    final screenContext = context;
     await showDialog(
-      context: screenContext,
+      context: context,
       builder: (dialogContext) => EditProgressDialog(
         initialTargetTimeMinutes: _goal.studyTime,
         initialTimeSpentMinutes: _timeSpent,
@@ -68,13 +66,11 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
             newTimeSpentMinutes: timeSpent,
           );
           if (!mounted) return;
-          setState(() {
-            _goal = updatedGoal;
-            _refreshData();
-          });
-          if (!mounted) return;
+          _goal = updatedGoal;
+          _refreshData();
+          setState(() {});
           GoalDialogService.showSuccessMessage(
-            screenContext,
+            context,
             'Progress updated successfully!',
           );
         },
@@ -133,6 +129,23 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     Navigator.pop(context, true);
   }
 
+  Future<void> _editSession(StudySession session) async {
+    await showStudySessionEditor(
+      context: context,
+      session: session,
+      existingSessions: _plannedSessions,
+      onSessionUpdated: (updated) async {
+        await _sessionRepo.updateSession(updated);
+        await Future.wait([
+          NotificationService.cancelSessionNotification(updated.id),
+          NotificationService.scheduleSessionReminder(updated, _goal.title),
+        ]);
+        if (!mounted) return;
+        setState(() => _refreshData());
+      },
+    );
+  }
+
   Future<void> _addSession() async {
     await showStudySessionPicker(
       context: context,
@@ -160,10 +173,8 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF102221) : const Color(0xFFF5F8F8),
+      backgroundColor: AppColors.getBackground(context),
       appBar: GoalDetailsAppBar(onDelete: _deleteGoal),
       body: GoalDetailsTemplate(
         goal: _goal,
@@ -172,6 +183,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
         onEditProgress: _showEditProgressDialog,
         onMarkComplete: _toggleComplete,
         onAddSession: _addSession,
+        onEditSession: _editSession,
         onEditInfo: _showEditInfoModal,
         onEditDeadline: _pickDeadline,
       ),

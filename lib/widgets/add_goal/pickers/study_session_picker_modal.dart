@@ -8,11 +8,13 @@ import 'duration_picker_modal.dart';
 class StudySessionPickerModal extends StatefulWidget {
   final void Function(StudySession session) onSessionAdded;
   final List<StudySession> existingSessions;
+  final StudySession? initialSession; // non-null = edit mode
 
   const StudySessionPickerModal({
     super.key,
     required this.onSessionAdded,
     this.existingSessions = const [],
+    this.initialSession,
   });
 
   @override
@@ -34,10 +36,20 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    selectedDate = now;
-    selectedHour = now.hour;
-    selectedMinute = now.minute;
+    final initial = widget.initialSession;
+    if (initial != null) {
+      selectedDate = initial.date;
+      selectedHour = initial.startTime?.hour ?? DateTime.now().hour;
+      selectedMinute = initial.startTime?.minute ?? DateTime.now().minute;
+      durationHours = initial.duration ~/ 60;
+      durationMinutes = initial.duration % 60;
+      notesController.text = initial.notes ?? '';
+    } else {
+      final now = DateTime.now();
+      selectedDate = now;
+      selectedHour = now.hour;
+      selectedMinute = now.minute;
+    }
   }
 
   @override
@@ -141,12 +153,13 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       return;
     }
 
+    final isEditing = widget.initialSession != null;
     final session = StudySession(
-      id: const Uuid().v4(),
-      goalId: '',
+      id: isEditing ? widget.initialSession!.id : const Uuid().v4(),
+      goalId: isEditing ? widget.initialSession!.goalId : '',
       date: selectedDate,
       duration: totalDuration,
-      isCompleted: false,
+      isCompleted: isEditing ? widget.initialSession!.isCompleted : false,
       startTime: newStart,
       notes: notesController.text.isEmpty ? null : notesController.text,
     );
@@ -158,10 +171,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     Navigator.pop(context);
 
     messenger.showSnackBar(
-      const SnackBar(
-        content: Text('Session added!'),
+      SnackBar(
+        content: Text(isEditing ? 'Session updated!' : 'Session added!'),
         behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
@@ -170,6 +183,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.initialSession != null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightCard;
     final sectionBg =
@@ -204,7 +218,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
               children: [
                 Expanded(
                   child: Text(
-                    'Plan Study Session',
+                    isEditing ? 'Edit Session' : 'Plan Study Session',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -335,13 +349,13 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     Row(
                       children: [
                         const Icon(Icons.error_outline,
-                            size: 14, color: Color(0xFFFF5252)),
+                            size: 14, color: AppColors.overdue),
                         const SizedBox(width: 4),
                         Text(
                           _overlapError!,
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xFFFF5252),
+                            color: AppColors.overdue,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -438,10 +452,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     ),
                     child: ElevatedButton.icon(
                       onPressed: _addSession,
-                      icon: const Icon(Icons.add, size: 18),
-                      label: const Text(
-                        'Add Session',
-                        style: TextStyle(
+                      icon: Icon(isEditing ? Icons.check : Icons.add, size: 18),
+                      label: Text(
+                        isEditing ? 'Save Changes' : 'Add Session',
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
@@ -640,6 +654,29 @@ Future<void> showStudySessionPicker({
       return StudySessionPickerModal(
         onSessionAdded: onSessionAdded,
         existingSessions: existingSessions,
+      );
+    },
+  );
+}
+
+Future<void> showStudySessionEditor({
+  required BuildContext context,
+  required StudySession session,
+  required void Function(StudySession updated) onSessionUpdated,
+  List<StudySession> existingSessions = const [],
+}) async {
+  await showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    isDismissible: true,
+    builder: (BuildContext context) {
+      return StudySessionPickerModal(
+        onSessionAdded: onSessionUpdated,
+        // Exclude the session being edited from overlap check
+        existingSessions:
+            existingSessions.where((s) => s.id != session.id).toList(),
+        initialSession: session,
       );
     },
   );

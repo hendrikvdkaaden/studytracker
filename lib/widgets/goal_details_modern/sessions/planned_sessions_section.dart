@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
-import 'planned_session_item.dart';
+import '../../../utils/format_helpers.dart';
+import '../../common/planned_session_item.dart';
 
 class PlannedSessionsSection extends StatefulWidget {
   final List<StudySession> sessions;
   final String goalTitle;
   final VoidCallback onAddSession;
+  final void Function(StudySession session)? onEditSession;
 
   const PlannedSessionsSection({
     super.key,
     required this.sessions,
     required this.goalTitle,
     required this.onAddSession,
+    this.onEditSession,
   });
 
   @override
@@ -25,103 +28,144 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
 
     final incomplete = widget.sessions.where((s) => !s.isCompleted).toList();
     final completedCount = widget.sessions.length - incomplete.length;
     final visibleSessions = _showCompleted ? widget.sessions : incomplete;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Column(
+    final totalMinutes = widget.sessions.fold(0, (s, e) => s + e.duration);
+
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header row
           Row(
             children: [
-              Text(
-                'Sessions',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF0d1c1b),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF7C3AED).withValues(alpha: 0.15)
+                      : const Color(0xFFF5F3FF),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.bolt, size: 17, color: Color(0xFF7C3AED)),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'STUDY SESSIONS',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.1,
+                    color: subtleText,
+                  ),
                 ),
               ),
-              const Spacer(),
               if (completedCount > 0)
                 GestureDetector(
                   onTap: () => setState(() => _showCompleted = !_showCompleted),
                   child: Text(
-                    _showCompleted ? 'Hide Completed' : 'Show Completed',
+                    _showCompleted ? 'Hide completed' : 'Show completed',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: isDark
-                          ? const Color(0xFFa0cbc8)
-                          : AppColors.upcoming,
+                          ? AppColors.primary.withValues(alpha: 0.9)
+                          : AppColors.primary,
                     ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
-          // Session list as one card with dividers
-          if (visibleSessions.isEmpty)
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.calendarDarkCard : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+          // Session list
+          if (visibleSessions.isEmpty && widget.sessions.isEmpty)
+            GestureDetector(
+              onTap: widget.onAddSession,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkFieldBackground
+                      : AppColors.lightFieldBackground,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.06)
+                        : const Color(0xFFE5E7EB),
                   ),
-                ],
-              ),
-              child: Center(
-                child: Column(
+                ),
+                child: Row(
                   children: [
-                    Icon(
-                      Icons.event_available_outlined,
-                      size: 48,
-                      color: isDark ? Colors.grey[600] : Colors.grey[400],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'No sessions planned yet',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark ? Colors.grey[500] : Colors.grey[600],
+                    Expanded(
+                      child: Text(
+                        'Add study session',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? Colors.white : const Color(0xFF111827),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Tap + to add a study session',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? Colors.grey[600] : Colors.grey[500],
-                      ),
-                    ),
+                    Icon(Icons.add, color: subtleText, size: 20),
                   ],
                 ),
               ),
             )
-          else
+          else if (visibleSessions.isEmpty)
             Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                color: isDark
+                    ? AppColors.darkFieldBackground
+                    : AppColors.lightFieldBackground,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : const Color(0xFFE5E7EB),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'All sessions are completed',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Tap "Show completed" above to view them',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: subtleText,
+                    ),
                   ),
                 ],
               ),
+            )
+          else ...[
+            Container(
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : const Color(0xFFE5E7EB),
+                ),
+              ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(20),
                 child: Column(
                   children: [
                     for (int i = 0; i < visibleSessions.length; i++) ...[
@@ -130,63 +174,97 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                           height: 1,
                           thickness: 1,
                           color: isDark
-                              ? const Color(0xFF2d4a48)
-                              : const Color(0xFFcee8e6),
+                              ? Colors.white.withValues(alpha: 0.06)
+                              : const Color(0xFFE5E7EB),
                         ),
                       PlannedSessionItem(
                         session: visibleSessions[i],
-                        goalTitle: widget.goalTitle,
+                        index: i,
+                        title: widget.goalTitle,
+                        onEdit: !visibleSessions[i].isCompleted &&
+                                widget.onEditSession != null
+                            ? () => widget.onEditSession!(visibleSessions[i])
+                            : null,
                       ),
                     ],
                   ],
                 ),
               ),
             ),
-
-          const SizedBox(height: 12),
-
-          // Add button below list
-          GestureDetector(
-            onTap: widget.onAddSession,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.calendarAccent.withOpacity(0.08)
-                    : AppColors.calendarAccent.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.calendarAccent.withOpacity(0.25),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    size: 16,
-                    color: isDark
-                        ? AppColors.calendarAccent
-                        : AppColors.upcoming,
+            const SizedBox(height: 12),
+            // Summary + add button
+            Row(
+              children: [
+                Text(
+                  '${widget.sessions.length} session${widget.sessions.length != 1 ? 's' : ''}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey[300] : const Color(0xFF374151),
                   ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Add session',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '•',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: isDark ? Colors.grey[500] : Colors.grey[400],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  FormatHelpers.formatTime(totalMinutes),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: widget.onAddSession,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
                       color: isDark
-                          ? AppColors.calendarAccent
-                          : AppColors.upcoming,
+                          ? AppColors.primary.withValues(alpha: 0.15)
+                          : const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.primary.withValues(alpha: 0.3)
+                            : AppColors.primary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.add,
+                          size: 14,
+                          color: isDark
+                              ? AppColors.primary.withValues(alpha: 0.9)
+                              : AppColors.primary,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Add session',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.primary.withValues(alpha: 0.9)
+                                : AppColors.primary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
+          ],
         ],
-      ),
     );
   }
 }

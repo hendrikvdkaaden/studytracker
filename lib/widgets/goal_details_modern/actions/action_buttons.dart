@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
 class ActionButtons extends StatelessWidget {
   final VoidCallback onMarkComplete;
@@ -12,40 +13,61 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: onMarkComplete,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF0DF2DF),
-          foregroundColor: const Color(0xFF102221),
-          elevation: 0,
-          shadowColor: const Color(0xFF0DF2DF).withValues(alpha: 0.2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    if (isCompleted) {
+      return SizedBox(
+        width: double.infinity,
+        height: 54,
+        child: OutlinedButton.icon(
+          onPressed: onMarkComplete,
+          icon: const Icon(Icons.check_circle, size: 18),
+          label: const Text(
+            'Mark as Incomplete',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.completed,
+            side: const BorderSide(color: AppColors.completed),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isCompleted ? Icons.check_circle : Icons.check_circle_outline,
-              color: const Color(0xFF102221),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              isCompleted ? 'Mark as Incomplete' : 'Mark as Completed',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF102221),
-              ),
-            ),
-          ],
+      );
+    }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.primary, const Color(0xFF4489FF)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: onMarkComplete,
+        icon: const Icon(Icons.check_circle_outline, size: 18),
+        label: const Text(
+          'Mark as Completed',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shadowColor: Colors.transparent,
+          minimumSize: const Size(double.infinity, 54),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
     );
   }
 }
-

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../utils/goal_helpers.dart';
+import '../../../utils/goal_type_helper.dart';
 import '../../../utils/format_helpers.dart';
 
 class UpcomingGoalCard extends StatelessWidget {
@@ -79,7 +80,7 @@ class UpcomingGoalCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    GoalHelpers.getGoalIcon(goal.type),
+                    GoalTypeHelper.getIconForType(goal.type),
                     color: accentColor,
                     size: 20,
                   ),

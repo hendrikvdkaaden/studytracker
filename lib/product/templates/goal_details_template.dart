@@ -17,6 +17,7 @@ class GoalDetailsTemplate extends StatelessWidget {
   final VoidCallback onEditProgress;
   final VoidCallback onMarkComplete;
   final VoidCallback onAddSession;
+  final void Function(StudySession session) onEditSession;
   final VoidCallback onEditInfo;
   final VoidCallback onEditDeadline;
 
@@ -28,6 +29,7 @@ class GoalDetailsTemplate extends StatelessWidget {
     required this.onEditProgress,
     required this.onMarkComplete,
     required this.onAddSession,
+    required this.onEditSession,
     required this.onEditInfo,
     required this.onEditDeadline,
   });
@@ -35,43 +37,35 @@ class GoalDetailsTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjectColor = SettingsService.colorForSubject(goal.subject);
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 32 + bottomInset),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: GoalInfoCard(goal: goal, onTap: onEditInfo, accentColor: subjectColor),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: DeadlineCard(goal: goal, onTap: onEditDeadline),
-          ),
+          GoalInfoCard(goal: goal, onTap: onEditInfo, accentColor: subjectColor),
+          const SizedBox(height: 24),
+          DeadlineCard(goal: goal, onTap: onEditDeadline),
+          const SizedBox(height: 24),
           PlannedSessionsSection(
             sessions: plannedSessions,
             goalTitle: goal.title,
             onAddSession: onAddSession,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-            child: ProgressSectionHeader(onEdit: onEditProgress),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ProgressCircle(
-              timeSpent: timeSpent,
-              targetTime: goal.studyTime,
-              accentColor: subjectColor,
-            ),
+            onEditSession: onEditSession,
           ),
           const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            child: ActionButtons(
-              onMarkComplete: onMarkComplete,
-              isCompleted: goal.isCompleted,
-            ),
+          ProgressSectionHeader(onEdit: onEditProgress),
+          const SizedBox(height: 10),
+          ProgressCircle(
+            timeSpent: timeSpent,
+            targetTime: goal.studyTime,
+            accentColor: subjectColor,
+          ),
+          const SizedBox(height: 32),
+          ActionButtons(
+            onMarkComplete: onMarkComplete,
+            isCompleted: goal.isCompleted,
           ),
         ],
       ),

@@ -19,51 +19,64 @@ class GoalInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Use provided color, fall back to lookup, fall back to default
     final color = accentColor
         ?? SettingsService.colorForSubject(goal.subject)
         ?? AppColors.calendarAccent;
 
-    final cardColor = isDark ? AppColors.calendarDarkCard : AppColors.lightCard;
+    final sectionBg = isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final textColor = isDark ? Colors.white : const Color(0xFF111827);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? color.withValues(alpha: 0.15)
+                    : color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                GoalTypeHelper.getIconForType(goal.type),
+                size: 17,
+                color: color,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'GOAL INFO',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.1,
+                color: subtleText,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Content field
+        GestureDetector(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              color: sectionBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : const Color(0xFFE5E7EB),
+              ),
+            ),
             child: Row(
               children: [
-                // Icon
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    GoalTypeHelper.getIconForType(goal.type),
-                    color: color,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Title and Subject
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,16 +84,16 @@ class GoalInfoCard extends StatelessWidget {
                       Text(
                         goal.title,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? AppColors.lightText : AppColors.darkText,
+                          color: textColor,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${goal.subject} • ${GoalTypeHelper.getLabel(goal.type)}',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w500,
                           color: color,
                         ),
@@ -89,16 +102,12 @@ class GoalInfoCard extends StatelessWidget {
                   ),
                 ),
                 if (onTap != null)
-                  Icon(
-                    Icons.edit_outlined,
-                    size: 18,
-                    color: color,
-                  ),
+                  Icon(Icons.chevron_right, color: subtleText, size: 20),
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

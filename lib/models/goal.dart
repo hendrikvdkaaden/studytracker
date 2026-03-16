@@ -41,11 +41,17 @@ class Goal extends HiveObject {
 
   // Helper methods
   bool isOverdue() {
-    return !isCompleted && date.isBefore(DateTime.now());
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final deadlineDay = DateTime(date.year, date.month, date.day);
+    return !isCompleted && deadlineDay.isBefore(today);
   }
 
   int daysUntilDeadline() {
-    return date.difference(DateTime.now()).inDays + 1;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final deadlineDay = DateTime(date.year, date.month, date.day);
+    return deadlineDay.difference(today).inDays;
   }
 
   // Helper methods for study time

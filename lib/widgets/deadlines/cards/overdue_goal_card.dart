@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
-import '../../../utils/goal_helpers.dart';
+import '../../../utils/goal_type_helper.dart';
 
 class OverdueGoalCard extends StatelessWidget {
   final Goal goal;
@@ -61,7 +61,7 @@ class OverdueGoalCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    GoalHelpers.getGoalIcon(goal.type),
+                    GoalTypeHelper.getIconForType(goal.type),
                     color: Colors.red.shade600,
                     size: 20,
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
-/// Header for the progress section with edit button
 class ProgressSectionHeader extends StatelessWidget {
   final VoidCallback onEdit;
 
@@ -12,40 +12,78 @@ class ProgressSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Progress Overview',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.015,
-            color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: isDark
+                ? AppColors.primary.withValues(alpha: 0.15)
+                : const Color(0xFFEFF6FF),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(
+            Icons.trending_up,
+            size: 17,
+            color: AppColors.primary,
           ),
         ),
-        _buildEditButton(isDark),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            'PROGRESS',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              color: subtleText,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: onEdit,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.primary.withValues(alpha: 0.15)
+                  : const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.primary.withValues(alpha: 0.3)
+                    : AppColors.primary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.edit_outlined,
+                  size: 14,
+                  color: isDark
+                      ? AppColors.primary.withValues(alpha: 0.9)
+                      : AppColors.primary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark
+                        ? AppColors.primary.withValues(alpha: 0.9)
+                        : AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
-    );
-  }
-
-  Widget _buildEditButton(bool isDark) {
-    return GestureDetector(
-      onTap: onEdit,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: const Color(0xFF0DF2DF).withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Icon(
-          Icons.edit,
-          size: 18,
-          color: isDark ? const Color(0xFF0DF2DF) : const Color(0xFF0D1C1B),
-        ),
-      ),
     );
   }
 }

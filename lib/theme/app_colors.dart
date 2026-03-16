@@ -38,6 +38,10 @@ class AppColors {
   static const Color lightCard = Colors.white;
   static const Color darkCard = Color(0xFF1F2937);
 
+  // Field Background Colors
+  static const Color darkFieldBackground = Color(0xFF1A2035);
+  static const Color lightFieldBackground = Color(0xFFF9FAFB);
+
   // Opacity helpers
   static Color withOpacity(Color color, double opacity) {
     return color.withOpacity(opacity);

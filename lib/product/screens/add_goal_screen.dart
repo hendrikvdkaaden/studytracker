@@ -8,6 +8,7 @@ import '../../services/notification_service.dart';
 import '../../services/settings_service.dart'; // also imports SubjectData
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/format_helpers.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
@@ -96,6 +97,20 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     setState(() {
       _plannedSessions.removeAt(index);
     });
+  }
+
+  Future<void> _editSession(int index) async {
+    FocusScope.of(context).unfocus();
+    await showStudySessionEditor(
+      context: context,
+      session: _plannedSessions[index],
+      existingSessions: _plannedSessions,
+      onSessionUpdated: (updated) {
+        setState(() {
+          _plannedSessions[index] = updated;
+        });
+      },
+    );
   }
 
   void _onSubjectSelected(String subject) {
@@ -198,16 +213,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     }
   }
 
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    final month = months[date.month - 1];
-    final day = date.day;
-    final year = date.year;
-    return '$month $day, $year';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +227,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         subjectController: _subjectController,
         selectedDate: _selectedDate,
         selectedType: _selectedType,
-        formattedDate: _formatDate(_selectedDate),
+        formattedDate: FormatHelpers.formatDate(_selectedDate),
         plannedSessions: _plannedSessions,
         subjects: _subjects,
         selectedSubject: _selectedSubject,
@@ -232,6 +237,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         onSessionTap: _showStudySessionPicker,
         onAutoplan: _autoPlanSessions,
         onSessionDelete: _deleteSession,
+        onSessionEdit: _editSession,
         onSave: _saveGoal,
       ),
     );

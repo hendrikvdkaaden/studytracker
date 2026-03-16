@@ -6,6 +6,7 @@ import '../../theme/app_colors.dart';
 import '../../widgets/add_goal/fields/clickable_field.dart';
 import '../../widgets/add_goal/fields/custom_text_field.dart';
 import '../../widgets/add_goal/fields/goal_type_selector.dart';
+import '../../utils/format_helpers.dart';
 import '../../widgets/add_goal/sessions/planned_sessions_list.dart';
 import '../../widgets/common/subject_selector_field.dart';
 
@@ -25,6 +26,7 @@ class AddGoalTemplate extends StatelessWidget {
   final VoidCallback onSessionTap;
   final VoidCallback onAutoplan;
   final Function(int) onSessionDelete;
+  final Function(int) onSessionEdit;
   final VoidCallback onSave;
 
   const AddGoalTemplate({
@@ -43,6 +45,7 @@ class AddGoalTemplate extends StatelessWidget {
     required this.onSessionTap,
     required this.onAutoplan,
     required this.onSessionDelete,
+    required this.onSessionEdit,
     required this.onSave,
     this.selectedSubject,
   });
@@ -270,48 +273,123 @@ class AddGoalTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        GestureDetector(
-          onTap: onSessionTap,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF1A2035)
-                  : const Color(0xFFF9FAFB),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    plannedSessions.isEmpty
-                        ? 'Add study session'
-                        : '${plannedSessions.length} session${plannedSessions.length != 1 ? 's' : ''} planned',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.white : const Color(0xFF111827),
-                    ),
-                  ),
-                ),
-                Icon(Icons.add,
-                    color: isDark ? Colors.grey[400] : Colors.grey[500],
-                    size: 20),
-              ],
-            ),
-          ),
-        ),
-        if (plannedSessions.isNotEmpty)
+        if (plannedSessions.isNotEmpty) ...[
           PlannedSessionsList(
             sessions: plannedSessions,
             onDelete: onSessionDelete,
+            onEdit: onSessionEdit,
           ),
+          const SizedBox(height: 12),
+        ],
+        // Footer: full-width card when empty, summary+pill when list has items
+        if (plannedSessions.isEmpty)
+          GestureDetector(
+            onTap: onSessionTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF1A2035)
+                    : const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : const Color(0xFFE5E7EB),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Add study session',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.white : const Color(0xFF111827),
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.add,
+                      color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      size: 20),
+                ],
+              ),
+            ),
+          )
+        else
+          Row(
+          children: [
+            Text(
+              '${plannedSessions.length} session${plannedSessions.length != 1 ? 's' : ''}',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              '•',
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark ? Colors.grey[500] : Colors.grey[400],
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              FormatHelpers.formatTime(
+                plannedSessions.fold(0, (s, e) => s + e.duration),
+              ),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+              ),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: onSessionTap,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.primary.withValues(alpha: 0.15)
+                      : const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.primary.withValues(alpha: 0.3)
+                        : AppColors.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add,
+                        size: 14,
+                        color: isDark
+                            ? AppColors.primary.withValues(alpha: 0.9)
+                            : AppColors.primary),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Add session',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? AppColors.primary.withValues(alpha: 0.9)
+                            : AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 }
+

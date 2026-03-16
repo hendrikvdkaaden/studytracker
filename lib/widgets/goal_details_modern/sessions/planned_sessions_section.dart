@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/format_helpers.dart';
+import '../../../utils/l10n_extension.dart';
 import '../../common/planned_session_item.dart';
 
 class PlannedSessionsSection extends StatefulWidget {
@@ -56,7 +57,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'STUDY SESSIONS',
+                  context.l10n.goalInfoSessionsLabel,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -69,7 +70,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                 GestureDetector(
                   onTap: () => setState(() => _showCompleted = !_showCompleted),
                   child: Text(
-                    _showCompleted ? 'Hide completed' : 'Show completed',
+                    _showCompleted ? context.l10n.goalDetailsHideCompleted : context.l10n.goalDetailsShowCompleted,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -104,7 +105,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Add study session',
+                        context.l10n.goalDetailsAddSession,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -135,7 +136,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'All sessions are completed',
+                    context.l10n.goalDetailsAllSessionsCompleted,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -144,7 +145,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Tap "Show completed" above to view them',
+                    context.l10n.goalDetailsShowCompletedHint,
                     style: TextStyle(
                       fontSize: 12,
                       color: subtleText,
@@ -196,7 +197,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
             Row(
               children: [
                 Text(
-                  '${widget.sessions.length} session${widget.sessions.length != 1 ? 's' : ''}',
+                  context.l10n.goalDetailsSessionCount(widget.sessions.length),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -248,7 +249,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Add session',
+                          context.l10n.goalDetailsAddSessionShort,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,

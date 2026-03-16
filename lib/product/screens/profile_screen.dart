@@ -3,6 +3,7 @@ import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/profile/add_subject_modal.dart';
 import '../../widgets/profile/edit_name_dialog.dart';
 import '../templates/profile_template.dart';
@@ -77,10 +78,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _deleteSubject(SubjectData subject) async {
+    final l10n = context.l10n;
     final confirmed = await _showDestructiveConfirmation(
-      title: 'Remove subject?',
-      body: '"${subject.name}" will be removed from your subjects list. Deadlines using this subject are not affected.',
-      confirmLabel: 'Remove',
+      title: l10n.profileRemoveSubjectTitle,
+      body: l10n.profileRemoveSubjectBody(subject.name),
+      confirmLabel: l10n.profileRemoveSubjectConfirm,
     );
     if (confirmed == true && mounted) {
       final updated = _subjects.where((s) => s.name != subject.name).toList();
@@ -90,12 +92,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _pickSessionReminder() async {
+    final l10n = context.l10n;
     await _showPickerSheet(
-      title: 'Session reminder',
-      subtitle: 'How long before a session should we remind you?',
+      title: l10n.profilePickerSessionTitle,
+      subtitle: l10n.profilePickerSessionSubtitle,
       options: [5, 10, 15, 30, 60],
       currentValue: _sessionReminderMinutes,
-      labelBuilder: (v) => v < 60 ? '$v minutes before' : '${v ~/ 60}h before',
+      labelBuilder: (v) => l10n.profilePickerSessionOptionFormat(v),
       onSelected: (v) async {
         await SettingsService.setSessionReminderMinutes(v);
         setState(() => _sessionReminderMinutes = v);
@@ -104,12 +107,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _pickDeadlineReminder() async {
+    final l10n = context.l10n;
     await _showPickerSheet(
-      title: 'Deadline reminder',
-      subtitle: 'How many days before a deadline should we remind you?',
+      title: l10n.profilePickerDeadlineTitle,
+      subtitle: l10n.profilePickerDeadlineSubtitle,
       options: [1, 2, 3, 5, 7],
       currentValue: _deadlineReminderDays,
-      labelBuilder: (v) => v == 1 ? '1 day before' : '$v days before',
+      labelBuilder: (v) => l10n.profilePickerDeadlineOptionFormat(v),
       onSelected: (v) async {
         await SettingsService.setDeadlineReminderDays(v);
         setState(() => _deadlineReminderDays = v);
@@ -118,9 +122,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _pickTheme() async {
-    final labels = ['System', 'Light', 'Dark'];
+    final l10n = context.l10n;
+    final labels = [l10n.profileThemeSystem, l10n.profileThemeLight, l10n.profileThemeDark];
     await _showPickerSheet(
-      title: 'Appearance',
+      title: l10n.profilePickerThemeTitle,
       options: [0, 1, 2],
       currentValue: _themeModeIndex,
       labelBuilder: (i) => labels[i],
@@ -216,17 +221,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _confirmDeleteSessions() async {
+    final l10n = context.l10n;
     final confirmed = await _showDestructiveConfirmation(
-      title: 'Delete all study sessions?',
-      body: 'This will permanently delete all your study sessions. Your deadlines will remain intact.',
-      confirmLabel: 'Delete sessions',
+      title: l10n.profileDeleteSessionsTitle,
+      body: l10n.profileDeleteSessionsBody,
+      confirmLabel: l10n.profileDeleteSessionsConfirm,
     );
     if (confirmed == true && mounted) {
       await StudySessionRepository().clearAll();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('All study sessions deleted.'),
+          SnackBar(
+            content: Text(context.l10n.profileDeleteSessionsSnack),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -235,17 +241,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _confirmDeleteEverything() async {
+    final l10n = context.l10n;
     final confirmed = await _showDestructiveConfirmation(
-      title: 'Delete everything?',
-      body: 'This will permanently delete all your deadlines and study sessions. This action cannot be undone.',
-      confirmLabel: 'Delete everything',
+      title: l10n.profileDeleteEverythingTitle,
+      body: l10n.profileDeleteEverythingBody,
+      confirmLabel: l10n.profileDeleteEverythingConfirm,
     );
     if (confirmed == true && mounted) {
       await HiveService.clearAllData();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('All data deleted.'),
+          SnackBar(
+            content: Text(context.l10n.profileDeleteEverythingSnack),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -258,6 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String body,
     required String confirmLabel,
   }) {
+    final cancelLabel = context.l10n.btnCancel;
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -266,7 +274,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(cancelLabel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),

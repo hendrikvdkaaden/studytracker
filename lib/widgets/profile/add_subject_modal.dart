@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 
 
 class AddSubjectModal extends StatefulWidget {
@@ -85,7 +86,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Add Subject',
+                    context.l10n.addSubjectTitle,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -93,7 +94,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                     ),
                   ),
                   Text(
-                    'Choose a name and color',
+                    context.l10n.addSubjectSubtitle,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.grey[500],
@@ -107,7 +108,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
 
           // Subject name label
           Text(
-            'SUBJECT NAME',
+            context.l10n.addSubjectNameLabel,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -127,7 +128,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
             },
             onSubmitted: (_) => _submit(),
             decoration: InputDecoration(
-              hintText: 'e.g. Physics',
+              hintText: context.l10n.addSubjectHint,
               hintStyle: TextStyle(
                 color: isDark ? Colors.grey[600] : Colors.grey[400],
               ),
@@ -152,7 +153,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                   width: 2,
                 ),
               ),
-              errorText: showError ? 'Please enter a subject name' : null,
+              errorText: showError ? context.l10n.addSubjectErrorEmpty : null,
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.red),
@@ -167,7 +168,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
 
           // Color label
           Text(
-            'THEME COLOR',
+            context.l10n.addSubjectColorLabel,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -227,9 +228,9 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                  child: Text(
+                    context.l10n.btnCancel,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -246,9 +247,9 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Create',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  child: Text(
+                    context.l10n.addSubjectSaveButton,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

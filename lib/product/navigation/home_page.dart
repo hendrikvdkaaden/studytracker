@@ -3,6 +3,7 @@ import '../../main.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -35,21 +36,22 @@ class _HomePageState extends State<HomePage> {
     ProfileScreen(onThemeChanged: _onThemeChanged),
   ];
 
-  final List<String> _titles = const [
-    'Daily Tasks',
-    'Calendar',
-    'Deadlines',
-    'Profile',
+  List<String> _buildTitles(BuildContext context) => [
+    context.l10n.navHome,
+    context.l10n.navCalendar,
+    context.l10n.navDeadlines,
+    context.l10n.navProfile,
   ];
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final titles = _buildTitles(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _titles[_currentIndex],
+          titles[_currentIndex],
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -92,22 +94,22 @@ class _HomePageState extends State<HomePage> {
           unselectedFontSize: 10,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
           elevation: 0,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: const Icon(Icons.home),
+              label: context.l10n.navHome,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              label: 'Calendar',
+              icon: const Icon(Icons.calendar_today),
+              label: context.l10n.navCalendar,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
-              label: 'Deadlines',
+              icon: const Icon(Icons.bar_chart),
+              label: context.l10n.navDeadlines,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: const Icon(Icons.person),
+              label: context.l10n.navProfile,
             ),
           ],
         ),

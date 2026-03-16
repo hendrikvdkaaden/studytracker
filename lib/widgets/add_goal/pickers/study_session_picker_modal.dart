@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/format_helpers.dart';
+import '../../../utils/l10n_extension.dart';
 import 'package:uuid/uuid.dart';
 import 'duration_picker_modal.dart';
 
@@ -148,7 +149,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
     if (_hasOverlap(newStart, totalDuration)) {
       setState(() {
-        _overlapError = 'This session overlaps with an existing session.';
+        _overlapError = context.l10n.sessionPickerOverlapError;
       });
       return;
     }
@@ -172,7 +173,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
     messenger.showSnackBar(
       SnackBar(
-        content: Text(isEditing ? 'Session updated!' : 'Session added!'),
+        content: Text(isEditing ? context.l10n.sessionPickerSaveEditButton : context.l10n.sessionPickerSaveButton),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 1),
       ),
@@ -218,7 +219,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
               children: [
                 Expanded(
                   child: Text(
-                    isEditing ? 'Edit Session' : 'Plan Study Session',
+                    isEditing ? context.l10n.sessionPickerTitleEdit : context.l10n.sessionPickerTitleAdd,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -255,7 +256,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                 children: [
                   // Date
                   _buildSectionHeader(
-                    label: 'Date',
+                    label: context.l10n.sessionPickerDateLabel,
                     icon: Icons.calendar_month,
                     iconBg: const Color(0xFFEFF6FF),
                     iconColor: const Color(0xFF135BEC),
@@ -286,7 +287,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
                   // Start time
                   _buildSectionHeader(
-                    label: 'Start Time',
+                    label: context.l10n.sessionPickerStartTimeLabel,
                     icon: Icons.access_time,
                     iconBg: const Color(0xFFFFF3E0),
                     iconColor: const Color(0xFFEA6C0A),
@@ -312,7 +313,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       children: [
                         _buildStepper(
                           isDark: isDark,
-                          label: 'Hours',
+                          label: context.l10n.sessionPickerHours,
                           value: selectedHour,
                           max: 23,
                           onChanged: (v) => setState(() {
@@ -333,7 +334,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                         ),
                         _buildStepper(
                           isDark: isDark,
-                          label: 'Minutes',
+                          label: context.l10n.sessionPickerMinutes,
                           value: selectedMinute,
                           max: 59,
                           onChanged: (v) => setState(() {
@@ -365,7 +366,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   const SizedBox(height: 24),
                   // Notes
                   _buildSectionHeader(
-                    label: 'Notes (Optional)',
+                    label: context.l10n.sessionPickerNotesLabel,
                     icon: Icons.edit_note,
                     iconBg: const Color(0xFFF5F3FF),
                     iconColor: const Color(0xFF7C3AED),
@@ -393,7 +394,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                         color: textColor,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'What will you study?',
+                        hintText: context.l10n.sessionPickerNotesHint,
                         hintStyle: TextStyle(color: subtleText),
                         filled: false,
                         contentPadding: const EdgeInsets.all(16),
@@ -404,7 +405,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   const SizedBox(height: 24),
                   // Duration
                   _buildSectionHeader(
-                    label: 'Duration',
+                    label: context.l10n.sessionPickerDurationLabel,
                     icon: Icons.bolt,
                     iconBg: const Color(0xFFECFDF5),
                     iconColor: const Color(0xFF059669),
@@ -454,7 +455,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       onPressed: _addSession,
                       icon: Icon(isEditing ? Icons.check : Icons.add, size: 18),
                       label: Text(
-                        isEditing ? 'Save Changes' : 'Add Session',
+                        isEditing ? context.l10n.sessionPickerSaveEditButton : context.l10n.sessionPickerSaveButton,
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,

@@ -3,6 +3,7 @@ import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
+import '../../../utils/l10n_extension.dart';
 
 class GoalInfoCard extends StatelessWidget {
   final Goal goal;
@@ -50,7 +51,7 @@ class GoalInfoCard extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              'GOAL INFO',
+              context.l10n.goalInfoCardLabel,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -91,7 +92,7 @@ class GoalInfoCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${goal.subject} • ${GoalTypeHelper.getLabel(goal.type)}',
+                        '${goal.subject} • ${GoalTypeHelper.getLocalizedLabel(context, goal.type)}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,

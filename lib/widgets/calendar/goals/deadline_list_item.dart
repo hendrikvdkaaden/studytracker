@@ -3,6 +3,7 @@ import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
+import '../../../utils/l10n_extension.dart';
 import '../grid/calendar_day_cell.dart';
 
 class DeadlineListItem extends StatelessWidget {
@@ -44,12 +45,13 @@ class DeadlineListItem extends StatelessWidget {
     }
   }
 
-  String _getSubtitle() {
+  String _getSubtitle(BuildContext context) {
+    final l10n = context.l10n;
     if (goal.isCompleted) {
-      return '${goal.subject} - Completed';
+      return '${goal.subject} - ${l10n.deadlineStatusCompleted}';
     } else if (goal.isOverdue()) {
       final daysOverdue = goal.daysUntilDeadline().abs();
-      return '${goal.subject} - Overdue ($daysOverdue day${daysOverdue == 1 ? '' : 's'})';
+      return '${goal.subject} - ${l10n.deadlineStatusDaysOverdue(daysOverdue)}';
     } else {
       // Format time if available
       final hour = goal.date.hour;
@@ -64,6 +66,7 @@ class DeadlineListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final status = _getGoalStatus();
+    final subtitle = _getSubtitle(context);
     final subjectColor = SettingsService.colorForSubject(goal.subject);
 
     return InkWell(
@@ -127,7 +130,7 @@ class DeadlineListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    _getSubtitle(),
+                    subtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: status == GoalStatus.overdue

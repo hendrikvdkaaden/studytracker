@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
+import 'l10n_extension.dart';
 
 class DifficultyHelper {
   static String getLabel(Difficulty difficulty) {
@@ -38,6 +39,20 @@ class DifficultyHelper {
         return const Color(0xFFEF4444);
       case Difficulty.veryHard:
         return const Color(0xFF7C3AED);
+    }
+  }
+
+  static String getLocalizedLabel(BuildContext context, Difficulty difficulty) {
+    final l10n = context.l10n;
+    switch (difficulty) {
+      case Difficulty.easy:
+        return l10n.difficultyEasy;
+      case Difficulty.medium:
+        return l10n.difficultyMedium;
+      case Difficulty.hard:
+        return l10n.difficultyHard;
+      case Difficulty.veryHard:
+        return l10n.difficultyVeryHard;
     }
   }
 }

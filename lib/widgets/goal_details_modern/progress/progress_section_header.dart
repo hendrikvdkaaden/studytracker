@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/l10n_extension.dart';
 
 class ProgressSectionHeader extends StatelessWidget {
   final VoidCallback onEdit;
@@ -34,7 +35,7 @@ class ProgressSectionHeader extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            'PROGRESS',
+            context.l10n.goalInfoProgressLabel,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -70,7 +71,7 @@ class ProgressSectionHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  'Edit',
+                  context.l10n.btnEdit,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/format_helpers.dart';
+import '../../../utils/l10n_extension.dart';
 
 class DeadlineCard extends StatelessWidget {
   final Goal goal;
@@ -25,23 +26,24 @@ class DeadlineCard extends StatelessWidget {
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
 
+    final l10n = context.l10n;
     String statusText;
     Color statusColor;
     if (isCompleted) {
-      statusText = 'Completed';
+      statusText = l10n.deadlineStatusCompleted;
       statusColor = AppColors.completed;
     } else if (isOverdue) {
       final days = daysLeft.abs();
-      statusText = '$days day${days == 1 ? '' : 's'} overdue';
+      statusText = l10n.deadlineStatusDaysOverdue(days);
       statusColor = AppColors.overdue;
     } else if (daysLeft == 0) {
-      statusText = 'Today';
+      statusText = l10n.deadlineStatusToday;
       statusColor = AppColors.upcoming;
     } else if (daysLeft == 1) {
-      statusText = 'Tomorrow';
+      statusText = l10n.deadlineStatusTomorrow;
       statusColor = AppColors.upcoming;
     } else {
-      statusText = '$daysLeft days left';
+      statusText = l10n.deadlineStatusDaysLeft(daysLeft);
       statusColor = AppColors.upcoming;
     }
 
@@ -68,7 +70,7 @@ class DeadlineCard extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              'DEADLINE',
+              context.l10n.goalInfoDeadlineLabel,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,

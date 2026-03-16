@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/home/date_selector.dart';
 import '../../widgets/home/home_section_header.dart';
 import '../../widgets/home/deadline_card.dart';
@@ -63,7 +64,7 @@ class HomeTemplate extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No tasks for this day',
+                      context.l10n.homeNoTasksTitle,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -72,7 +73,7 @@ class HomeTemplate extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Select another day or add a new deadline',
+                      context.l10n.homeNoTasksSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -89,7 +90,7 @@ class HomeTemplate extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: HomeSectionHeader(
-                title: 'Deadlines Today',
+                title: context.l10n.homeDeadlinesToday,
                 remainingCount: deadlines.length,
               ),
             ),
@@ -114,7 +115,7 @@ class HomeTemplate extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: HomeSectionHeader(
-                title: 'Study Sessions',
+                title: context.l10n.homeStudySessions,
                 completedCount: completedSessionsCount,
                 totalCount: totalSessions,
               ),

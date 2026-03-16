@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../../utils/l10n_extension.dart';
 
 class EditProgressDialog extends StatefulWidget {
   final int initialTargetTimeMinutes;
@@ -49,7 +50,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
           children: [
             // Header
             Text(
-              'Edit Progress',
+              context.l10n.goalDetailsEditProgressTitle,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -60,7 +61,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
 
             // Target Time Section
             Text(
-              'Target Time',
+              context.l10n.progressEditTargetTime,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -72,7 +73,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
               children: [
                 Expanded(
                   child: _buildTimePicker(
-                    label: 'Hours',
+                    label: context.l10n.progressEditHours,
                     value: _targetHours,
                     max: 100,
                     onChanged: (value) => setState(() => _targetHours = value),
@@ -82,7 +83,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildTimePicker(
-                    label: 'Minutes',
+                    label: context.l10n.progressEditMinutes,
                     value: _targetMinutes,
                     max: 55,
                     step: 5,
@@ -97,7 +98,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
 
             // Time Spent Section
             Text(
-              'Time Spent',
+              context.l10n.progressEditTimeSpent,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -109,7 +110,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
               children: [
                 Expanded(
                   child: _buildTimePicker(
-                    label: 'Hours',
+                    label: context.l10n.progressEditHours,
                     value: _spentHours,
                     max: 100,
                     onChanged: (value) => setState(() => _spentHours = value),
@@ -119,7 +120,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildTimePicker(
-                    label: 'Minutes',
+                    label: context.l10n.progressEditMinutes,
                     value: _spentMinutes,
                     max: 55,
                     step: 5,
@@ -148,7 +149,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: Text(
-                      'Cancel',
+                      context.l10n.btnCancel,
                       style: TextStyle(
                         color: isDark ? Colors.white : const Color(0xFF0D1C1B),
                         fontWeight: FontWeight.w600,
@@ -174,9 +175,9 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.btnSave,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

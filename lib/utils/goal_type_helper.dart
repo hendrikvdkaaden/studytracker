@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
+import 'l10n_extension.dart';
 
 class GoalTypeHelper {
   static IconData getIconForType(GoalType type) {
@@ -41,6 +42,28 @@ class GoalTypeHelper {
         return 'Quiz';
       case GoalType.other:
         return 'Other';
+    }
+  }
+
+  static String getLocalizedLabel(BuildContext context, GoalType type) {
+    final l10n = context.l10n;
+    switch (type) {
+      case GoalType.exam:
+        return l10n.goalTypeExam;
+      case GoalType.test:
+        return l10n.goalTypeTest;
+      case GoalType.assignment:
+        return l10n.goalTypeAssignment;
+      case GoalType.presentation:
+        return l10n.goalTypePresentation;
+      case GoalType.project:
+        return l10n.goalTypeProject;
+      case GoalType.paper:
+        return l10n.goalTypePaper;
+      case GoalType.quiz:
+        return l10n.goalTypeQuiz;
+      case GoalType.other:
+        return l10n.goalTypeOther;
     }
   }
 }

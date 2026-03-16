@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 
 class EditProfileResult {
   final String name;
@@ -110,7 +111,7 @@ class _EditNameDialogState extends State<EditNameDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Edit Name',
+                    context.l10n.editNameTitle,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -120,7 +121,7 @@ class _EditNameDialogState extends State<EditNameDialog> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    "This is how you'll appear to your study group.",
+                    context.l10n.editNameSubtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: subtitleColor,
@@ -132,12 +133,12 @@ class _EditNameDialogState extends State<EditNameDialog> {
             ),
 
             // Display Name field
-            _FieldLabel(label: 'DISPLAY NAME', color: labelColor),
+            _FieldLabel(label: context.l10n.editNameDisplayLabel, color: labelColor),
             const SizedBox(height: 8),
             _SheetTextField(
               controller: _nameController,
               focusNode: _nameFocusNode,
-              hintText: 'Enter your name',
+              hintText: context.l10n.editNameDisplayHint,
               fieldFill: fieldFill,
               isDark: isDark,
               textInputAction: TextInputAction.next,
@@ -147,12 +148,12 @@ class _EditNameDialogState extends State<EditNameDialog> {
             const SizedBox(height: 24),
 
             // School Name field
-            _FieldLabel(label: 'SCHOOL NAME', color: labelColor),
+            _FieldLabel(label: context.l10n.editNameSchoolLabel, color: labelColor),
             const SizedBox(height: 8),
             _SheetTextField(
               controller: _schoolController,
               focusNode: _schoolFocusNode,
-              hintText: 'Enter school name',
+              hintText: context.l10n.editNameSchoolHint,
               fieldFill: fieldFill,
               isDark: isDark,
               textInputAction: TextInputAction.done,
@@ -179,9 +180,9 @@ class _EditNameDialogState extends State<EditNameDialog> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.editNameSaveButton,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -202,9 +203,9 @@ class _EditNameDialogState extends State<EditNameDialog> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      context.l10n.btnCancel,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ),

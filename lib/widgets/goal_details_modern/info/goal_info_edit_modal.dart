@@ -4,6 +4,7 @@ import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/difficulty_helper.dart';
 import '../../../utils/goal_type_helper.dart';
+import '../../../utils/l10n_extension.dart';
 import '../../common/subject_selector_field.dart';
 
 Future<Goal?> showGoalInfoEditModal(
@@ -56,6 +57,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
   }
 
   void _save() {
+    final l10n = context.l10n;
     final title = _titleController.text.trim();
     final subject = _subjects.isNotEmpty
         ? (_selectedSubject ?? '')
@@ -63,13 +65,13 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
+        SnackBar(content: Text(l10n.goalInfoEditValidateTitle)),
       );
       return;
     }
     if (subject.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a subject')),
+        SnackBar(content: Text(l10n.goalInfoEditValidateSubject)),
       );
       return;
     }
@@ -126,7 +128,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
             child: Row(
               children: [
                 Text(
-                  'Edit Deadline Info',
+                  context.l10n.goalInfoEditModalTitle,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -137,7 +139,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    'Cancel',
+                    context.l10n.btnCancel,
                     style: TextStyle(color: subTextColor),
                   ),
                 ),
@@ -154,7 +156,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                 children: [
                   // Title field
                   Text(
-                    'Title',
+                    context.l10n.goalInfoEditTitleLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -166,7 +168,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                     controller: _titleController,
                     style: TextStyle(color: textColor),
                     decoration: InputDecoration(
-                      hintText: 'Deadline title',
+                      hintText: context.l10n.goalInfoEditTitleHint,
                       hintStyle: TextStyle(color: subTextColor),
                       filled: true,
                       fillColor: fieldFill,
@@ -205,7 +207,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
                   // Goal type
                   Text(
-                    'Deadline Type',
+                    context.l10n.goalInfoEditTypeLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -250,7 +252,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  GoalTypeHelper.getLabel(type),
+                                  GoalTypeHelper.getLocalizedLabel(context, type),
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
@@ -270,7 +272,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
                   // Difficulty
                   Text(
-                    'Difficulty',
+                    context.l10n.goalInfoEditDifficultyLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -304,7 +306,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                                 height: 40,
                                 child: Center(
                                   child: Text(
-                                    DifficultyHelper.getLabel(diff),
+                                    DifficultyHelper.getLocalizedLabel(context, diff),
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -336,9 +338,9 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(
+                      child: Text(
+                        context.l10n.goalInfoEditSaveButton,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),

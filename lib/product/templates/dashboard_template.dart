@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/deadlines/cards/overdue_goal_card.dart';
 import '../../widgets/deadlines/cards/upcoming_goal_card.dart';
 import '../../widgets/deadlines/cards/completed_goal_card.dart';
@@ -62,7 +63,7 @@ class DashboardTemplate extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Overdue',
+                      context.l10n.dashboardSectionOverdue,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -75,7 +76,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 if (overdueGoals.length > 2)
                   Text(
-                    'SEE ALL',
+                    context.l10n.dashboardSeeAll,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -120,7 +121,7 @@ class DashboardTemplate extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Upcoming',
+                      context.l10n.dashboardSectionUpcoming,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -131,7 +132,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 if (upcomingGoals.length > 3)
                   Text(
-                    'SEE ALL',
+                    context.l10n.dashboardSeeAll,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -174,7 +175,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Completed',
+                  context.l10n.dashboardSectionCompleted,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -219,7 +220,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'No deadlines yet',
+                  context.l10n.dashboardEmptyTitle,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -228,7 +229,7 @@ class DashboardTemplate extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tap + to create your first deadline',
+                  context.l10n.dashboardEmptySubtitle,
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.grey[700] : Colors.grey[400],

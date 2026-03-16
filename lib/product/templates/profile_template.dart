@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/profile/subjects_section.dart';
 
 class ProfileTemplate extends StatelessWidget {
@@ -49,32 +50,21 @@ class ProfileTemplate extends StatelessWidget {
     return trimmed[0].toUpperCase();
   }
 
-  String get _themeModeLabel {
+  String _themeModeLabel(BuildContext context) {
+    final l10n = context.l10n;
     switch (themeModeIndex) {
       case 1:
-        return 'Light';
+        return l10n.profileThemeLight;
       case 2:
-        return 'Dark';
+        return l10n.profileThemeDark;
       default:
-        return 'System';
+        return l10n.profileThemeSystem;
     }
-  }
-
-  String _formatSessionReminder(int minutes) {
-    if (minutes < 60) return '$minutes min before';
-    final h = minutes ~/ 60;
-    final m = minutes % 60;
-    if (m == 0) return '${h}h before';
-    return '${h}h ${m}m before';
-  }
-
-  String _formatDeadlineReminder(int days) {
-    if (days == 1) return '1 day before';
-    return '$days days before';
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
@@ -85,7 +75,7 @@ class ProfileTemplate extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Subjects Section
-        _buildSectionLabel('SUBJECTS', isDark),
+        _buildSectionLabel(l10n.profileSectionSubjects, isDark),
         const SizedBox(height: 8),
         SubjectsSection(
           subjects: subjects,
@@ -95,7 +85,7 @@ class ProfileTemplate extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Notifications Section
-        _buildSectionLabel('NOTIFICATIONS', isDark),
+        _buildSectionLabel(l10n.profileSectionNotifications, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
@@ -106,8 +96,8 @@ class ProfileTemplate extends StatelessWidget {
               isDark,
               icon: Icons.notifications_outlined,
               iconColor: AppColors.primary,
-              label: 'Session reminder',
-              value: _formatSessionReminder(sessionReminderMinutes),
+              label: l10n.profileSessionReminderLabel,
+              value: l10n.profileSessionReminderFormat(sessionReminderMinutes),
               onTap: onSessionReminderTap,
             ),
             _buildDivider(isDark),
@@ -116,8 +106,8 @@ class ProfileTemplate extends StatelessWidget {
               isDark,
               icon: Icons.event_note_outlined,
               iconColor: const Color(0xFF8B5CF6),
-              label: 'Deadline reminder',
-              value: _formatDeadlineReminder(deadlineReminderDays),
+              label: l10n.profileDeadlineReminderLabel,
+              value: l10n.profileDeadlineReminderFormat(deadlineReminderDays),
               onTap: onDeadlineReminderTap,
             ),
           ],
@@ -125,7 +115,7 @@ class ProfileTemplate extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Appearance Section
-        _buildSectionLabel('APPEARANCE', isDark),
+        _buildSectionLabel(l10n.profileSectionAppearance, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
@@ -136,8 +126,8 @@ class ProfileTemplate extends StatelessWidget {
               isDark,
               icon: Icons.palette_outlined,
               iconColor: const Color(0xFF10B981),
-              label: 'Theme',
-              value: _themeModeLabel,
+              label: l10n.profileThemeLabel,
+              value: _themeModeLabel(context),
               onTap: onThemeTap,
             ),
           ],
@@ -145,7 +135,7 @@ class ProfileTemplate extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Data Section
-        _buildSectionLabel('DATA', isDark),
+        _buildSectionLabel(l10n.profileSectionData, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
@@ -156,7 +146,7 @@ class ProfileTemplate extends StatelessWidget {
               isDark,
               icon: Icons.timer_off_outlined,
               iconColor: const Color(0xFFEF4444),
-              label: 'Delete all study sessions',
+              label: l10n.profileDeleteSessionsLabel,
               labelColor: const Color(0xFFEF4444),
               onTap: onDeleteSessions,
               showChevron: false,
@@ -167,7 +157,7 @@ class ProfileTemplate extends StatelessWidget {
               isDark,
               icon: Icons.delete_outline,
               iconColor: const Color(0xFFEF4444),
-              label: 'Delete everything',
+              label: l10n.profileDeleteEverythingLabel,
               labelColor: const Color(0xFFEF4444),
               onTap: onDeleteEverything,
               showChevron: false,
@@ -179,7 +169,7 @@ class ProfileTemplate extends StatelessWidget {
         // App version
         Center(
           child: Text(
-            'StudyTracker $appVersion',
+            l10n.profileVersionLabel(appVersion),
             style: TextStyle(
               fontSize: 12,
               color: isDark ? Colors.grey[600] : Colors.grey[400],
@@ -225,7 +215,7 @@ class ProfileTemplate extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  userName.isEmpty ? 'Add your name' : userName,
+                  userName.isEmpty ? context.l10n.profileNamePlaceholder : userName,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -238,7 +228,7 @@ class ProfileTemplate extends StatelessWidget {
                 GestureDetector(
                   onTap: onEditName,
                   child: Text(
-                    schoolName.isEmpty ? 'Tap to set school name' : schoolName,
+                    schoolName.isEmpty ? context.l10n.profileSchoolNamePlaceholder : schoolName,
                     style: TextStyle(
                       fontSize: 13,
                       color: isDark ? Colors.grey[500] : Colors.grey[400],

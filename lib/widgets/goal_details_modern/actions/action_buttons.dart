@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/l10n_extension.dart';
 
 class ActionButtons extends StatelessWidget {
   final VoidCallback onMarkComplete;
@@ -20,9 +21,9 @@ class ActionButtons extends StatelessWidget {
         child: OutlinedButton.icon(
           onPressed: onMarkComplete,
           icon: const Icon(Icons.check_circle, size: 18),
-          label: const Text(
-            'Mark as Incomplete',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          label: Text(
+            context.l10n.goalDetailsMarkIncomplete,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.completed,
@@ -54,9 +55,9 @@ class ActionButtons extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onMarkComplete,
         icon: const Icon(Icons.check_circle_outline, size: 18),
-        label: const Text(
-          'Mark as Completed',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        label: Text(
+          context.l10n.goalDetailsMarkComplete,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,

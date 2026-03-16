@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/day_status.dart';
+import '../../../utils/l10n_extension.dart';
 import 'day_status_circle.dart';
 
 class StudyConsistencyCard extends StatelessWidget {
@@ -23,31 +24,31 @@ class StudyConsistencyCard extends StatelessWidget {
   int get _completedDaysCount =>
       weeklyConsistency.values.where((s) => s == DayStatus.completed).length;
 
-  ({String title, String subtitle}) get _statusText {
+  ({String title, String subtitle}) _buildStatusText(BuildContext context) {
+    final l10n = context.l10n;
     if (!_hasAnySessions) {
       return (
-        title: 'Start Your Week Strong',
-        subtitle: 'Plan some study sessions to track your week.',
+        title: l10n.consistencyNoSessionsTitle,
+        subtitle: l10n.consistencyNoSessionsSubtitle,
       );
     }
     if (missedSessionsCount > 0) {
       return (
-        title:
-            '$missedSessionsCount Session${missedSessionsCount != 1 ? 's' : ''} Missed',
-        subtitle: "Don't give up! You can still crush this week.",
+        title: l10n.consistencyMissedTitle(missedSessionsCount),
+        subtitle: l10n.consistencyMissedSubtitle,
       );
     }
     final days = _completedDaysCount;
     return (
-      title: '$days Day${days != 1 ? 's' : ''} No Session Missed',
-      subtitle: 'Great job! Keep up the consistency.',
+      title: l10n.consistencyDaysNoMissed(days),
+      subtitle: l10n.consistencyDaysNoMissedSubtitle,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final status = _statusText;
+    final status = _buildStatusText(context);
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -76,7 +77,7 @@ class StudyConsistencyCard extends StatelessWidget {
                   Icon(Icons.event_busy, color: Colors.amber.shade700, size: 16),
                   const SizedBox(width: 8),
                   Text(
-                    'STUDY CONSISTENCY',
+                    context.l10n.consistencyTitle,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,

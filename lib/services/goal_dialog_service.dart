@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import '../utils/l10n_extension.dart';
 
 /// Service for displaying goal-related dialogs
 class GoalDialogService {
   /// Shows a confirmation dialog for deleting a goal
   static Future<bool> showDeleteConfirmation(BuildContext context) async {
+    final l10n = context.l10n;
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Goal'),
-        content: const Text('Are you sure you want to delete this goal?'),
+        title: Text(l10n.goalDialogDeleteTitle),
+        content: Text(l10n.goalDialogDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.btnCancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(l10n.btnDelete),
           ),
         ],
       ),

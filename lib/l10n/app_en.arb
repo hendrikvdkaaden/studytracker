@@ -1,0 +1,303 @@
+{
+  "@@locale": "en",
+
+  "navHome": "Home",
+  "navCalendar": "Calendar",
+  "navDeadlines": "Goals",
+  "navProfile": "Profile",
+
+  "btnSave": "Save",
+  "btnCancel": "Cancel",
+  "btnDelete": "Delete",
+  "btnEdit": "Edit",
+  "btnAdd": "Add",
+  "btnDone": "Done",
+  "btnConfirm": "Confirm",
+  "btnClose": "Close",
+  "commonLoading": "Loading...",
+  "commonError": "Something went wrong",
+  "commonNoData": "No data available",
+
+  "addGoalTitle": "Add Goal",
+  "editGoalTitle": "Edit Goal",
+  "addGoalSubjectLabel": "Subject",
+  "addGoalSubjectHint": "e.g. Mathematics",
+  "addGoalTitleLabel": "Title",
+  "addGoalTitleHint": "e.g. Chapter 5 Exam",
+  "addGoalDeadlineLabel": "Deadline",
+  "addGoalTypeLabel": "Goal Type",
+  "addGoalDifficultyLabel": "Difficulty",
+  "addGoalStudyTimeLabel": "Target Study Time",
+  "addGoalStudyTimePlaceholder": "Set study time",
+  "addGoalSessionsLabel": "Planned Sessions",
+  "addGoalSaveButton": "Save Goal",
+  "addGoalValidateSubject": "Please enter a subject",
+  "addGoalValidateTitle": "Please enter a title",
+  "addGoalValidateDeadline": "Please select a deadline",
+  "addGoalValidateType": "Please select a goal type",
+  "addGoalValidateDifficulty": "Please select a difficulty",
+  "addGoalValidateStudyTime": "Please set a target study time",
+  "addGoalSessionCount": "{count, plural, =0{No sessions} =1{1 session} other{{count} sessions}}",
+  "@addGoalSessionCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addGoalAutoPlanButton": "Plan for me",
+  "addGoalAddSessionButton": "Add study session",
+  "addGoalAddSessionShort": "Add session",
+  "addGoalSaveButtonLabel": "Add Deadline",
+
+  "sessionPickerTitleAdd": "Plan Study Session",
+  "sessionPickerTitleEdit": "Edit Session",
+  "sessionPickerDateLabel": "Date",
+  "sessionPickerStartTimeLabel": "Start Time",
+  "sessionPickerDurationLabel": "Duration",
+  "sessionPickerNotesLabel": "Notes (Optional)",
+  "sessionPickerNotesHint": "What will you study?",
+  "sessionPickerSaveButton": "Add Session",
+  "sessionPickerSaveEditButton": "Save Changes",
+  "sessionPickerOverlapError": "This session overlaps with an existing session.",
+  "sessionPickerHours": "Hours",
+  "sessionPickerMinutes": "Minutes",
+
+  "autoPlanTitle": "Plan Sessions",
+  "autoPlanTotalStudyTimeLabel": "Total Study Time",
+  "autoPlanStudyDaysLabel": "Study Days",
+  "autoPlanStudyWindowLabel": "Study Window",
+  "autoPlanSessionDurationLabel": "Session Duration",
+  "autoPlanConfirmButton": "Plan Sessions",
+  "autoPlanErrorNoDays": "Select at least one study day.",
+  "autoPlanErrorNoTime": "Set a total study time.",
+  "autoPlanErrorNoSessionDuration": "Set a session duration.",
+  "autoPlanErrorWindowNegative": "End time must be after start time.",
+  "autoPlanErrorSessionTooLong": "Session duration does not fit within the study window.",
+
+  "timerDialogLeaveTitle": "Exit Timer?",
+  "timerDialogLeaveBody": "Your progress will be saved. You can continue later.",
+  "timerDialogLeaveConfirm": "Exit",
+  "timerDialogLeaveCancel": "Cancel",
+  "timerDialogCompleteTitle": "Complete Session?",
+  "timerDialogCompleteBody": "You studied for {time}. Save this session?",
+  "@timerDialogCompleteBody": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "timerDialogCompleteConfirm": "Save",
+  "timerDialogCompleteCancel": "Cancel",
+  "timerDialogMarkCompleteTitle": "Mark as Complete?",
+  "timerDialogMarkCompleteBody": "Mark this session as fully completed? The full session duration will be logged.",
+  "timerDialogMarkCompleteConfirm": "Complete",
+  "timerSnackSessionSaved": "Session saved! {time} logged.",
+  "@timerSnackSessionSaved": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "timerSnackSessionCompleted": "Session completed!",
+
+  "goalDetailsSectionInfo": "Goal Info",
+  "goalDetailsSectionStudySessions": "Study Sessions",
+  "goalDetailsSectionProgress": "Progress",
+  "goalDetailsNoSessions": "No sessions planned yet",
+  "goalDetailsAddSession": "Add study session",
+  "goalDetailsAddSessionShort": "Add session",
+  "goalDetailsMarkComplete": "Mark as Completed",
+  "goalDetailsMarkIncomplete": "Mark as Incomplete",
+  "goalDetailsDeleteGoal": "Delete Goal",
+  "goalDetailsDeleteConfirmTitle": "Delete Goal",
+  "goalDetailsDeleteConfirmBody": "Are you sure you want to delete this goal?",
+  "goalDetailsProgressLabel": "Progress",
+  "goalDetailsEditProgressTitle": "Edit Progress",
+  "goalDetailsTargetTimeLabel": "Target Time",
+  "goalDetailsTimeSpentLabel": "Time Spent",
+  "goalDetailsHideCompleted": "Hide completed",
+  "goalDetailsShowCompleted": "Show completed",
+  "goalDetailsAllSessionsCompleted": "All sessions are completed",
+  "goalDetailsShowCompletedHint": "Tap \"Show completed\" above to view them",
+  "goalDetailsSessionCount": "{count, plural, =0{No sessions} =1{1 session} other{{count} sessions}}",
+  "@goalDetailsSessionCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "goalInfoCardLabel": "GOAL INFO",
+  "goalInfoDeadlineLabel": "DEADLINE",
+  "goalInfoProgressLabel": "PROGRESS",
+  "goalInfoSessionsLabel": "STUDY SESSIONS",
+  "goalInfoEditModalTitle": "Edit Deadline Info",
+  "goalInfoEditTitleLabel": "Title",
+  "goalInfoEditTitleHint": "Deadline title",
+  "goalInfoEditTypeLabel": "Deadline Type",
+  "goalInfoEditDifficultyLabel": "Difficulty",
+  "goalInfoEditSaveButton": "Save Changes",
+  "goalInfoEditValidateTitle": "Please enter a title",
+  "goalInfoEditValidateSubject": "Please select a subject",
+
+  "deadlineStatusDaysLeft": "{days, plural, =1{1 day left} other{{days} days left}}",
+  "@deadlineStatusDaysLeft": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "deadlineStatusDaysOverdue": "{days, plural, =1{1 day overdue} other{{days} days overdue}}",
+  "@deadlineStatusDaysOverdue": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "deadlineStatusToday": "Today",
+  "deadlineStatusTomorrow": "Tomorrow",
+  "deadlineStatusCompleted": "Completed",
+
+  "dashboardTitle": "Goals",
+  "dashboardSectionOverdue": "Overdue",
+  "dashboardSectionUpcoming": "Upcoming",
+  "dashboardSectionCompleted": "Completed",
+  "dashboardEmptyTitle": "No deadlines yet",
+  "dashboardEmptySubtitle": "Tap + to create your first deadline",
+  "dashboardSeeAll": "SEE ALL",
+
+  "consistencyTitle": "STUDY CONSISTENCY",
+  "consistencyNoSessionsTitle": "Start Your Week Strong",
+  "consistencyNoSessionsSubtitle": "Plan some study sessions to track your week.",
+  "consistencyMissedTitle": "{count, plural, =1{1 Session Missed} other{{count} Sessions Missed}}",
+  "@consistencyMissedTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "consistencyMissedSubtitle": "Don't give up! You can still crush this week.",
+  "consistencyDaysNoMissed": "{days, plural, =1{1 Day No Session Missed} other{{days} Days No Session Missed}}",
+  "@consistencyDaysNoMissed": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "consistencyDaysNoMissedSubtitle": "Great job! Keep up the consistency.",
+
+  "profileSectionSubjects": "SUBJECTS",
+  "profileSectionNotifications": "NOTIFICATIONS",
+  "profileSectionAppearance": "APPEARANCE",
+  "profileSectionData": "DATA",
+  "profileNamePlaceholder": "Add your name",
+  "profileSchoolNamePlaceholder": "Tap to set school name",
+  "profileSessionReminderLabel": "Session reminder",
+  "profileDeadlineReminderLabel": "Deadline reminder",
+  "profileThemeLabel": "Theme",
+  "profileThemeSystem": "System",
+  "profileThemeLight": "Light",
+  "profileThemeDark": "Dark",
+  "profileDeleteSessionsLabel": "Delete all study sessions",
+  "profileDeleteEverythingLabel": "Delete everything",
+  "profileVersionLabel": "StudyTracker {version}",
+  "@profileVersionLabel": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "profileSessionReminderFormat": "{minutes, plural, =0{Disabled} =1{1 minute before} other{{minutes} minutes before}}",
+  "@profileSessionReminderFormat": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "profileDeadlineReminderFormat": "{days, plural, =1{1 day before} other{{days} days before}}",
+  "@profileDeadlineReminderFormat": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "profilePickerSessionTitle": "Session reminder",
+  "profilePickerSessionSubtitle": "How long before a session should we remind you?",
+  "profilePickerDeadlineTitle": "Deadline reminder",
+  "profilePickerDeadlineSubtitle": "How many days before a deadline should we remind you?",
+  "profilePickerThemeTitle": "Appearance",
+  "profilePickerSessionOptionFormat": "{minutes, plural, other{{minutes} minutes before}}",
+  "@profilePickerSessionOptionFormat": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "profilePickerDeadlineOptionFormat": "{days, plural, =1{1 day before} other{{days} days before}}",
+  "@profilePickerDeadlineOptionFormat": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "profileDeleteSessionsTitle": "Delete all study sessions?",
+  "profileDeleteSessionsBody": "This will permanently delete all your study sessions. Your deadlines will remain intact.",
+  "profileDeleteSessionsConfirm": "Delete sessions",
+  "profileDeleteEverythingTitle": "Delete everything?",
+  "profileDeleteEverythingBody": "This will permanently delete all your deadlines and study sessions. This action cannot be undone.",
+  "profileDeleteEverythingConfirm": "Delete everything",
+  "profileDeleteSessionsSnack": "All study sessions deleted.",
+  "profileDeleteEverythingSnack": "All data deleted.",
+  "profileRemoveSubjectTitle": "Remove subject?",
+  "profileRemoveSubjectBody": "\"{name}\" will be removed from your subjects list. Deadlines using this subject are not affected.",
+  "@profileRemoveSubjectBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileRemoveSubjectConfirm": "Remove",
+
+  "addSubjectTitle": "Add Subject",
+  "addSubjectSubtitle": "Choose a name and color",
+  "addSubjectNameLabel": "SUBJECT NAME",
+  "addSubjectColorLabel": "THEME COLOR",
+  "addSubjectHint": "e.g. Physics",
+  "addSubjectSaveButton": "Create",
+  "addSubjectErrorEmpty": "Please enter a subject name",
+
+  "editNameTitle": "Edit Name",
+  "editNameSubtitle": "This is how you'll appear to your study group.",
+  "editNameDisplayLabel": "DISPLAY NAME",
+  "editNameSchoolLabel": "SCHOOL NAME",
+  "editNameDisplayHint": "Enter your name",
+  "editNameSchoolHint": "Enter school name",
+  "editNameSaveButton": "Update",
+
+  "goalDialogDeleteTitle": "Delete Goal",
+  "goalDialogDeleteBody": "Are you sure you want to delete this goal?",
+
+  "homeNoTasksTitle": "No tasks for this day",
+  "homeNoTasksSubtitle": "Select another day or add a new deadline",
+  "homeDeadlinesToday": "Deadlines Today",
+  "homeStudySessions": "Study Sessions",
+
+  "calendarSectionGoals": "Goals",
+  "calendarSectionSessions": "Sessions",
+  "calendarNoGoals": "No goals on this day",
+  "calendarNoSessions": "No sessions on this day",
+  "calendarTodayButton": "Today",
+
+  "goalTypeExam": "Exam",
+  "goalTypeTest": "Test",
+  "goalTypeAssignment": "Assignment",
+  "goalTypePresentation": "Presentation",
+  "goalTypeProject": "Project",
+  "goalTypePaper": "Paper",
+  "goalTypeQuiz": "Quiz",
+  "goalTypeOther": "Other",
+
+  "difficultyEasy": "Easy",
+  "difficultyMedium": "Medium",
+  "difficultyHard": "Hard",
+  "difficultyVeryHard": "Very Hard",
+
+  "plannedSessionDuration": "{duration} min",
+  "@plannedSessionDuration": {
+    "placeholders": {
+      "duration": { "type": "int" }
+    }
+  },
+  "plannedSessionNoTime": "No time set",
+
+  "progressEditTargetTime": "Target Time",
+  "progressEditTimeSpent": "Time Spent",
+  "progressEditHours": "HOURS",
+  "progressEditMinutes": "MINUTES"
+}

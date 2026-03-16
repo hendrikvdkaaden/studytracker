@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'l10n/app_localizations.dart';
 import 'product/navigation/home_page.dart';
 import 'services/hive_service.dart';
 import 'services/notification_service.dart';
@@ -43,6 +44,8 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             fontFamily: 'Roboto',
           ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           themeMode: themeMode,
           home: const HomePage(),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../../theme/app_colors.dart';
 
 class StudyTimePickerModal extends StatefulWidget {
   final int initialHours;
@@ -35,7 +36,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        color: isDark ? AppColors.sectionDarkBg : Colors.white,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -49,7 +50,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                  color: isDark ? AppColors.dividerDark : AppColors.lightBorder,
                 ),
               ),
             ),
@@ -61,7 +62,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                   child: const Text(
                     'Cancel',
                     style: TextStyle(
-                      color: Color(0xFF135BEC),
+                      color: AppColors.primary,
                       fontSize: 16,
                     ),
                   ),
@@ -81,7 +82,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                   child: const Text(
                     'Done',
                     style: TextStyle(
-                      color: Color(0xFF135BEC),
+                      color: AppColors.primary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -140,7 +141,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                 Container(
                   width: 1,
                   height: 200,
-                  color: isDark ? const Color(0xFF4B5563) : const Color(0xFFD1D5DB),
+                  color: isDark ? AppColors.dividerDark : AppColors.dividerLight,
                 ),
                 // Minutes Picker
                 Expanded(

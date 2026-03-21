@@ -188,8 +188,8 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightCard;
     final sectionBg =
-        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
+        isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg;
+    final textColor = isDark ? Colors.white : AppColors.darkText;
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
     final bottomInset = MediaQuery.of(context).padding.bottom;
     final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
@@ -258,8 +258,8 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   _buildSectionHeader(
                     label: context.l10n.sessionPickerDateLabel,
                     icon: Icons.calendar_month,
-                    iconBg: const Color(0xFFEFF6FF),
-                    iconColor: const Color(0xFF135BEC),
+                    iconBg: AppColors.iconBgBlue,
+                    iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     isDark: isDark,
                   ),
                   const SizedBox(height: 12),
@@ -289,8 +289,8 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   _buildSectionHeader(
                     label: context.l10n.sessionPickerStartTimeLabel,
                     icon: Icons.access_time,
-                    iconBg: const Color(0xFFFFF3E0),
-                    iconColor: const Color(0xFFEA6C0A),
+                    iconBg: AppColors.iconBgOrange,
+                    iconColor: AppColors.iconOrange,
                     isDark: isDark,
                   ),
                   const SizedBox(height: 12),
@@ -304,7 +304,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                             ? AppColors.overdue
                             : (isDark
                                 ? Colors.white.withValues(alpha: 0.06)
-                                : const Color(0xFFE5E7EB)),
+                                : AppColors.lightBorder),
                         width: _overlapError != null ? 1.5 : 1,
                       ),
                     ),
@@ -368,8 +368,8 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   _buildSectionHeader(
                     label: context.l10n.sessionPickerNotesLabel,
                     icon: Icons.edit_note,
-                    iconBg: const Color(0xFFF5F3FF),
-                    iconColor: const Color(0xFF7C3AED),
+                    iconBg: AppColors.iconBgPurple,
+                    iconColor: AppColors.iconPurple,
                     isDark: isDark,
                   ),
                   const SizedBox(height: 12),
@@ -381,7 +381,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       border: Border.all(
                         color: isDark
                             ? Colors.white.withValues(alpha: 0.06)
-                            : const Color(0xFFE5E7EB),
+                            : AppColors.lightBorder,
                       ),
                     ),
                     child: TextField(
@@ -407,8 +407,8 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   _buildSectionHeader(
                     label: context.l10n.sessionPickerDurationLabel,
                     icon: Icons.bolt,
-                    iconBg: const Color(0xFFECFDF5),
-                    iconColor: const Color(0xFF059669),
+                    iconBg: AppColors.iconBgGreen,
+                    iconColor: AppColors.iconGreen,
                     isDark: isDark,
                   ),
                   const SizedBox(height: 12),
@@ -438,7 +438,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF135BEC), Color(0xFF4489FF)],
+                        colors: [AppColors.primary, AppColors.primaryLight],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -522,7 +522,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     required ValueChanged<int> onChanged,
   }) {
     final cardColor = isDark ? AppColors.darkCard : Colors.white;
-    final valueColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final valueColor = isDark ? Colors.white : AppColors.darkText;
 
     return Column(
       children: [
@@ -631,7 +631,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                 ? AppColors.overdue
                 : (isDark
                     ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB)),
+                    : AppColors.lightBorder),
             width: hasError ? 1.5 : 1,
           ),
         ),

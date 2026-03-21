@@ -5,46 +5,75 @@ class AppColors {
   AppColors._(); // Private constructor to prevent instantiation
 
   // Primary Colors
-  static const Color primary = Color(0xFF135BEC);
+  static const Color primary = Color(0xFF0F766E);      // Teal Dark
+  static const Color primaryLight = Color(0xFF14B8A6); // Teal Light
+  static const Color primaryVeryLight = Color(0xFF99F6E4); // Teal Very Light
 
   // Calendar/Plan Screen Colors
-  static const Color calendarAccent = Color(0xFF0DF2DF);
-  static const Color calendarDarkBackground = Color(0xFF102221);
-  static const Color calendarLightBackground = Color(0xFFF5F8F8);
-  static const Color calendarDarkCard = Color(0xFF1A2F2E);
+  static const Color calendarAccent = Color(0xFF14B8A6);
+  static const Color calendarDarkBackground = Color(0xFF0D2626);
+  static const Color calendarLightBackground = Color(0xFFF0FDFA);
+  static const Color calendarDarkCard = Color(0xFF134E4A);
 
   // Background Colors
-  static const Color darkBackground = Color(0xFF101622);
-  static const Color lightBackground = Color(0xFFF6F6F8);
+  static const Color darkBackground = Color(0xFF0F172A);
+  static const Color lightBackground = Color(0xFFF8FAFC);
 
   // Status Colors
-  static const Color overdue = Color(0xFFFF5252);
-  static const Color upcoming = Color(0xFF499C95);
-  static const Color completed = Color(0xFF078830);
-  static const Color success = Colors.green;
-  static const Color error = Colors.red;
+  static const Color overdue = Color(0xFFEF4444);
+  static const Color upcoming = Color(0xFF0F766E);
+  static const Color completed = Color(0xFF22C55E);
+  static const Color success = Color(0xFF22C55E);
+  static const Color error = Color(0xFFEF4444);
+  static const Color warning = Color(0xFFF59E0B);
 
   // Text Colors
-  static const Color darkText = Color(0xFF0D1C1B);
-  static const Color lightText = Color(0xFFF8FCFB);
+  static const Color darkText = Color(0xFF0F172A);
+  static const Color lightText = Color(0xFFF8FAFC);
 
   // Border Colors
-  static const Color lightBorder = Color(0xFFE5E7EB);
-  static const Color darkBorder = Color(0xFF374151);
-  static const Color lightCardBorder = Color(0xFFF3F4F6);
-  static const Color darkCardBorder = Color(0xFF1F2937);
+  static const Color lightBorder = Color(0xFFE2E8F0);
+  static const Color darkBorder = Color(0xFF334155);
+  static const Color lightCardBorder = Color(0xFFF1F5F9);
+  static const Color darkCardBorder = Color(0xFF1E293B);
 
   // Card Colors
   static const Color lightCard = Colors.white;
-  static const Color darkCard = Color(0xFF1F2937);
+  static const Color darkCard = Color(0xFF1E293B);
+
+  // Accent Color (light grey-blue for subtle icons, dividers, inactive elements)
+  static const Color accent = Color(0xFFE2E8F0);
 
   // Field Background Colors
-  static const Color darkFieldBackground = Color(0xFF1A2035);
-  static const Color lightFieldBackground = Color(0xFFF9FAFB);
+  static const Color darkFieldBackground = Color(0xFF1E293B);
+  static const Color lightFieldBackground = Color(0xFFF8FAFC);
+
+  // Semantic UI icon colors
+  static const Color iconBgBlue = Color(0xFFEFF6FF);
+  static const Color iconBgGreen = Color(0xFFECFDF5);
+  static const Color iconBgOrange = Color(0xFFFFF7ED);
+  static const Color iconBgPurple = Color(0xFFF5F3FF);
+  static const Color iconBgTeal = Color(0xFFF0FDFA);
+  static const Color iconGreen = Color(0xFF059669);
+  static const Color iconOrange = Color(0xFFEA580C);
+  static const Color iconPurple = Color(0xFF7C3AED);
+  static const Color iconTeal = Color(0xFF0F766E);
+
+  // Text secondary/tertiary
+  static const Color textSecondary = Color(0xFF64748B);
+  static const Color textTertiary = Color(0xFF94A3B8);
+
+  // Divider colors
+  static const Color dividerDark = Color(0xFF334155);
+  static const Color dividerLight = Color(0xFFE2E8F0);
+
+  // Section backgrounds
+  static const Color sectionDarkBg = Color(0xFF1E293B);
+  static const Color sectionLightBg = Color(0xFFF8FAFC);
 
   // Opacity helpers
   static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
+    return color.withValues(alpha: opacity);
   }
 
   // Context-aware color getters
@@ -71,5 +100,20 @@ class AppColors {
   static Color getCalendarBackground(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? calendarDarkBackground : calendarLightBackground;
+  }
+
+  static Color getFieldBackground(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? darkFieldBackground : lightFieldBackground;
+  }
+
+  static Color getModalBackground(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? sectionDarkBg : Colors.white;
+  }
+
+  static Color getSecondaryText(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF94A3B8) : textSecondary;
   }
 }

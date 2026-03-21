@@ -22,14 +22,14 @@ class ProgressSectionHeader extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             color: isDark
-                ? AppColors.primary.withValues(alpha: 0.15)
-                : const Color(0xFFEFF6FF),
+                ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.12)
+                : AppColors.iconBgTeal,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.trending_up,
             size: 17,
-            color: AppColors.primary,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(width: 10),
@@ -51,7 +51,7 @@ class ProgressSectionHeader extends StatelessWidget {
             decoration: BoxDecoration(
               color: isDark
                   ? AppColors.primary.withValues(alpha: 0.15)
-                  : const Color(0xFFEFF6FF),
+                  : AppColors.iconBgTeal,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isDark

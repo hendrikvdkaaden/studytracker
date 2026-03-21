@@ -156,7 +156,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
     final subjectColor = _selectedColor;
 
     final sectionBg =
-        isDark ? const Color(0xFF1A2035) : const Color(0xFFF9FAFB);
+        isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg;
 
     return FormField<String>(
       validator: _validate,
@@ -205,7 +205,7 @@ class _SubjectSelectorWithList extends StatelessWidget {
                               ? (isDark ? Colors.grey[500] : Colors.grey[400])
                               : (isDark
                                   ? Colors.white
-                                  : const Color(0xFF111827)),
+                                  : AppColors.darkText),
                         ),
                       ),
                     ),

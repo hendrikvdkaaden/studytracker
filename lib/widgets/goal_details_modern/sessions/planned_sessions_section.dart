@@ -109,7 +109,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.white : const Color(0xFF111827),
+                          color: isDark ? Colors.white : AppColors.darkText,
                         ),
                       ),
                     ),
@@ -140,7 +140,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.white : const Color(0xFF111827),
+                      color: isDark ? Colors.white : AppColors.darkText,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -201,7 +201,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+                    color: isDark ? Colors.grey[300] : AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -218,7 +218,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+                    color: isDark ? Colors.grey[300] : AppColors.textSecondary,
                   ),
                 ),
                 const Spacer(),

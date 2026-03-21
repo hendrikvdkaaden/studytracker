@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/goal_repository.dart';
+import '../../theme/app_colors.dart';
 import 'grid/calendar_grid.dart';
 import 'grid/month_navigation.dart';
 
@@ -11,8 +12,8 @@ class CalendarSection extends StatelessWidget {
   final VoidCallback onNextMonth;
   final Function(DateTime) onDateSelected;
 
-  static const _darkBorder = Color(0xFF1F2937);
-  static const _lightBorder = Color(0xFFF3F4F6);
+  static const _darkBorder = AppColors.sectionDarkBg;
+  static const _lightBorder = AppColors.lightFieldBackground;
 
   const CalendarSection({
     super.key,

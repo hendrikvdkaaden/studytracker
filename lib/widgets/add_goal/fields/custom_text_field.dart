@@ -31,13 +31,13 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(isDark, subtleText),
+        _buildHeader(context, isDark, subtleText),
         const SizedBox(height: 10),
         TextFormField(
           controller: controller,
           style: TextStyle(
             fontSize: 15,
-            color: isDark ? Colors.white : const Color(0xFF111827),
+            color: isDark ? Colors.white : AppColors.darkText,
           ),
           decoration: InputDecoration(
             hintText: hintText,
@@ -51,7 +51,7 @@ class CustomTextField extends StatelessWidget {
               borderSide: BorderSide(
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB),
+                    : AppColors.lightBorder,
               ),
             ),
             enabledBorder: OutlineInputBorder(
@@ -59,7 +59,7 @@ class CustomTextField extends StatelessWidget {
               borderSide: BorderSide(
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB),
+                    : AppColors.lightBorder,
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -85,7 +85,7 @@ class CustomTextField extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isDark, Color subtleText) {
+  Widget _buildHeader(BuildContext context, bool isDark, Color subtleText) {
     if (icon != null) {
       return Row(
         children: [
@@ -94,12 +94,12 @@ class CustomTextField extends StatelessWidget {
             height: 32,
             decoration: BoxDecoration(
               color: isDark
-                  ? (iconColor ?? AppColors.primary).withValues(alpha: 0.15)
-                  : (iconBg ?? const Color(0xFFEFF6FF)),
+                  ? (iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.15)
+                  : (iconBg ?? AppColors.iconBgTeal),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, size: 17,
-                color: iconColor ?? AppColors.primary),
+                color: iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 10),
           Text(

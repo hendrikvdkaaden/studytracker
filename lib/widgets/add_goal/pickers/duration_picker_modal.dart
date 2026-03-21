@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../../theme/app_colors.dart';
 
 Future<({int hours, int minutes})?> showDurationPickerModal({
   required BuildContext context,
@@ -17,7 +18,7 @@ Future<({int hours, int minutes})?> showDurationPickerModal({
       return Container(
         height: 300,
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1F2937) : Colors.white,
+          color: isDark ? AppColors.sectionDarkBg : Colors.white,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -48,8 +49,8 @@ Future<({int hours, int minutes})?> showDurationPickerModal({
                     width: 1,
                     height: 150,
                     color: isDark
-                        ? const Color(0xFF4B5563)
-                        : const Color(0xFFD1D5DB),
+                        ? AppColors.dividerDark
+                        : AppColors.dividerLight,
                   ),
                   _PickerColumn(
                     label: 'MINUTES',
@@ -89,7 +90,7 @@ class _PickerHeader extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            color: isDark ? AppColors.dividerDark : AppColors.lightBorder,
           ),
         ),
       ),
@@ -112,7 +113,7 @@ class _PickerHeader extends StatelessWidget {
             child: const Text(
               'Done',
               style: TextStyle(
-                color: Color(0xFF135BEC),
+                color: AppColors.primary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

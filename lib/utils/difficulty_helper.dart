@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
+import '../theme/app_colors.dart';
 import 'l10n_extension.dart';
 
 class DifficultyHelper {
@@ -32,13 +33,13 @@ class DifficultyHelper {
   static Color getAccentColor(Difficulty difficulty) {
     switch (difficulty) {
       case Difficulty.easy:
-        return const Color(0xFF078830);
+        return AppColors.completed;
       case Difficulty.medium:
-        return const Color(0xFFF59E0B);
+        return AppColors.warning;
       case Difficulty.hard:
-        return const Color(0xFFEF4444);
+        return AppColors.overdue;
       case Difficulty.veryHard:
-        return const Color(0xFF7C3AED);
+        return AppColors.iconPurple;
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 import '../../widgets/study_timer/timer_display.dart';
 import '../../widgets/study_timer/session_info_card.dart';
 import '../../widgets/study_timer/session_progress_bar.dart';
@@ -66,7 +67,7 @@ class StudyTimerTemplate extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF101622) : const Color(0xFFF9FAFB),
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.sectionLightBg,
       body: Stack(
         children: [
           SafeArea(

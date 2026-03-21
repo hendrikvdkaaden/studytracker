@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
 class DateHeader extends StatelessWidget {
   final DateTime selectedDate;
 
-  static const _darkBorder = Color(0xFF1F2937);
-  static const _lightBorder = Color(0xFFF3F4F6);
+  static const _darkBorder = AppColors.sectionDarkBg;
+  static const _lightBorder = AppColors.lightFieldBackground;
   static const _darkText = Color(0xFFF8FCFB);
   static const _lightText = Color(0xFF0D1C1B);
 

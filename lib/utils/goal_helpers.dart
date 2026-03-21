@@ -26,7 +26,7 @@ class GoalHelpers {
   static MaterialColor getGoalColor(GoalType type) {
     switch (type) {
       case GoalType.exam:
-        return Colors.blue;
+        return Colors.deepPurple;
       case GoalType.assignment:
         return Colors.indigo;
       case GoalType.project:

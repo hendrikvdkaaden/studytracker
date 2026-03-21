@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/day_status.dart';
+import '../../../theme/app_colors.dart';
 
 class DayStatusCircle extends StatelessWidget {
   final DayStatus status;
@@ -24,7 +25,7 @@ class DayStatusCircle extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: const BoxDecoration(
-            color: Color(0xFF0DF2DF),
+            color: AppColors.calendarAccent,
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.check, color: Colors.white, size: 16),

@@ -69,10 +69,10 @@ class HomeSectionHeader extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 '$completedCount/$totalCount',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],

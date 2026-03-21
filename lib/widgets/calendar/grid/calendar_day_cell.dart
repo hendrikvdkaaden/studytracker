@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
 class CalendarDayCell extends StatelessWidget {
   final int day;
@@ -87,7 +88,7 @@ class CalendarDayCell extends StatelessWidget {
       case GoalStatus.upcoming:
         return const Color(0xFF499C95);
       case GoalStatus.completed:
-        return const Color(0xFF078830);
+        return AppColors.completed;
     }
   }
 }

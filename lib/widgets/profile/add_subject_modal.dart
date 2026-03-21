@@ -133,7 +133,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                 color: isDark ? Colors.grey[600] : Colors.grey[400],
               ),
               filled: true,
-              fillColor: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+              fillColor: isDark ? AppColors.darkText : AppColors.lightFieldBackground,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               enabledBorder: OutlineInputBorder(
@@ -142,7 +142,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                   color: showError
                       ? Colors.red
                       : isDark
-                          ? const Color(0xFF374151)
+                          ? AppColors.textSecondary
                           : const Color(0xFFE5E7EB),
                 ),
               ),

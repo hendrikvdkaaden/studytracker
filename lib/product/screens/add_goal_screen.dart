@@ -250,7 +250,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
-          color: isDark ? Colors.white : const Color(0xFF111827),
+          color: isDark ? Colors.white : AppColors.darkText,
         ),
         onPressed: () => Navigator.pop(context),
       ),
@@ -259,7 +259,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white : const Color(0xFF111827),
+          color: isDark ? Colors.white : AppColors.darkText,
         ),
       ),
       bottom: PreferredSize(

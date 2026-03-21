@@ -38,8 +38,8 @@ class ActionButtons extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.primary, const Color(0xFF4489FF)],
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, AppColors.primaryLight],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),

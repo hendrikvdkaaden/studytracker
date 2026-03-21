@@ -116,7 +116,6 @@ class HomeSessionItem extends StatelessWidget {
   }
 
   Color _getLineColor(bool isDark) {
-    if (isCompleted) return AppColors.primary;
     return isDark ? Colors.grey[700]! : Colors.grey[300]!;
   }
 
@@ -127,12 +126,10 @@ class HomeSessionItem extends StatelessWidget {
 
     if (isCompleted) {
       cardColor = isDark
-          ? AppColors.primary.withValues(alpha: 0.08)
-          : AppColors.primary.withValues(alpha: 0.04);
+          ? Colors.grey[850]!
+          : AppColors.lightCard;
       cardBorder = Border.all(
-        color: isDark
-            ? AppColors.primary.withValues(alpha: 0.15)
-            : AppColors.primary.withValues(alpha: 0.1),
+        color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
       );
     } else if (_isActive) {
       cardColor = isDark ? Colors.grey[850]! : AppColors.lightCard;

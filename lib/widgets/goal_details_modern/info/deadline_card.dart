@@ -24,7 +24,7 @@ class DeadlineCard extends StatelessWidget {
 
     final sectionBg = isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
+    final textColor = isDark ? Colors.white : AppColors.darkText;
 
     final l10n = context.l10n;
     String statusText;

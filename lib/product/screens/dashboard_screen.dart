@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
+import '../../theme/app_colors.dart';
 import '../../models/day_status.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
@@ -153,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,
-        backgroundColor: const Color(0xFF6750A4),
+        backgroundColor: AppColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: DashboardTemplate(

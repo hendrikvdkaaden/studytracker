@@ -27,7 +27,7 @@ class ClickableField extends StatelessWidget {
     final sectionBg =
         isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
     final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
+    final textColor = isDark ? Colors.white : AppColors.darkText;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,12 +39,12 @@ class ClickableField extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 color: isDark
-                    ? (iconColor ?? AppColors.primary).withValues(alpha: 0.15)
-                    : (iconBg ?? const Color(0xFFEFF6FF)),
+                    ? (iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.15)
+                    : (iconBg ?? AppColors.iconBgTeal),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, size: 17,
-                  color: iconColor ?? AppColors.primary),
+                  color: iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -81,7 +81,7 @@ class ClickableField extends StatelessWidget {
               border: Border.all(
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB),
+                    : AppColors.lightBorder,
               ),
             ),
             child: Row(

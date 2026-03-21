@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: AppColors.primary,
               brightness: Brightness.light,
+              surface: AppColors.lightBackground,
             ),
             scaffoldBackgroundColor: AppColors.lightBackground,
             useMaterial3: true,
@@ -39,8 +40,10 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: AppColors.primary,
               brightness: Brightness.dark,
+              surface: AppColors.darkBackground,
             ),
             scaffoldBackgroundColor: AppColors.darkBackground,
+            cardColor: AppColors.darkCard,
             useMaterial3: true,
             fontFamily: 'Roboto',
           ),

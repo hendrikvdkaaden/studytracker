@@ -440,8 +440,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days Days No Session Missed',
-      one: '1 Day No Session Missed',
+      other: 'Completed all Sessions for $days Days',
+      one: 'Completed all Sessions Today',
     );
     return '$_temp0';
   }

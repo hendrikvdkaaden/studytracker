@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
+import '../../theme/app_colors.dart';
 import '../../widgets/calendar/calendar_section.dart';
 import '../../widgets/calendar/goals/date_header.dart';
 import '../../widgets/calendar/calendar_day_content.dart';
@@ -43,12 +44,21 @@ class PlanTemplate extends StatelessWidget {
           onNextMonth: onNextMonth,
           onDateSelected: onDateSelected,
         ),
-        DateHeader(selectedDate: selectedDate),
         Expanded(
-          child: CalendarDayContent(
-            goals: goalsForSelectedDate,
-            sessions: sessionsForSelectedDate,
-            onGoalUpdated: onGoalUpdated,
+          child: Container(
+            color: AppColors.getBackground(context),
+            child: Column(
+              children: [
+                DateHeader(selectedDate: selectedDate),
+                Expanded(
+                  child: CalendarDayContent(
+                    goals: goalsForSelectedDate,
+                    sessions: sessionsForSelectedDate,
+                    onGoalUpdated: onGoalUpdated,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

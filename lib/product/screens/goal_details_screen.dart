@@ -146,6 +146,13 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     );
   }
 
+  Future<void> _deleteSession(StudySession session) async {
+    await NotificationService.cancelSessionNotification(session.id);
+    await _sessionRepo.deleteSession(session.id);
+    if (!mounted) return;
+    setState(() => _refreshData());
+  }
+
   Future<void> _addSession() async {
     await showStudySessionPicker(
       context: context,
@@ -184,6 +191,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
         onMarkComplete: _toggleComplete,
         onAddSession: _addSession,
         onEditSession: _editSession,
+        onDeleteSession: _deleteSession,
         onEditInfo: _showEditInfoModal,
         onEditDeadline: _pickDeadline,
       ),

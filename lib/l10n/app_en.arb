@@ -170,7 +170,7 @@
     }
   },
   "consistencyMissedSubtitle": "Don't give up! You can still crush this week.",
-  "consistencyDaysNoMissed": "{days, plural, =1{1 Day No Session Missed} other{{days} Days No Session Missed}}",
+  "consistencyDaysNoMissed": "{days, plural, =1{Completed all Sessions Today} other{Completed all Sessions for {days} Days}}",
   "@consistencyDaysNoMissed": {
     "placeholders": {
       "days": { "type": "int" }

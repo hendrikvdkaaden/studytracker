@@ -18,6 +18,7 @@ class GoalDetailsTemplate extends StatelessWidget {
   final VoidCallback onMarkComplete;
   final VoidCallback onAddSession;
   final void Function(StudySession session) onEditSession;
+  final void Function(StudySession session) onDeleteSession;
   final VoidCallback onEditInfo;
   final VoidCallback onEditDeadline;
 
@@ -30,6 +31,7 @@ class GoalDetailsTemplate extends StatelessWidget {
     required this.onMarkComplete,
     required this.onAddSession,
     required this.onEditSession,
+    required this.onDeleteSession,
     required this.onEditInfo,
     required this.onEditDeadline,
   });
@@ -53,6 +55,7 @@ class GoalDetailsTemplate extends StatelessWidget {
             goalTitle: goal.title,
             onAddSession: onAddSession,
             onEditSession: onEditSession,
+            onDeleteSession: onDeleteSession,
           ),
           const SizedBox(height: 24),
           ProgressSectionHeader(onEdit: onEditProgress),

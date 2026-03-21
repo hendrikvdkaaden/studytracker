@@ -104,34 +104,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return missedCount;
   }
 
-  /// Returns the current streak: the number of consecutive days (going back from
-  /// today) on which at least one session was completed on time.
+  /// Returns the current streak: the number of consecutive past days on which
+  /// ALL planned sessions were completed on time.
+  /// Today is only counted once ALL its sessions are completed.
   /// Days with no planned sessions are skipped — they don't break the streak.
-  /// The streak only counts days that had at least one planned session.
   int _getStudyStreak() {
     final now = DateTime.now();
     int streak = 0;
 
-    // Check up to 365 days back
     for (int i = 0; i < 365; i++) {
       final day = DateTime(now.year, now.month, now.day - i);
       final dayEnd = DateTime(day.year, day.month, day.day + 1);
 
       final sessions = _sessionRepo.getSessionsByDateRange(day, dayEnd);
 
-      // Skip days with no planned sessions — don't break the streak
+      // Skip days with no planned sessions — they don't break the streak
       if (sessions.isEmpty) continue;
 
-      final hasCompletedOnTime = sessions.any(
-        (s) => s.completedAt != null
-            ? !s.completedAt!.isAfter(DateTime(s.date.year, s.date.month, s.date.day + 1))
-            : s.isCompleted,
-      );
+      final allCompletedOnTime = sessions.every(_isCompletedOnTime);
 
-      if (hasCompletedOnTime) {
+      if (i == 0) {
+        // Today: only count if ALL sessions are already done.
+        // Either way stop here — incomplete today doesn't break past streak,
+        // but today can't extend a historical streak either.
+        if (allCompletedOnTime) streak++;
+        break;
+      }
+
+      if (allCompletedOnTime) {
         streak++;
       } else {
-        // A planned session that was missed — streak is broken
         break;
       }
     }
@@ -151,6 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: AppColors.getBackground(context),
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
+
 class CompletedGoalCard extends StatelessWidget {
   final Goal goal;
   final VoidCallback onTap;
@@ -14,88 +16,82 @@ class CompletedGoalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor = isDark ? Colors.grey[500]! : Colors.grey[400]!;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 240,
-        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1d1b20) : Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.06)
+                : AppColors.lightBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.green.shade900.withValues(alpha: 0.3)
-                        : Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(12),
+            Container(
+              height: 44,
+              width: 44,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.completed.withValues(alpha: 0.1)
+                    : AppColors.completed.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                GoalTypeHelper.getIconForType(goal.type),
+                color: AppColors.completed,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    goal.title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: titleColor,
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: titleColor,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  child: Icon(
-                    GoalTypeHelper.getIconForType(goal.type),
-                    color: Colors.green.shade600,
-                    size: 20,
+                  const SizedBox(height: 2),
+                  Text(
+                    goal.subject,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        goal.title,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        goal.subject.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isDark ? Colors.grey[500] : Colors.grey[600],
-                          letterSpacing: 0.5,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 24,
-                  width: 24,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              height: 28,
+              width: 28,
+              decoration: BoxDecoration(
+                color: AppColors.completed.withValues(alpha: isDark ? 0.15 : 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check,
+                color: AppColors.completed,
+                size: 16,
+              ),
             ),
           ],
         ),

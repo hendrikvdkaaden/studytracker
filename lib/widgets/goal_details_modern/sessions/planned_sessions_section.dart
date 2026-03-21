@@ -10,6 +10,7 @@ class PlannedSessionsSection extends StatefulWidget {
   final String goalTitle;
   final VoidCallback onAddSession;
   final void Function(StudySession session)? onEditSession;
+  final void Function(StudySession session)? onDeleteSession;
 
   const PlannedSessionsSection({
     super.key,
@@ -17,6 +18,7 @@ class PlannedSessionsSection extends StatefulWidget {
     required this.goalTitle,
     required this.onAddSession,
     this.onEditSession,
+    this.onDeleteSession,
   });
 
   @override
@@ -89,6 +91,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
             GestureDetector(
               onTap: widget.onAddSession,
               child: Container(
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
                   color: isDark
@@ -120,6 +123,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
             )
           else if (visibleSessions.isEmpty)
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
                 color: isDark
@@ -182,9 +186,11 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                         session: visibleSessions[i],
                         index: i,
                         title: widget.goalTitle,
-                        onEdit: !visibleSessions[i].isCompleted &&
-                                widget.onEditSession != null
+                        onEdit: widget.onEditSession != null
                             ? () => widget.onEditSession!(visibleSessions[i])
+                            : null,
+                        onDelete: widget.onDeleteSession != null
+                            ? () => widget.onDeleteSession!(visibleSessions[i])
                             : null,
                       ),
                     ],

@@ -34,17 +34,6 @@ class DeadlineListItem extends StatelessWidget {
     }
   }
 
-  Color _getIconBackgroundColor() {
-    final status = _getGoalStatus();
-    switch (status) {
-      case GoalStatus.overdue:
-        return AppColors.overdue.withValues(alpha: 0.1);
-      case GoalStatus.upcoming:
-      case GoalStatus.completed:
-        return AppColors.calendarAccent.withValues(alpha: 0.2);
-    }
-  }
-
   String _getSubtitle(BuildContext context) {
     final l10n = context.l10n;
     if (goal.isCompleted) {
@@ -69,50 +58,41 @@ class DeadlineListItem extends StatelessWidget {
     final subtitle = _getSubtitle(context);
     final subjectColor = SettingsService.colorForSubject(goal.subject);
 
+    final iconColor = subjectColor ??
+        (status == GoalStatus.overdue ? AppColors.overdue : AppColors.primary);
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.calendarDarkBackground : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.getBorderColor(context),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.06)
+                : AppColors.lightBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 4,
-              offset: const Offset(0, 1),
-            ),
-          ],
         ),
         child: Row(
           children: [
             // Icon
             Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                color: subjectColor != null
-                    ? subjectColor.withValues(alpha: 0.15)
-                    : _getIconBackgroundColor(),
-                borderRadius: BorderRadius.circular(8),
+                color: iconColor.withValues(alpha: isDark ? 0.15 : 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 GoalTypeHelper.getIconForType(goal.type),
-                color: subjectColor ??
-                    (status == GoalStatus.overdue
-                        ? AppColors.overdue
-                        : (isDark
-                            ? AppColors.calendarAccent
-                            : AppColors.upcoming)),
-                size: 24,
+                color: iconColor,
+                size: 22,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 14),
             // Content
             Expanded(
               child: Column(
@@ -121,23 +101,21 @@ class DeadlineListItem extends StatelessWidget {
                   Text(
                     goal.title,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? const Color(0xFFF8FCFB) : const Color(0xFF0D1C1B),
+                      color: isDark ? Colors.white : AppColors.darkText,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: status == GoalStatus.overdue
                           ? AppColors.overdue
-                          : (isDark
-                              ? AppColors.calendarAccent.withValues(alpha: 0.7)
-                              : AppColors.upcoming),
+                          : AppColors.textSecondary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -146,22 +124,22 @@ class DeadlineListItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            // Status indicator and chevron
+            // Status dot + chevron
             Row(
               children: [
                 Container(
-                  width: 12,
-                  height: 12,
+                  width: 8,
+                  height: 8,
                   decoration: BoxDecoration(
                     color: _getStatusColor(),
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Icon(
                   Icons.chevron_right,
                   color: isDark ? Colors.grey[600] : Colors.grey[400],
-                  size: 20,
+                  size: 18,
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
+import '../../theme/app_colors.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/deadlines/cards/overdue_goal_card.dart';
 import '../../widgets/deadlines/cards/upcoming_goal_card.dart';
@@ -29,178 +30,113 @@ class DashboardTemplate extends StatelessWidget {
     required this.onGoalTap,
   });
 
+  Widget _sectionLabel({
+    required BuildContext context,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    required String label,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subtleText = isDark ? Colors.grey[500]! : Colors.grey[500]!;
+
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: iconBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: iconColor, size: 16),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.1,
+            color: subtleText,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: 100),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
       children: [
         // Study Consistency
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-          child: StudyConsistencyCard(
-            weeklyConsistency: weeklyConsistency,
-            missedSessionsCount: missedSessionsCount,
-            studyStreak: studyStreak,
-          ),
+        StudyConsistencyCard(
+          weeklyConsistency: weeklyConsistency,
+          missedSessionsCount: missedSessionsCount,
+          studyStreak: studyStreak,
         ),
+
         // Overdue section
         if (overdueGoals.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.error,
-                      color: isDark
-                          ? const Color(0xFFf2b8b5)
-                          : const Color(0xFFb3261e),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.l10n.dashboardSectionOverdue,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? const Color(0xFFf2b8b5)
-                            : const Color(0xFFb3261e),
-                      ),
-                    ),
-                  ],
-                ),
-                if (overdueGoals.length > 2)
-                  Text(
-                    context.l10n.dashboardSeeAll,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.grey[500] : Colors.grey[600],
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-              ],
-            ),
+          const SizedBox(height: 24),
+          _sectionLabel(
+            context: context,
+            icon: Icons.error_outline,
+            iconColor: AppColors.overdue,
+            iconBg: isDark
+                ? AppColors.overdue.withValues(alpha: 0.1)
+                : const Color(0xFFFFEDED),
+            label: context.l10n.dashboardSectionOverdue,
           ),
-          SizedBox(
-            height: 130,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              scrollDirection: Axis.horizontal,
-              itemCount: overdueGoals.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final goal = overdueGoals[index];
-                return OverdueGoalCard(
-                  goal: goal,
-                  onTap: () => onGoalTap(goal),
-                );
-              },
+          const SizedBox(height: 12),
+          ...overdueGoals.map(
+            (goal) => OverdueGoalCard(
+              goal: goal,
+              onTap: () => onGoalTap(goal),
             ),
           ),
         ],
 
         // Upcoming section
         if (upcomingGoals.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_month,
-                      color: Color(0xFF6750A4),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.l10n.dashboardSectionUpcoming,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF1d1b20),
-                      ),
-                    ),
-                  ],
-                ),
-                if (upcomingGoals.length > 3)
-                  Text(
-                    context.l10n.dashboardSeeAll,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.grey[500] : Colors.grey[600],
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-              ],
-            ),
+          const SizedBox(height: 24),
+          _sectionLabel(
+            context: context,
+            icon: Icons.calendar_month,
+            iconColor: AppColors.iconPurple,
+            iconBg: AppColors.iconBgPurple,
+            label: context.l10n.dashboardSectionUpcoming,
           ),
-          SizedBox(
-            height: 130,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              scrollDirection: Axis.horizontal,
-              itemCount: upcomingGoals.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final goal = upcomingGoals[index];
-                return UpcomingGoalCard(
-                  goal: goal,
-                  timeSpent: goalsTimeSpent[goal.id] ?? 0,
-                  onTap: () => onGoalTap(goal),
-                );
-              },
+          const SizedBox(height: 12),
+          ...upcomingGoals.map(
+            (goal) => UpcomingGoalCard(
+              goal: goal,
+              timeSpent: goalsTimeSpent[goal.id] ?? 0,
+              onTap: () => onGoalTap(goal),
             ),
           ),
         ],
 
         // Completed section
         if (completedGoals.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: isDark ? Colors.green.shade400 : Colors.green.shade600,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  context.l10n.dashboardSectionCompleted,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? Colors.green.shade400
-                        : Colors.green.shade600,
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 24),
+          _sectionLabel(
+            context: context,
+            icon: Icons.check_circle_outline,
+            iconColor: AppColors.completed,
+            iconBg: isDark
+                ? AppColors.completed.withValues(alpha: 0.1)
+                : const Color(0xFFECFDF5),
+            label: context.l10n.dashboardSectionCompleted,
           ),
-          SizedBox(
-            height: 90,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              scrollDirection: Axis.horizontal,
-              itemCount: completedGoals.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final goal = completedGoals[index];
-                return CompletedGoalCard(
-                  goal: goal,
-                  onTap: () => onGoalTap(goal),
-                );
-              },
+          const SizedBox(height: 12),
+          ...completedGoals.map(
+            (goal) => CompletedGoalCard(
+              goal: goal,
+              onTap: () => onGoalTap(goal),
             ),
           ),
         ],
@@ -210,7 +146,7 @@ class DashboardTemplate extends StatelessWidget {
             upcomingGoals.isEmpty &&
             completedGoals.isEmpty)
           Padding(
-            padding: const EdgeInsets.all(48),
+            padding: const EdgeInsets.only(top: 48),
             child: Column(
               children: [
                 Icon(

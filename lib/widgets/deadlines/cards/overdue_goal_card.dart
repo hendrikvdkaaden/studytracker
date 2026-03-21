@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../theme/app_colors.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class OverdueGoalCard extends StatelessWidget {
@@ -27,97 +28,85 @@ class OverdueGoalCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 280,
-        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1d1b20) : Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isDark
-                ? Colors.red.shade900.withValues(alpha: 0.3)
-                : Colors.red.shade100,
+                ? Colors.white.withValues(alpha: 0.06)
+                : AppColors.lightBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.red.withValues(alpha: 0.15),
-              blurRadius: 15,
-              offset: const Offset(0, 0),
-            ),
-          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.red.shade900.withValues(alpha: 0.3)
-                        : Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    GoalTypeHelper.getIconForType(goal.type),
-                    color: Colors.red.shade600,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        goal.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        goal.subject,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? Colors.grey[500] : Colors.grey[600],
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              height: 44,
+              width: 44,
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.red.shade900.withValues(alpha: 0.3)
-                    : Colors.red.shade50,
+                    ? AppColors.overdue.withValues(alpha: 0.1)
+                    : AppColors.overdue.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                GoalTypeHelper.getIconForType(goal.type),
+                color: AppColors.overdue,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    goal.title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    goal.subject,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.overdue.withValues(alpha: 0.1)
+                    : AppColors.overdue.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.history,
-                    size: 14,
-                    color: Colors.red.shade600,
+                    size: 13,
+                    color: AppColors.overdue,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
                   Text(
                     '$daysOverdue day${daysOverdue != 1 ? 's' : ''} overdue',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red.shade600,
+                      color: AppColors.overdue,
                     ),
                   ),
                 ],

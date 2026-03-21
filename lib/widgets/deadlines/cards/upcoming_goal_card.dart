@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
+import '../../../theme/app_colors.dart';
 import '../../../services/settings_service.dart';
 import '../../../utils/goal_helpers.dart';
 import '../../../utils/goal_type_helper.dart';
@@ -49,21 +50,16 @@ class UpcomingGoalCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1d1b20) : Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.06)
+                : AppColors.lightBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,8 +69,8 @@ class UpcomingGoalCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 40,
-                  width: 40,
+                  height: 44,
+                  width: 44,
                   decoration: BoxDecoration(
                     color: iconBg,
                     borderRadius: BorderRadius.circular(12),
@@ -93,19 +89,18 @@ class UpcomingGoalCard extends StatelessWidget {
                       Text(
                         goal.title,
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
                       Text(
-                        goal.subject.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 10,
-                          color:
-                              isDark ? Colors.grey[500] : Colors.grey[600],
-                          letterSpacing: 0.5,
+                        goal.subject,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -114,9 +109,8 @@ class UpcomingGoalCard extends StatelessWidget {
                       Text(
                         formatDate(goal.date),
                         style: TextStyle(
-                          fontSize: 9,
-                          color:
-                              isDark ? Colors.grey[600] : Colors.grey[500],
+                          fontSize: 11,
+                          color: isDark ? Colors.grey[600] : Colors.grey[500],
                         ),
                       ),
                     ],
@@ -124,8 +118,7 @@ class UpcomingGoalCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: accentColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
@@ -158,8 +151,7 @@ class UpcomingGoalCard extends StatelessWidget {
               child: Container(
                 height: 6,
                 decoration: BoxDecoration(
-                  color:
-                      isDark ? Colors.grey[800] : Colors.grey[100],
+                  color: isDark ? Colors.grey[800] : Colors.grey[100],
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -171,9 +163,7 @@ class UpcomingGoalCard extends StatelessWidget {
                           bottom: 0,
                           width: constraints.maxWidth * progress,
                           child: Container(
-                            decoration: BoxDecoration(
-                              color: accentColor,
-                            ),
+                            decoration: BoxDecoration(color: accentColor),
                           ),
                         ),
                       ],

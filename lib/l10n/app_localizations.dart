@@ -841,7 +841,7 @@ abstract class AppLocalizations {
   /// No description provided for @consistencyDaysNoMissed.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, =1{1 Day No Session Missed} other{{days} Days No Session Missed}}'**
+  /// **'{days, plural, =1{Completed all Sessions Today} other{Completed all Sessions for {days} Days}}'**
   String consistencyDaysNoMissed(int days);
 
   /// No description provided for @consistencyDaysNoMissedSubtitle.

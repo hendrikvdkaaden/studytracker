@@ -514,8 +514,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days before',
-      one: '1 day before',
+      other: '$days days',
+      one: '1 day',
     );
     return '$_temp0';
   }
@@ -542,7 +542,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
-      other: '$minutes minutes before',
+      other: '$minutes minutes',
     );
     return '$_temp0';
   }
@@ -552,8 +552,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days before',
-      one: '1 day before',
+      other: '$days days',
+      one: '1 day',
     );
     return '$_temp0';
   }

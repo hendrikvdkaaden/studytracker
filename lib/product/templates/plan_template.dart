@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/goal_repository.dart';
+import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/calendar/calendar_section.dart';
 import '../../widgets/calendar/goals/date_header.dart';
@@ -12,6 +13,7 @@ class PlanTemplate extends StatelessWidget {
   final DateTime focusedMonth;
   final DateTime selectedDate;
   final GoalRepository goalRepo;
+  final StudySessionRepository sessionRepo;
   final List<Goal> goalsForSelectedDate;
   final List<StudySession> sessionsForSelectedDate;
   final VoidCallback onPreviousMonth;
@@ -24,6 +26,7 @@ class PlanTemplate extends StatelessWidget {
     required this.focusedMonth,
     required this.selectedDate,
     required this.goalRepo,
+    required this.sessionRepo,
     required this.goalsForSelectedDate,
     required this.sessionsForSelectedDate,
     required this.onPreviousMonth,
@@ -40,6 +43,7 @@ class PlanTemplate extends StatelessWidget {
           focusedMonth: focusedMonth,
           selectedDate: selectedDate,
           goalRepo: goalRepo,
+          sessionRepo: sessionRepo,
           onPreviousMonth: onPreviousMonth,
           onNextMonth: onNextMonth,
           onDateSelected: onDateSelected,

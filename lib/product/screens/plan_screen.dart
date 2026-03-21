@@ -57,11 +57,12 @@ class _PlanScreenState extends State<PlanScreen> {
         _sessionRepo.getPlannedSessionsByDate(_selectedDate);
 
     return Scaffold(
-      backgroundColor: AppColors.getCalendarBackground(context),
+      backgroundColor: AppColors.getBackground(context),
       body: PlanTemplate(
         focusedMonth: _focusedMonth,
         selectedDate: _selectedDate,
         goalRepo: _goalRepo,
+        sessionRepo: _sessionRepo,
         goalsForSelectedDate: goalsForSelectedDate,
         sessionsForSelectedDate: sessionsForSelectedDate,
         onPreviousMonth: _previousMonth,

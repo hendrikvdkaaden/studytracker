@@ -107,7 +107,9 @@ class DashboardTemplate extends StatelessWidget {
             context: context,
             icon: Icons.calendar_month,
             iconColor: AppColors.iconPurple,
-            iconBg: AppColors.iconBgPurple,
+            iconBg: isDark
+                ? AppColors.iconBgPurple.withValues(alpha: 0.1)
+                : const Color(0xFFFFEDED),
             label: context.l10n.dashboardSectionUpcoming,
           ),
           const SizedBox(height: 12),

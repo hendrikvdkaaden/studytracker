@@ -89,6 +89,8 @@ class CalendarDayCell extends StatelessWidget {
         return const Color(0xFF499C95);
       case GoalStatus.completed:
         return AppColors.completed;
+      case GoalStatus.session:
+        return AppColors.iconPurple;
     }
   }
 }
@@ -97,4 +99,5 @@ enum GoalStatus {
   overdue,
   upcoming,
   completed,
+  session,
 }

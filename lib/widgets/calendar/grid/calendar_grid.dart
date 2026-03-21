@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../services/goal_repository.dart';
+import '../../../services/study_session_repository.dart';
 import '../../../utils/calendar_helpers.dart';
 import 'calendar_day_builder.dart';
 import 'weekday_headers.dart';
@@ -10,6 +11,7 @@ class CalendarGrid extends StatelessWidget {
   final DateTime focusedMonth;
   final DateTime selectedDate;
   final GoalRepository goalRepo;
+  final StudySessionRepository sessionRepo;
   final Function(DateTime) onDateSelected;
 
   static const _calendarWeeks = 35;
@@ -20,6 +22,7 @@ class CalendarGrid extends StatelessWidget {
     required this.focusedMonth,
     required this.selectedDate,
     required this.goalRepo,
+    required this.sessionRepo,
     required this.onDateSelected,
   });
 
@@ -39,6 +42,7 @@ class CalendarGrid extends StatelessWidget {
       focusedMonth: focusedMonth,
       selectedDate: selectedDate,
       goalRepo: goalRepo,
+      sessionRepo: sessionRepo,
       onDateSelected: onDateSelected,
     );
 

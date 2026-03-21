@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
@@ -93,30 +94,250 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _pickSessionReminder() async {
     final l10n = context.l10n;
-    await _showPickerSheet(
-      title: l10n.profilePickerSessionTitle,
-      subtitle: l10n.profilePickerSessionSubtitle,
-      options: [5, 10, 15, 30, 60],
-      currentValue: _sessionReminderMinutes,
-      labelBuilder: (v) => l10n.profilePickerSessionOptionFormat(v),
-      onSelected: (v) async {
-        await SettingsService.setSessionReminderMinutes(v);
-        setState(() => _sessionReminderMinutes = v);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Build list of minutes: 1–59
+    final minutes = List.generate(59, (i) => i + 1);
+    int tempValue = _sessionReminderMinutes.clamp(1, 59);
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCard : AppColors.lightCard,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey[700] : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.profilePickerSessionTitle,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.profilePickerSessionSubtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 200,
+                child: CupertinoTheme(
+                  data: CupertinoThemeData(
+                    brightness: isDark ? Brightness.dark : Brightness.light,
+                    textTheme: CupertinoTextThemeData(
+                      pickerTextStyle: TextStyle(
+                        fontSize: 20,
+                        color: isDark ? Colors.white : AppColors.darkText,
+                      ),
+                    ),
+                  ),
+                  child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(
+                      initialItem: minutes.indexOf(tempValue),
+                    ),
+                    itemExtent: 44,
+                    onSelectedItemChanged: (index) {
+                      tempValue = minutes[index];
+                    },
+                    children: minutes.map((m) {
+                      return Center(
+                        child: Text(l10n.profilePickerSessionOptionFormat(m)),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    16, 12, 16, MediaQuery.of(ctx).padding.bottom + 16),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primary, AppColors.primaryLight],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await SettingsService.setSessionReminderMinutes(tempValue);
+                      setState(() => _sessionReminderMinutes = tempValue);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shadowColor: Colors.transparent,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
 
   Future<void> _pickDeadlineReminder() async {
     final l10n = context.l10n;
-    await _showPickerSheet(
-      title: l10n.profilePickerDeadlineTitle,
-      subtitle: l10n.profilePickerDeadlineSubtitle,
-      options: [1, 2, 3, 5, 7],
-      currentValue: _deadlineReminderDays,
-      labelBuilder: (v) => l10n.profilePickerDeadlineOptionFormat(v),
-      onSelected: (v) async {
-        await SettingsService.setDeadlineReminderDays(v);
-        setState(() => _deadlineReminderDays = v);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final days = List.generate(30, (i) => i + 1);
+    int tempValue = _deadlineReminderDays.clamp(1, 30);
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCard : AppColors.lightCard,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.profilePickerDeadlineTitle,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.profilePickerDeadlineSubtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 200,
+                child: CupertinoTheme(
+                  data: CupertinoThemeData(
+                    brightness: isDark ? Brightness.dark : Brightness.light,
+                    textTheme: CupertinoTextThemeData(
+                      pickerTextStyle: TextStyle(
+                        fontSize: 20,
+                        color: isDark ? Colors.white : AppColors.darkText,
+                      ),
+                    ),
+                  ),
+                  child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(
+                      initialItem: days.indexOf(tempValue),
+                    ),
+                    itemExtent: 44,
+                    onSelectedItemChanged: (index) {
+                      tempValue = days[index];
+                    },
+                    children: days.map((d) {
+                      return Center(
+                        child: Text(l10n.profilePickerDeadlineOptionFormat(d)),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    16, 12, 16, MediaQuery.of(ctx).padding.bottom + 16),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primary, AppColors.primaryLight],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await SettingsService.setDeadlineReminderDays(tempValue);
+                      setState(() => _deadlineReminderDays = tempValue);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shadowColor: Colors.transparent,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -196,6 +417,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ...options.map((option) {
                 final isSelected = option == currentValue;
                 return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   title: Text(
                     labelBuilder(option),
                     style: TextStyle(

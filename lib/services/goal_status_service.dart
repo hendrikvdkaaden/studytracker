@@ -2,25 +2,27 @@ import '../models/goal.dart';
 import '../utils/calendar_helpers.dart';
 import '../widgets/calendar/grid/calendar_day_cell.dart';
 import 'goal_repository.dart';
+import 'study_session_repository.dart';
 
 /// Service responsible for determining goal statuses for calendar dates
 class GoalStatusService {
   final GoalRepository _goalRepo;
+  final StudySessionRepository _sessionRepo;
 
-  GoalStatusService(this._goalRepo);
+  GoalStatusService(this._goalRepo, this._sessionRepo);
 
-  /// Gets the status indicators for all goals on a specific date
+  /// Gets the status indicators for all goals and sessions on a specific date
   List<GoalStatus> getStatusesForDate(DateTime date) {
-    final goalsForDate = _getGoalsForDate(date);
-    return goalsForDate.map(_determineGoalStatus).toList();
-  }
-
-  /// Retrieves all goals that have a deadline on the specified date
-  List<Goal> _getGoalsForDate(DateTime date) {
-    return _goalRepo
+    final statuses = _goalRepo
         .getAllGoals()
         .where((goal) => CalendarHelpers.isSameDay(goal.date, date))
+        .map(_determineGoalStatus)
         .toList();
+
+    final hasSessions = _sessionRepo.getPlannedSessionsByDate(date).isNotEmpty;
+    if (hasSessions) statuses.add(GoalStatus.session);
+
+    return statuses;
   }
 
   /// Determines the status of a single goal

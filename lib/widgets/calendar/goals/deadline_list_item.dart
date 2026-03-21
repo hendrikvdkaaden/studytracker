@@ -31,6 +31,8 @@ class DeadlineListItem extends StatelessWidget {
         return AppColors.upcoming;
       case GoalStatus.completed:
         return AppColors.completed;
+      case GoalStatus.session:
+        return AppColors.iconPurple;
     }
   }
 
@@ -42,7 +44,6 @@ class DeadlineListItem extends StatelessWidget {
       final daysOverdue = goal.daysUntilDeadline().abs();
       return '${goal.subject} - ${l10n.deadlineStatusDaysOverdue(daysOverdue)}';
     } else {
-      // Format time if available
       final hour = goal.date.hour;
       final minute = goal.date.minute.toString().padLeft(2, '0');
       final period = hour >= 12 ? 'PM' : 'AM';

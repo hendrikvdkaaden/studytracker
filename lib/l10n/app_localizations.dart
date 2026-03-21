@@ -949,7 +949,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileDeadlineReminderFormat.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, =1{1 day before} other{{days} days before}}'**
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
   String profileDeadlineReminderFormat(int days);
 
   /// No description provided for @profilePickerSessionTitle.
@@ -985,13 +985,13 @@ abstract class AppLocalizations {
   /// No description provided for @profilePickerSessionOptionFormat.
   ///
   /// In en, this message translates to:
-  /// **'{minutes, plural, other{{minutes} minutes before}}'**
+  /// **'{minutes, plural, other{{minutes} minutes}}'**
   String profilePickerSessionOptionFormat(int minutes);
 
   /// No description provided for @profilePickerDeadlineOptionFormat.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, =1{1 day before} other{{days} days before}}'**
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
   String profilePickerDeadlineOptionFormat(int days);
 
   /// No description provided for @profileDeleteSessionsTitle.

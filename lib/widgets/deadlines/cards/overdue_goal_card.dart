@@ -102,7 +102,7 @@ class OverdueGoalCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '$daysOverdue day${daysOverdue != 1 ? 's' : ''} overdue',
+                    '${daysOverdue}d',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,

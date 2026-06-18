@@ -15,8 +15,8 @@ class NotificationService {
   static Future<void> init() async {
     try {
       tz.initializeTimeZones();
-      final locationName = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(locationName));
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
 
       const androidSettings =
           AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -24,7 +24,7 @@ class NotificationService {
       const settings =
           InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-      await _plugin.initialize(settings);
+      await _plugin.initialize(settings: settings);
     } catch (e) {
       debugPrint('Failed to initialize notifications: $e');
     }
@@ -44,7 +44,7 @@ class NotificationService {
   }
 
   /// Schedule a reminder for a study session.
-  /// - If session has startTime: 15 min before startTime
+  /// - If session has startTime: N min before startTime
   /// - If no startTime: 09:00 on the session date
   /// - Notifications in the past are silently skipped
   static Future<void> scheduleSessionReminder(
@@ -70,15 +70,14 @@ class NotificationService {
         );
       }
 
-      // Don't schedule if in the past
       if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
 
       await _plugin.zonedSchedule(
-        session.id.hashCode,
-        'Study session coming up',
-        'Time to study "$goalTitle" - ${session.formattedDuration}',
-        scheduledDate,
-        const NotificationDetails(
+        id: session.id.hashCode,
+        title: 'Study session coming up',
+        body: 'Time to study "$goalTitle" - ${session.formattedDuration}',
+        scheduledDate: scheduledDate,
+        notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'study_sessions',
             'Study Session Reminders',
@@ -89,7 +88,6 @@ class NotificationService {
           iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        matchDateTimeComponents: null,
       );
     } catch (e) {
       debugPrint('Failed to schedule session reminder: $e');
@@ -109,15 +107,15 @@ class NotificationService {
         9, // 09:00
       );
 
-      // Don't schedule if in the past
       if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
 
+      final daysLabel = daysBefore == 1 ? 'tomorrow' : 'in $daysBefore days';
       await _plugin.zonedSchedule(
-        goal.id.hashCode,
-        'Deadline tomorrow',
-        '"${goal.title}" is due tomorrow!',
-        scheduledDate,
-        const NotificationDetails(
+        id: goal.id.hashCode,
+        title: 'Deadline $daysLabel',
+        body: '"${goal.title}" is due $daysLabel!',
+        scheduledDate: scheduledDate,
+        notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'deadlines',
             'Deadline Reminders',
@@ -128,7 +126,6 @@ class NotificationService {
           iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        matchDateTimeComponents: null,
       );
     } catch (e) {
       debugPrint('Failed to schedule deadline reminder: $e');
@@ -141,10 +138,10 @@ class NotificationService {
     List<StudySession> sessions,
   ) async {
     try {
-      await _plugin.cancel(goalId.hashCode);
+      await _plugin.cancel(id: goalId.hashCode);
 
       for (final session in sessions) {
-        await _plugin.cancel(session.id.hashCode);
+        await _plugin.cancel(id: session.id.hashCode);
       }
     } catch (e) {
       debugPrint('Failed to cancel goal notifications: $e');
@@ -154,7 +151,7 @@ class NotificationService {
   /// Cancel a single session notification
   static Future<void> cancelSessionNotification(String sessionId) async {
     try {
-      await _plugin.cancel(sessionId.hashCode);
+      await _plugin.cancel(id: sessionId.hashCode);
     } catch (e) {
       debugPrint('Failed to cancel session notification: $e');
     }
@@ -164,14 +161,15 @@ class NotificationService {
   static Future<void> showResumeSessionNotification(String goalTitle) async {
     try {
       await _plugin.show(
-        'resume_session'.hashCode,
-        'Don\'t forget your study session! 📚',
-        'You\'re still studying "$goalTitle". Tap to continue.',
-        const NotificationDetails(
+        id: 'resume_session'.hashCode,
+        title: 'Don\'t forget your study session! 📚',
+        body: 'You\'re still studying "$goalTitle". Tap to continue.',
+        notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'study_timer',
             'Study Timer',
-            channelDescription: 'Notifications for active study timer sessions',
+            channelDescription:
+                'Notifications for active study timer sessions',
             importance: Importance.high,
             priority: Priority.high,
             ongoing: false,
@@ -187,7 +185,7 @@ class NotificationService {
   /// Cancel the resume session notification
   static Future<void> cancelResumeSessionNotification() async {
     try {
-      await _plugin.cancel('resume_session'.hashCode);
+      await _plugin.cancel(id: 'resume_session'.hashCode);
     } catch (e) {
       debugPrint('Failed to cancel resume session notification: $e');
     }

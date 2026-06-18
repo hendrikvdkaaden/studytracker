@@ -17,7 +17,13 @@ class AppColors {
 
   // Background Colors
   static const Color darkBackground = Color(0xFF0F172A);
-  static const Color lightBackground = Color(0xFFF8FAFC);
+  static const Color lightBackground = Color(0xFFF9F9FF);
+
+  // Onboarding light mode
+  static const Color lightChipBg = Color(0xFFF8FAFC);       // slate-50
+  static const Color lightChipBorder = Color(0xFFE2E8F0);   // slate-200
+  static const Color lightNavy = Color(0xFF1A1F2E);         // navy-900
+  static const Color lightNavyMuted = Color(0xFF283044);    // navy-800
 
   // Status Colors
   static const Color overdue = Color(0xFFEF4444);
@@ -94,7 +100,7 @@ class AppColors {
 
   static Color getTextColor(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? lightText : darkText;
+    return isDark ? lightText : lightNavy;
   }
 
   static Color getCalendarBackground(BuildContext context) {

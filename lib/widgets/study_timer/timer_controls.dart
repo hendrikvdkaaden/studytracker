@@ -75,7 +75,7 @@ class TimerControls extends StatelessWidget {
                 backgroundColor: AppColors.calendarAccent,
                 foregroundColor: Colors.white,
                 elevation: 8,
-                shadowColor: AppColors.calendarAccent.withOpacity(0.3),
+                shadowColor: AppColors.calendarAccent.withValues(alpha: 0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

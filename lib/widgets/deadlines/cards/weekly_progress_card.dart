@@ -26,7 +26,7 @@ class WeeklyProgressCard extends StatelessWidget {
         color: isDark ? const Color(0xFF2b2930) : const Color(0xFFf3edf7),
         borderRadius: BorderRadius.circular(32),
         border: Border.all(
-          color: const Color(0xFF6750A4).withOpacity(0.1),
+          color: const Color(0xFF6750A4).withValues(alpha: 0.1),
         ),
       ),
       child: Stack(
@@ -39,7 +39,7 @@ class WeeklyProgressCard extends StatelessWidget {
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                color: const Color(0xFF6750A4).withOpacity(0.1),
+                color: const Color(0xFF6750A4).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
             ),
@@ -83,8 +83,8 @@ class WeeklyProgressCard extends StatelessWidget {
                   height: 8,
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.black.withOpacity(0.2)
-                        : Colors.white.withOpacity(0.5),
+                        ? Colors.black.withValues(alpha: 0.2)
+                        : Colors.white.withValues(alpha: 0.5),
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) {

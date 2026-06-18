@@ -31,7 +31,7 @@ class CalendarSectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.calendarAccent.withOpacity(0.2),
+              color: AppColors.calendarAccent.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(

@@ -43,7 +43,7 @@ class _AutoPlanWizardSheet extends StatefulWidget {
 class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _totalHours = 12;
   int _totalMinutes = 30;
-  List<int> _weekdays = [2, 3, 4]; // Di, Wo, Do default
+  final List<int> _weekdays = [2, 3, 4]; // Di, Wo, Do default
   double _startHour = 8;
   double _endHour = 18;
   int _sessionDurationHours = 0;

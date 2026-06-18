@@ -62,15 +62,16 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
   void _scrollToNotes() {
     Future.delayed(const Duration(milliseconds: 400), () {
-      final ctx = _notesKey.currentContext;
-      if (ctx != null) {
-        Scrollable.ensureVisible(
-          ctx,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          alignment: 0.2,
-        );
-      }
+      if (!mounted) return;
+      final scrollable = _notesKey.currentContext == null
+          ? null
+          : Scrollable.maybeOf(_notesKey.currentContext!);
+      scrollable?.position.ensureVisible(
+        _notesKey.currentContext!.findRenderObject()!,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
     });
   }
 

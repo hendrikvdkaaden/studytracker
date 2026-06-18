@@ -727,4 +727,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get progressEditMinutes => 'MINUTES';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingContinue => 'Continue';
+
+  @override
+  String get onboardingLetsGo => 'Let\'s go!';
+
+  @override
+  String get onboardingLandingTagline => 'Stay on top of your deadlines';
+
+  @override
+  String onboardingStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get onboardingStep1Title => 'What\'s your name?';
+
+  @override
+  String get onboardingStep1Subtitle =>
+      'We\'ll use this to personalize your experience';
+
+  @override
+  String get onboardingNameHint => 'Your name...';
+
+  @override
+  String get onboardingNameError => 'Please enter your name';
+
+  @override
+  String get onboardingSchoolHint => 'School or university (optional)';
+
+  @override
+  String get onboardingStep2Title => 'Add your subjects';
+
+  @override
+  String get onboardingStep2Subtitle =>
+      'Add the subjects you\'re studying so you can organize your deadlines';
+
+  @override
+  String get onboardingStep2Note =>
+      'You can always add more subjects later in your profile.';
+
+  @override
+  String get onboardingAddSubject => 'Add a subject';
+
+  @override
+  String get onboardingStep3Title => 'Set up reminders';
+
+  @override
+  String get onboardingStep3Subtitle =>
+      'Get notified before your study sessions and deadlines';
+
+  @override
+  String get onboardingStep3Note =>
+      'You can change this later in your Profile.';
+
+  @override
+  String get onboardingSessionReminder => 'Session reminder';
+
+  @override
+  String get onboardingDeadlineReminder => 'Deadline reminder';
 }

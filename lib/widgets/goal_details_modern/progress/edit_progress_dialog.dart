@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../../../utils/l10n_extension.dart';
 
 class EditProgressDialog extends StatefulWidget {

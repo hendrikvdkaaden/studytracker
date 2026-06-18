@@ -1,0 +1,294 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../../services/settings_service.dart';
+import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
+import '../../widgets/onboarding/onboarding_landing_button.dart';
+import '../../widgets/onboarding/onboarding_landing_page.dart';
+import '../../widgets/onboarding/onboarding_step_name.dart';
+import '../../widgets/onboarding/onboarding_step_notifications.dart';
+import '../../widgets/onboarding/onboarding_step_subjects.dart';
+import '../../widgets/profile/add_subject_modal.dart';
+import '../navigation/home_page.dart';
+
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final _pageController = PageController();
+  int _currentPage = 0;
+
+  final _nameController = TextEditingController();
+  final _schoolController = TextEditingController();
+  bool _nameError = false;
+
+  List<SubjectData> _subjects = [];
+  int _sessionReminderMinutes = 15;
+  int _deadlineReminderDays = 1;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _nameController.dispose();
+    _schoolController.dispose();
+    super.dispose();
+  }
+
+  void _nextPage() {
+    if (_currentPage == 1) {
+      if (_nameController.text.trim().isEmpty) {
+        setState(() => _nameError = true);
+        return;
+      }
+    }
+    if (_currentPage < 3) {
+      setState(() {
+        _nameError = false;
+        _currentPage++;
+      });
+      _pageController.jumpToPage(_currentPage);
+    } else {
+      _completeOnboarding();
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    final name = _nameController.text.trim();
+    if (name.isNotEmpty) await SettingsService.setUserName(name);
+    final school = _schoolController.text.trim();
+    if (school.isNotEmpty) await SettingsService.setSchoolName(school);
+    if (_subjects.isNotEmpty) await SettingsService.setSubjectData(_subjects);
+    await SettingsService.setSessionReminderMinutes(_sessionReminderMinutes);
+    await SettingsService.setDeadlineReminderDays(_deadlineReminderDays);
+    await SettingsService.setOnboardingCompleted(true);
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    }
+  }
+
+  void _addSubject(SubjectData subject) {
+    if (_subjects.contains(subject)) return;
+    setState(() => _subjects = [..._subjects, subject]);
+  }
+
+  void _removeSubject(SubjectData subject) {
+    setState(() => _subjects = _subjects.where((s) => s != subject).toList());
+  }
+
+  Future<void> _showAddSubjectModal() async {
+    final result = await showModalBottomSheet<SubjectData>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const AddSubjectModal(),
+    );
+    if (result != null && mounted) {
+      _addSubject(result);
+    }
+  }
+
+  Future<void> _pickSessionReminder() async {
+    final options = [0, 5, 10, 15, 30, 60];
+    final initialIndex = options.indexOf(_sessionReminderMinutes);
+    final title = context.l10n.onboardingSessionReminder;
+    final subtitle = context.l10n.profilePickerSessionSubtitle;
+    final itemLabels = options
+        .map((m) => context.l10n.profileSessionReminderFormat(m))
+        .toList();
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return _buildPickerSheet(
+          ctx: ctx,
+          title: title,
+          subtitle: subtitle,
+          initialIndex: initialIndex < 0 ? 3 : initialIndex,
+          itemCount: options.length,
+          itemBuilder: (i) => itemLabels[i],
+          onConfirm: (index) async {
+            if (mounted) setState(() => _sessionReminderMinutes = options[index]);
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _pickDeadlineReminder() async {
+    final options = [1, 2, 3, 7];
+    final initialIndex = options.indexOf(_deadlineReminderDays);
+    final title = context.l10n.onboardingDeadlineReminder;
+    final subtitle = context.l10n.profilePickerDeadlineSubtitle;
+    final itemLabels = options
+        .map((d) => context.l10n.profilePickerDeadlineOptionFormat(d))
+        .toList();
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return _buildPickerSheet(
+          ctx: ctx,
+          title: title,
+          subtitle: subtitle,
+          initialIndex: initialIndex < 0 ? 0 : initialIndex,
+          itemCount: options.length,
+          itemBuilder: (i) => itemLabels[i],
+          onConfirm: (index) async {
+            if (mounted) setState(() => _deadlineReminderDays = options[index]);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildPickerSheet({
+    required BuildContext ctx,
+    required String title,
+    required String subtitle,
+    required int initialIndex,
+    required int itemCount,
+    required String Function(int) itemBuilder,
+    required Future<void> Function(int) onConfirm,
+  }) {
+    final isDark = Theme.of(ctx).brightness == Brightness.dark;
+    int selectedIndex = initialIndex;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.getCardColor(ctx),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, -4),
+                ),
+              ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.getBorderColor(ctx),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.getTextColor(ctx),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 200,
+            child: CupertinoTheme(
+              data: CupertinoThemeData(
+                brightness: isDark ? Brightness.dark : Brightness.light,
+                textTheme: CupertinoTextThemeData(
+                  pickerTextStyle: TextStyle(
+                    fontSize: 20,
+                    color: AppColors.getTextColor(ctx),
+                  ),
+                ),
+              ),
+              child: CupertinoPicker(
+                scrollController: FixedExtentScrollController(
+                  initialItem: initialIndex,
+                ),
+                itemExtent: 44,
+                onSelectedItemChanged: (i) => selectedIndex = i,
+                children: List.generate(
+                  itemCount,
+                  (i) => Center(child: Text(itemBuilder(i))),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+                16, 12, 16, MediaQuery.of(ctx).padding.bottom + 16),
+            child: OnboardingLandingButton(
+              label: context.l10n.btnConfirm,
+              width: double.infinity,
+              onTap: () async {
+                Navigator.pop(ctx);
+                await onConfirm(selectedIndex);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.getBackground(context),
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          OnboardingLandingPage(onNext: _nextPage),
+          OnboardingStepName(
+            nameController: _nameController,
+            schoolController: _schoolController,
+            nameError: _nameError,
+            onNext: _nextPage,
+            onNameChanged: (_) {
+              if (_nameError) setState(() => _nameError = false);
+            },
+          ),
+          OnboardingStepSubjects(
+            subjects: _subjects,
+            onNext: _nextPage,
+            onAddSubject: _showAddSubjectModal,
+            onRemoveSubject: _removeSubject,
+          ),
+          OnboardingStepNotifications(
+            sessionReminderMinutes: _sessionReminderMinutes,
+            deadlineReminderDays: _deadlineReminderDays,
+            onComplete: _completeOnboarding,
+            onSessionReminderTap: _pickSessionReminder,
+            onDeadlineReminderTap: _pickDeadlineReminder,
+          ),
+        ],
+      ),
+    );
+  }
+}

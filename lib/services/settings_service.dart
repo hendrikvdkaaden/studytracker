@@ -153,4 +153,14 @@ class SettingsService {
   static Future<void> setSchoolName(String name) async {
     await _box.put(_keySchoolName, name);
   }
+
+  // Onboarding
+  static const String _keyOnboardingCompleted = 'onboardingCompleted';
+
+  static bool get onboardingCompleted =>
+      _box.get(_keyOnboardingCompleted, defaultValue: false) as bool;
+
+  static Future<void> setOnboardingCompleted(bool value) async {
+    await _box.put(_keyOnboardingCompleted, value);
+  }
 }

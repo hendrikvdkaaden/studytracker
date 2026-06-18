@@ -101,12 +101,8 @@ class StudySessionRepository {
 
   /// Get planned sessions for a specific date
   List<StudySession> getPlannedSessionsByDate(DateTime date) {
-    final startOfDay = DateTime(date.year, date.month, date.day);
-    final endOfDay = startOfDay.add(const Duration(days: 1));
-
     return _box.values
         .where((session) {
-          // Check if session.date is on the same day
           final sessionDay = DateTime(
             session.date.year,
             session.date.month,

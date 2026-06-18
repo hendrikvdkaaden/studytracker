@@ -316,12 +316,15 @@
   "onboardingStep1Title": "What's your name?",
   "onboardingStep1Subtitle": "We'll use this to personalize your experience",
   "onboardingNameHint": "Your name...",
+  "onboardingNameError": "Please enter your name",
   "onboardingSchoolHint": "School or university (optional)",
   "onboardingStep2Title": "Add your subjects",
   "onboardingStep2Subtitle": "Add the subjects you're studying so you can organize your deadlines",
+  "onboardingStep2Note": "You can always add more subjects later in your profile.",
   "onboardingAddSubject": "Add a subject",
   "onboardingStep3Title": "Set up reminders",
   "onboardingStep3Subtitle": "Get notified before your study sessions and deadlines",
+  "onboardingStep3Note": "You can change this later in your Profile.",
   "onboardingSessionReminder": "Session reminder",
   "onboardingDeadlineReminder": "Deadline reminder"
 }

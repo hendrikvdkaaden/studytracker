@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
-import '../../../theme/app_colors.dart';
 import '../../common/planned_session_item.dart';
 
 class PlannedSessionsList extends StatelessWidget {
@@ -30,7 +29,7 @@ class PlannedSessionsList extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

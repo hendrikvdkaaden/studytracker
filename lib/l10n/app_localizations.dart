@@ -1317,6 +1317,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MINUTES'**
   String get progressEditMinutes;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingLetsGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go!'**
+  String get onboardingLetsGo;
+
+  /// No description provided for @onboardingLandingTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on top of your deadlines'**
+  String get onboardingLandingTagline;
+
+  /// No description provided for @onboardingStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String onboardingStepOf(int step, int total);
+
+  /// No description provided for @onboardingStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your name?'**
+  String get onboardingStep1Title;
+
+  /// No description provided for @onboardingStep1Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll use this to personalize your experience'**
+  String get onboardingStep1Subtitle;
+
+  /// No description provided for @onboardingNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name...'**
+  String get onboardingNameHint;
+
+  /// No description provided for @onboardingNameError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name'**
+  String get onboardingNameError;
+
+  /// No description provided for @onboardingSchoolHint.
+  ///
+  /// In en, this message translates to:
+  /// **'School or university (optional)'**
+  String get onboardingSchoolHint;
+
+  /// No description provided for @onboardingStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your subjects'**
+  String get onboardingStep2Title;
+
+  /// No description provided for @onboardingStep2Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the subjects you\'re studying so you can organize your deadlines'**
+  String get onboardingStep2Subtitle;
+
+  /// No description provided for @onboardingStep2Note.
+  ///
+  /// In en, this message translates to:
+  /// **'You can always add more subjects later in your profile.'**
+  String get onboardingStep2Note;
+
+  /// No description provided for @onboardingAddSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a subject'**
+  String get onboardingAddSubject;
+
+  /// No description provided for @onboardingStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up reminders'**
+  String get onboardingStep3Title;
+
+  /// No description provided for @onboardingStep3Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified before your study sessions and deadlines'**
+  String get onboardingStep3Subtitle;
+
+  /// No description provided for @onboardingStep3Note.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this later in your Profile.'**
+  String get onboardingStep3Note;
+
+  /// No description provided for @onboardingSessionReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reminder'**
+  String get onboardingSessionReminder;
+
+  /// No description provided for @onboardingDeadlineReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline reminder'**
+  String get onboardingDeadlineReminder;
 }
 
 class _AppLocalizationsDelegate

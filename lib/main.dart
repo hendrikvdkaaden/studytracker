@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'l10n/app_localizations.dart';
 import 'product/navigation/home_page.dart';
+import 'product/screens/onboarding_screen.dart';
 import 'services/hive_service.dart';
 import 'services/notification_service.dart';
 import 'services/settings_service.dart';
@@ -50,7 +51,9 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           themeMode: themeMode,
-          home: const HomePage(),
+          home: SettingsService.onboardingCompleted
+              ? const HomePage()
+              : const OnboardingScreen(),
         );
       },
     );

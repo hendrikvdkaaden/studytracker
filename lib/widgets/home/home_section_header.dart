@@ -35,13 +35,13 @@ class HomeSectionHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: isDark
-                  ? AppColors.overdue.withOpacity(0.2)
-                  : AppColors.overdue.withOpacity(0.1),
+                  ? AppColors.overdue.withValues(alpha: 0.2)
+                  : AppColors.overdue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isDark
-                    ? AppColors.overdue.withOpacity(0.3)
-                    : AppColors.overdue.withOpacity(0.2),
+                    ? AppColors.overdue.withValues(alpha: 0.3)
+                    : AppColors.overdue.withValues(alpha: 0.2),
               ),
             ),
             child: Text(

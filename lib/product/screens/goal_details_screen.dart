@@ -134,6 +134,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
       context: context,
       session: session,
       existingSessions: _plannedSessions,
+      deadline: _goal.date,
       onSessionUpdated: (updated) async {
         await _sessionRepo.updateSession(updated);
         await Future.wait([
@@ -157,6 +158,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     await showStudySessionPicker(
       context: context,
       existingSessions: _plannedSessions,
+      deadline: _goal.date,
       onSessionAdded: (session) async {
         final sessionWithGoalId = session.copyWith(goalId: _goal.id);
         await _sessionRepo.addSession(sessionWithGoalId);

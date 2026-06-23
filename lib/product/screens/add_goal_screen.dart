@@ -84,13 +84,28 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     await showStudySessionPicker(
       context: context,
       existingSessions: _plannedSessions,
+      deadline: _selectedDate,
       onSessionAdded: (session) {
         setState(() {
           _plannedSessions.add(session);
+          _sortSessions();
         });
       },
     );
     if (mounted) FocusScope.of(context).unfocus();
+  }
+
+  void _sortSessions() {
+    _plannedSessions.sort((a, b) {
+      final dateCompare = a.date.compareTo(b.date);
+      if (dateCompare != 0) return dateCompare;
+      final aStart = a.startTime;
+      final bStart = b.startTime;
+      if (aStart == null && bStart == null) return 0;
+      if (aStart == null) return 1;
+      if (bStart == null) return -1;
+      return aStart.compareTo(bStart);
+    });
   }
 
   void _deleteSession(int index) {
@@ -105,9 +120,11 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       context: context,
       session: _plannedSessions[index],
       existingSessions: _plannedSessions,
+      deadline: _selectedDate,
       onSessionUpdated: (updated) {
         setState(() {
           _plannedSessions[index] = updated;
+          _sortSessions();
         });
       },
     );
@@ -121,7 +138,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     final result = await showAutoPlanWizard(context: context);
     if (result == null || !mounted) return;
 
-    // Overlap check only against DB sessions (form sessions are replaced)
     final existing = _sessionRepo.getAllPlannedSessions();
 
     final generated = AutoPlannerService.generateSessions(
@@ -134,6 +150,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       endHour: result.endHour,
       endMinute: result.endMinute,
       sessionDuration: result.sessionDuration,
+      breakMinutes: result.breakMinutes,
       existingSessions: existing,
     );
 
@@ -152,6 +169,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     setState(() {
       _plannedSessions.clear();
       _plannedSessions.addAll(generated);
+      _sortSessions();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -173,7 +191,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 
       final goal = Goal(
         id: const Uuid().v4(),
-        title: _titleController.text,
+        title: _titleController.text.trim(),
         subject: subjectValue,
         date: _selectedDate,
         type: _selectedType,

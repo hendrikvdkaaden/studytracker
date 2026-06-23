@@ -10,6 +10,7 @@ class AutoPlanWizardResult {
   final int endHour;
   final int endMinute;
   final int sessionDuration; // minutes
+  final int breakMinutes; // break between sessions on the same day
 
   const AutoPlanWizardResult({
     required this.totalMinutes,
@@ -19,6 +20,7 @@ class AutoPlanWizardResult {
     required this.endHour,
     required this.endMinute,
     required this.sessionDuration,
+    required this.breakMinutes,
   });
 }
 
@@ -41,13 +43,14 @@ class _AutoPlanWizardSheet extends StatefulWidget {
 }
 
 class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
-  int _totalHours = 12;
+  int _totalHours = 5;
   int _totalMinutes = 30;
   final List<int> _weekdays = [2, 3, 4]; // Di, Wo, Do default
   double _startHour = 8;
   double _endHour = 18;
   int _sessionDurationHours = 0;
   int _sessionDurationMinutes = 45;
+  int _breakMinutes = 15;
 
   static const _dayLabels = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   static const _dayValues = [1, 2, 3, 4, 5, 6, 7];
@@ -100,6 +103,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         endHour: _endHour.round(),
         endMinute: 0,
         sessionDuration: sessionMins,
+        breakMinutes: _breakMinutes,
       ),
     );
   }
@@ -294,6 +298,18 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   onMinutesChanged: (v) =>
                       setState(() => _sessionDurationMinutes = v),
                 ),
+                const SizedBox(height: 28),
+
+                // 5. Pauze tussen sessies
+                _buildSectionHeader(
+                  label: context.l10n.autoPlanBreakDurationLabel,
+                  icon: Icons.coffee_outlined,
+                  iconBg: AppColors.iconBgOrange,
+                  iconColor: AppColors.iconOrange,
+                  isDark: isDark,
+                ),
+                const SizedBox(height: 12),
+                _buildBreakPicker(isDark: isDark, sectionBg: sectionBg, subtleText: subtleText),
                 const SizedBox(height: 24),
               ],
             ),
@@ -464,93 +480,79 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     required int max,
     required ValueChanged<int> onChanged,
   }) {
-    final cardColor = isDark ? AppColors.darkCard : Colors.white;
-    final valueColor = isDark ? Colors.white : AppColors.darkText;
-
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-            color: isDark ? Colors.grey[500] : Colors.grey[400],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.grey[100]!,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Text(
-            value.toString().padLeft(2, '0'),
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w300,
-              color: valueColor,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            _stepButton(
-              icon: Icons.remove,
-              onTap: () {
-                if (value > 0) onChanged(value - 1);
-              },
-              isDark: isDark,
-            ),
-            const SizedBox(width: 8),
-            _stepButton(
-              icon: Icons.add,
-              onTap: () {
-                if (value < max) onChanged(value + 1);
-              },
-              isDark: isDark,
-            ),
-          ],
-        ),
-      ],
+    return _InlineStepper(
+      isDark: isDark,
+      label: label,
+      value: value,
+      max: max,
+      onChanged: onChanged,
     );
   }
 
-  Widget _stepButton({
-    required IconData icon,
-    required VoidCallback onTap,
+  Widget _buildBreakPicker({
     required bool isDark,
+    required Color sectionBg,
+    required Color subtleText,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
+    const options = [0, 15, 30, 45, 60];
+    final labels = [
+      context.l10n.autoPlanBreakNone,
+      context.l10n.autoPlanBreak15,
+      context.l10n.autoPlanBreak30,
+      context.l10n.autoPlanBreak45,
+      context.l10n.autoPlanBreak60,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: sectionBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
           color: isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
+              ? Colors.white.withValues(alpha: 0.06)
+              : AppColors.lightBorder,
         ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: isDark ? Colors.grey[300] : Colors.grey[600],
-        ),
+      ),
+      child: Row(
+        children: List.generate(options.length, (i) {
+          final selected = _breakMinutes == options[i];
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _breakMinutes = options[i]),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                margin: EdgeInsets.only(right: i < options.length - 1 ? 6 : 0),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? AppColors.primary
+                      : (isDark
+                          ? Colors.white.withValues(alpha: 0.06)
+                          : Colors.white),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: selected
+                        ? AppColors.primary
+                        : (isDark
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.grey[200]!),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    labels[i],
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: selected ? Colors.white : subtleText,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -661,6 +663,203 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _InlineStepper extends StatefulWidget {
+  final bool isDark;
+  final String label;
+  final int value;
+  final int max;
+  final ValueChanged<int> onChanged;
+
+  const _InlineStepper({
+    required this.isDark,
+    required this.label,
+    required this.value,
+    required this.max,
+    required this.onChanged,
+  });
+
+  @override
+  State<_InlineStepper> createState() => _InlineStepperState();
+}
+
+class _InlineStepperState extends State<_InlineStepper> {
+  bool _editing = false;
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value.toString());
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus && _editing) _commit();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_InlineStepper old) {
+    super.didUpdateWidget(old);
+    if (!_editing && old.value != widget.value) {
+      _controller.text = widget.value.toString();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _startEditing() {
+    setState(() {
+      _editing = true;
+      _controller.text = widget.value.toString();
+      _controller.selection =
+          TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+    });
+    _focusNode.requestFocus();
+  }
+
+  void _commit() {
+    final parsed = int.tryParse(_controller.text.trim());
+    final clamped = (parsed ?? widget.value).clamp(0, widget.max);
+    setState(() => _editing = false);
+    widget.onChanged(clamped);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cardColor = widget.isDark ? AppColors.darkCard : Colors.white;
+    final valueColor = widget.isDark ? Colors.white : AppColors.darkText;
+
+    return Column(
+      children: [
+        Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+            color: widget.isDark ? Colors.grey[500] : Colors.grey[400],
+          ),
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: _editing ? null : _startEditing,
+          child: Container(
+            width: 88,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: cardColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _editing
+                    ? AppColors.primary
+                    : (widget.isDark
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.grey[100]!),
+                width: _editing ? 2 : 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: _editing
+                ? TextField(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w300,
+                      color: valueColor,
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    onSubmitted: (_) => _commit(),
+                  )
+                : Text(
+                    widget.value.toString().padLeft(2, '0'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w300,
+                      color: valueColor,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _StepButton(
+              icon: Icons.remove,
+              isDark: widget.isDark,
+              onTap: () {
+                if (widget.value > 0) widget.onChanged(widget.value - 1);
+              },
+            ),
+            const SizedBox(width: 8),
+            _StepButton(
+              icon: Icons.add,
+              isDark: widget.isDark,
+              onTap: () {
+                if (widget.value < widget.max) {
+                  widget.onChanged(widget.value + 1);
+                }
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _StepButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool isDark;
+
+  const _StepButton({
+    required this.icon,
+    required this.onTap,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: isDark ? Colors.grey[300] : Colors.grey[600],
+        ),
       ),
     );
   }

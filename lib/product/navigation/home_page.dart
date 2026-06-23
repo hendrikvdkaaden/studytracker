@@ -18,23 +18,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  final _homeScreenKey = GlobalKey<HomeScreenState>();
+  late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
     NotificationService.requestPermission();
+    _screens = [
+      HomeScreen(key: _homeScreenKey),
+      const PlanScreen(),
+      DashboardScreen(),
+      ProfileScreen(onThemeChanged: _onThemeChanged),
+    ];
   }
 
   void _onThemeChanged() {
     themeModeNotifier.value = SettingsService.themeMode;
   }
-
-  List<Widget> get _screens => [
-    const HomeScreen(),
-    const PlanScreen(),
-    DashboardScreen(),
-    ProfileScreen(onThemeChanged: _onThemeChanged),
-  ];
 
   List<String> _buildTitles(BuildContext context) => [
     context.l10n.navHome,
@@ -83,6 +84,9 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _currentIndex = index;
             });
+            if (index == 0) {
+              _homeScreenKey.currentState?.refresh();
+            }
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: isDark

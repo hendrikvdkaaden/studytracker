@@ -10,12 +10,14 @@ class StudySessionPickerModal extends StatefulWidget {
   final void Function(StudySession session) onSessionAdded;
   final List<StudySession> existingSessions;
   final StudySession? initialSession; // non-null = edit mode
+  final DateTime? deadline;
 
   const StudySessionPickerModal({
     super.key,
     required this.onSessionAdded,
     this.existingSessions = const [],
     this.initialSession,
+    this.deadline,
   });
 
   @override
@@ -91,11 +93,18 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   }
 
   Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final rawDeadline = widget.deadline;
+    final lastDate = rawDeadline != null && !rawDeadline.isBefore(today)
+        ? rawDeadline
+        : today.add(const Duration(days: 365));
+    final clampedInitial = selectedDate.isBefore(today) ? today : selectedDate;
     final date = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      initialDate: clampedInitial,
+      firstDate: today,
+      lastDate: lastDate,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -646,6 +655,7 @@ Future<void> showStudySessionPicker({
   required BuildContext context,
   required void Function(StudySession session) onSessionAdded,
   List<StudySession> existingSessions = const [],
+  DateTime? deadline,
 }) async {
   await showModalBottomSheet(
     context: context,
@@ -656,6 +666,7 @@ Future<void> showStudySessionPicker({
       return StudySessionPickerModal(
         onSessionAdded: onSessionAdded,
         existingSessions: existingSessions,
+        deadline: deadline,
       );
     },
   );
@@ -666,6 +677,7 @@ Future<void> showStudySessionEditor({
   required StudySession session,
   required void Function(StudySession updated) onSessionUpdated,
   List<StudySession> existingSessions = const [],
+  DateTime? deadline,
 }) async {
   await showModalBottomSheet(
     context: context,
@@ -675,10 +687,10 @@ Future<void> showStudySessionEditor({
     builder: (BuildContext context) {
       return StudySessionPickerModal(
         onSessionAdded: onSessionUpdated,
-        // Exclude the session being edited from overlap check
         existingSessions:
             existingSessions.where((s) => s.id != session.id).toList(),
         initialSession: session,
+        deadline: deadline,
       );
     },
   );

@@ -224,12 +224,13 @@ class HomeSessionItem extends StatelessWidget {
               width: 32,
               child: Column(
                 children: [
+                  SizedBox(height: 4),
                   _buildCircle(isDark),
                   if (!isLast)
                     Expanded(
                       child: Container(
                         width: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        margin: const EdgeInsets.symmetric(vertical: 2),
                         decoration: BoxDecoration(
                           color: _getLineColor(isDark),
                           borderRadius: BorderRadius.circular(1),

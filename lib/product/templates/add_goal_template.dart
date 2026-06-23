@@ -71,7 +71,7 @@ class AddGoalTemplate extends StatelessWidget {
             iconBg: AppColors.iconBgTeal,
             iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.trim().isEmpty) {
                 return context.l10n.addGoalValidateTitle;
               }
               return null;

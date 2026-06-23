@@ -172,7 +172,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionPickerMinutes => 'Minutes';
 
   @override
-  String get autoPlanTitle => 'Plan Sessions';
+  String get autoPlanTitle => 'Session Planner';
 
   @override
   String get autoPlanTotalStudyTimeLabel => 'Total Study Time';
@@ -185,6 +185,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoPlanSessionDurationLabel => 'Session Duration';
+
+  @override
+  String get autoPlanBreakDurationLabel => 'Break Between Sessions';
+
+  @override
+  String get autoPlanBreakNone => 'None';
+
+  @override
+  String get autoPlanBreak15 => '15 min';
+
+  @override
+  String get autoPlanBreak30 => '30 min';
+
+  @override
+  String get autoPlanBreak45 => '45 min';
+
+  @override
+  String get autoPlanBreak60 => '1 hour';
 
   @override
   String get autoPlanConfirmButton => 'Plan Sessions';

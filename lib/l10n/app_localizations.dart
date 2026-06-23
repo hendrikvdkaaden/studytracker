@@ -403,7 +403,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoPlanTitle.
   ///
   /// In en, this message translates to:
-  /// **'Plan Sessions'**
+  /// **'Session Planner'**
   String get autoPlanTitle;
 
   /// No description provided for @autoPlanTotalStudyTimeLabel.
@@ -429,6 +429,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Session Duration'**
   String get autoPlanSessionDurationLabel;
+
+  /// No description provided for @autoPlanBreakDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Break Between Sessions'**
+  String get autoPlanBreakDurationLabel;
+
+  /// No description provided for @autoPlanBreakNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get autoPlanBreakNone;
+
+  /// No description provided for @autoPlanBreak15.
+  ///
+  /// In en, this message translates to:
+  /// **'15 min'**
+  String get autoPlanBreak15;
+
+  /// No description provided for @autoPlanBreak30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 min'**
+  String get autoPlanBreak30;
+
+  /// No description provided for @autoPlanBreak45.
+  ///
+  /// In en, this message translates to:
+  /// **'45 min'**
+  String get autoPlanBreak45;
+
+  /// No description provided for @autoPlanBreak60.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get autoPlanBreak60;
 
   /// No description provided for @autoPlanConfirmButton.
   ///

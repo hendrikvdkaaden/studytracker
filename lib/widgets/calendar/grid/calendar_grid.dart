@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../services/goal_repository.dart';
-import '../../../services/study_session_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../providers/app_providers.dart';
+import '../../../services/goal_status_service.dart';
 import '../../../utils/calendar_helpers.dart';
 import 'calendar_day_builder.dart';
 import 'weekday_headers.dart';
 
 /// Main calendar grid widget that displays a month view with weekday headers
 /// and a 7x5 grid of days
-class CalendarGrid extends StatelessWidget {
+class CalendarGrid extends ConsumerWidget {
   final DateTime focusedMonth;
   final DateTime selectedDate;
-  final GoalRepository goalRepo;
-  final StudySessionRepository sessionRepo;
   final Function(DateTime) onDateSelected;
 
   static const _calendarWeeks = 35;
@@ -21,28 +20,26 @@ class CalendarGrid extends StatelessWidget {
     super.key,
     required this.focusedMonth,
     required this.selectedDate,
-    required this.goalRepo,
-    required this.sessionRepo,
     required this.onDateSelected,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statusService = ref.watch(goalStatusServiceProvider);
     return Column(
       children: [
         const WeekdayHeaders(),
-        _buildCalendarDaysGrid(),
+        _buildCalendarDaysGrid(statusService),
       ],
     );
   }
 
-  Widget _buildCalendarDaysGrid() {
+  Widget _buildCalendarDaysGrid(GoalStatusService statusService) {
     final calendarInfo = CalendarHelpers.getCalendarInfo(focusedMonth);
     final dayBuilder = CalendarDayBuilder(
       focusedMonth: focusedMonth,
       selectedDate: selectedDate,
-      goalRepo: goalRepo,
-      sessionRepo: sessionRepo,
+      statusService: statusService,
       onDateSelected: onDateSelected,
     );
 

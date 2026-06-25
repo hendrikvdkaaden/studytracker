@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../services/goal_repository.dart';
 import '../../../services/goal_status_service.dart';
-import '../../../services/study_session_repository.dart';
 import '../../../utils/calendar_helpers.dart';
 import 'calendar_day_cell.dart';
 
@@ -9,18 +7,15 @@ import 'calendar_day_cell.dart';
 class CalendarDayBuilder {
   final DateTime focusedMonth;
   final DateTime selectedDate;
-  final GoalRepository goalRepo;
-  final StudySessionRepository sessionRepo;
+  final GoalStatusService statusService;
   final Function(DateTime) onDateSelected;
-  final GoalStatusService _statusService;
 
   CalendarDayBuilder({
     required this.focusedMonth,
     required this.selectedDate,
-    required this.goalRepo,
-    required this.sessionRepo,
+    required this.statusService,
     required this.onDateSelected,
-  }) : _statusService = GoalStatusService(goalRepo, sessionRepo);
+  });
 
   /// Builds a calendar cell based on its position in the grid
   Widget buildDay(int index, CalendarInfo info) {
@@ -62,7 +57,7 @@ class CalendarDayBuilder {
       isCurrentMonth: true,
       isToday: CalendarHelpers.isSameDay(date, now),
       isSelected: CalendarHelpers.isSameDay(date, selectedDate),
-      statuses: _statusService.getStatusesForDate(date),
+      statuses: statusService.getStatusesForDate(date),
       onTap: () => onDateSelected(date),
     );
   }

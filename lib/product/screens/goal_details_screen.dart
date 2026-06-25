@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
 import '../../models/study_session.dart';
+import '../../providers/app_providers.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
 import '../../services/notification_service.dart';
@@ -13,22 +15,22 @@ import '../../widgets/goal_details_modern/info/goal_info_edit_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/goal_details_template.dart';
 
-class GoalDetailsScreen extends StatefulWidget {
+class GoalDetailsScreen extends ConsumerStatefulWidget {
   final Goal goal;
 
   const GoalDetailsScreen({super.key, required this.goal});
 
   @override
-  State<GoalDetailsScreen> createState() => _GoalDetailsScreenState();
+  ConsumerState<GoalDetailsScreen> createState() => _GoalDetailsScreenState();
 }
 
-class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
+class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
   late Goal _goal;
   late int _timeSpent;
   late List<StudySession> _plannedSessions;
 
-  final GoalOperationsService _operationsService = GoalOperationsService();
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+  GoalOperationsService get _operationsService => ref.read(goalOperationsServiceProvider);
+  StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
 
   @override
   void initState() {

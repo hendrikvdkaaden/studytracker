@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import '../templates/plan_template.dart';
 
-class PlanScreen extends StatefulWidget {
+class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
 
   @override
-  State<PlanScreen> createState() => _PlanScreenState();
+  ConsumerState<PlanScreen> createState() => _PlanScreenState();
 }
 
-class _PlanScreenState extends State<PlanScreen> {
-  final GoalRepository _goalRepo = GoalRepository();
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+class _PlanScreenState extends ConsumerState<PlanScreen> {
+  GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
+  StudySessionRepository get _sessionRepo =>
+      ref.read(studySessionRepositoryProvider);
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedMonth = DateTime.now();
 
@@ -61,8 +63,6 @@ class _PlanScreenState extends State<PlanScreen> {
       body: PlanTemplate(
         focusedMonth: _focusedMonth,
         selectedDate: _selectedDate,
-        goalRepo: _goalRepo,
-        sessionRepo: _sessionRepo,
         goalsForSelectedDate: goalsForSelectedDate,
         sessionsForSelectedDate: sessionsForSelectedDate,
         onPreviousMonth: _previousMonth,

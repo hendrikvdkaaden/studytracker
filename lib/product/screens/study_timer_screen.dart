@@ -2,15 +2,17 @@ import 'dart:async';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../providers/app_providers.dart';
 import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/study_timer/timer_controls.dart';
 import '../templates/study_timer_template.dart';
 
-class StudyTimerScreen extends StatefulWidget {
+class StudyTimerScreen extends ConsumerStatefulWidget {
   final StudySession session;
   final Goal goal;
 
@@ -21,12 +23,12 @@ class StudyTimerScreen extends StatefulWidget {
   });
 
   @override
-  State<StudyTimerScreen> createState() => _StudyTimerScreenState();
+  ConsumerState<StudyTimerScreen> createState() => _StudyTimerScreenState();
 }
 
-class _StudyTimerScreenState extends State<StudyTimerScreen>
+class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
     with WidgetsBindingObserver {
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+  StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
   late final ConfettiController _confettiController;
   Timer? _timer;
   int _elapsedSeconds = 0;

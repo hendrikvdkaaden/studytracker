@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
 import '../../models/day_status.dart';
 import '../../models/study_session.dart';
+import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/calendar_helpers.dart';
@@ -10,16 +12,16 @@ import '../templates/dashboard_template.dart';
 import 'add_goal_screen.dart';
 import 'goal_details_screen.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  final GoalRepository _goalRepo = GoalRepository();
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
+  StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
 
   /// Returns the midnight at the end of the day a session was planned on.
   DateTime _endOfDay(StudySession s) =>

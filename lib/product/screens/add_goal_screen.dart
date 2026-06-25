@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../providers/app_providers.dart';
 import '../../services/auto_planner_service.dart';
 import '../../services/goal_repository.dart';
 import '../../services/notification_service.dart';
@@ -13,19 +15,19 @@ import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../templates/add_goal_template.dart';
 
-class AddGoalScreen extends StatefulWidget {
+class AddGoalScreen extends ConsumerStatefulWidget {
   const AddGoalScreen({super.key});
 
   @override
-  State<AddGoalScreen> createState() => _AddGoalScreenState();
+  ConsumerState<AddGoalScreen> createState() => _AddGoalScreenState();
 }
 
-class _AddGoalScreenState extends State<AddGoalScreen> {
+class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _subjectController = TextEditingController();
-  final GoalRepository _goalRepo = GoalRepository();
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+  GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
+  StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
 
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
   GoalType _selectedType = GoalType.exam;

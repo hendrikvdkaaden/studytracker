@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
@@ -8,17 +10,17 @@ import '../templates/home_template.dart';
 import 'goal_details_screen.dart';
 import 'study_timer_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => HomeScreenState();
+  ConsumerState<HomeScreen> createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends ConsumerState<HomeScreen> {
   void refresh() => setState(() {});
-  final GoalRepository _goalRepo = GoalRepository();
-  final StudySessionRepository _sessionRepo = StudySessionRepository();
+  GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
+  StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
   DateTime _selectedDate = DateTime.now();
 
   bool _isSameDay(DateTime date1, DateTime date2) {

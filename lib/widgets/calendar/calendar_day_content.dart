@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../product/screens/goal_details_screen.dart';
 import '../../product/screens/study_timer_screen.dart';
+import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../theme/app_colors.dart';
 import 'goals/deadline_list_item.dart';
 import 'sessions/session_list_item.dart';
 
-class CalendarDayContent extends StatefulWidget {
+class CalendarDayContent extends ConsumerStatefulWidget {
   final List<Goal> goals;
   final List<StudySession> sessions;
   final VoidCallback onGoalUpdated;
@@ -21,11 +23,11 @@ class CalendarDayContent extends StatefulWidget {
   });
 
   @override
-  State<CalendarDayContent> createState() => _CalendarDayContentState();
+  ConsumerState<CalendarDayContent> createState() => _CalendarDayContentState();
 }
 
-class _CalendarDayContentState extends State<CalendarDayContent> {
-  final _goalRepo = GoalRepository();
+class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
+  GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
 
   bool _isSessionCompleted(StudySession session) {
     return session.actualDuration != null &&

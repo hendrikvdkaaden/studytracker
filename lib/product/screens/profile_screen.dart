@@ -1,24 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/app_providers.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
-import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/profile/add_subject_modal.dart';
 import '../../widgets/profile/edit_name_dialog.dart';
 import '../templates/profile_template.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   final VoidCallback? onThemeChanged;
 
   const ProfileScreen({super.key, this.onThemeChanged});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String _userName = '';
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
@@ -450,7 +451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       confirmLabel: l10n.profileDeleteSessionsConfirm,
     );
     if (confirmed == true && mounted) {
-      await StudySessionRepository().clearAll();
+      await ref.read(studySessionRepositoryProvider).clearAll();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

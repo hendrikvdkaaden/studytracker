@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../services/goal_repository.dart';
-import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import 'grid/calendar_grid.dart';
 import 'grid/month_navigation.dart';
@@ -8,8 +6,6 @@ import 'grid/month_navigation.dart';
 class CalendarSection extends StatelessWidget {
   final DateTime focusedMonth;
   final DateTime selectedDate;
-  final GoalRepository goalRepo;
-  final StudySessionRepository sessionRepo;
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
   final Function(DateTime) onDateSelected;
@@ -21,8 +17,6 @@ class CalendarSection extends StatelessWidget {
     super.key,
     required this.focusedMonth,
     required this.selectedDate,
-    required this.goalRepo,
-    required this.sessionRepo,
     required this.onPreviousMonth,
     required this.onNextMonth,
     required this.onDateSelected,
@@ -50,8 +44,6 @@ class CalendarSection extends StatelessWidget {
             child: CalendarGrid(
               focusedMonth: focusedMonth,
               selectedDate: selectedDate,
-              goalRepo: goalRepo,
-              sessionRepo: sessionRepo,
               onDateSelected: onDateSelected,
             ),
           ),

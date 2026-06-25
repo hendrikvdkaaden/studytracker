@@ -1,4 +1,4 @@
-package com.example.studytrack
+package com.hendrikvdk.deadly
 
 import io.flutter.embedding.android.FlutterActivity
 

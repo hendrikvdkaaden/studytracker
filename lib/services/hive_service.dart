@@ -14,11 +14,11 @@ class HiveService {
     // Initialize Hive for Flutter
     await Hive.initFlutter();
 
-    // Register all type adapters
-    Hive.registerAdapter(GoalAdapter());
-    Hive.registerAdapter(GoalTypeAdapter());
-    Hive.registerAdapter(DifficultyAdapter());
-    Hive.registerAdapter(StudySessionAdapter());
+    // Register all type adapters (guard against duplicate registration on hot restart)
+    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(GoalAdapter());
+    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(GoalTypeAdapter());
+    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(DifficultyAdapter());
+    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(StudySessionAdapter());
 
     // Open all boxes
     await Hive.openBox<Goal>(goalsBoxName);

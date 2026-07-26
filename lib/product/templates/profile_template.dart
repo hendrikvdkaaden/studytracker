@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/l10n_extension.dart';
+import '../../widgets/common/premium_icon.dart';
 import '../../widgets/profile/subjects_section.dart';
 
 class ProfileTemplate extends StatelessWidget {
@@ -12,6 +13,8 @@ class ProfileTemplate extends StatelessWidget {
   final String appVersion;
   final List<SubjectData> subjects;
   final String schoolName;
+  final bool isPremium;
+  final VoidCallback onSubscriptionTap;
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
   final VoidCallback onDeadlineReminderTap;
@@ -30,6 +33,8 @@ class ProfileTemplate extends StatelessWidget {
     required this.appVersion,
     required this.subjects,
     required this.schoolName,
+    required this.isPremium,
+    required this.onSubscriptionTap,
     required this.onEditName,
     required this.onSessionReminderTap,
     required this.onDeadlineReminderTap,
@@ -70,11 +75,10 @@ class ProfileTemplate extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 40),
       children: [
-        // Profile Header
         _buildProfileHeader(context, isDark),
         const SizedBox(height: 24),
-
-        // Subjects Section
+        _buildPremiumCard(context, isDark),
+        const SizedBox(height: 24),
         _buildSectionLabel(l10n.profileSectionSubjects, isDark),
         const SizedBox(height: 8),
         SubjectsSection(
@@ -83,8 +87,6 @@ class ProfileTemplate extends StatelessWidget {
           onDeleteSubject: onDeleteSubject,
         ),
         const SizedBox(height: 24),
-
-        // Notifications Section
         _buildSectionLabel(l10n.profileSectionNotifications, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
@@ -113,8 +115,6 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-
-        // Appearance Section
         _buildSectionLabel(l10n.profileSectionAppearance, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
@@ -133,8 +133,6 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-
-        // Data Section
         _buildSectionLabel(l10n.profileSectionData, isDark),
         const SizedBox(height: 8),
         _buildGroupCard(
@@ -165,8 +163,6 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 32),
-
-        // App version
         Center(
           child: Text(
             l10n.profileVersionLabel(appVersion),
@@ -348,6 +344,154 @@ class ProfileTemplate extends StatelessWidget {
                 color: isDark ? Colors.grey[600] : Colors.grey[400],
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPremiumCard(BuildContext context, bool isDark) {
+    if (isPremium) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.25),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.star_rounded, color: AppColors.primary, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.profilePremiumTitle,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      context.l10n.profilePremiumSubtitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primary.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Non-premium: gradient card met Upgrade knop
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GestureDetector(
+        onTap: onSubscriptionTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: BoxDecoration(
+            gradient: isDark
+                ? const LinearGradient(
+                    colors: [Color(0xFF1E2A4A), Color(0xFF1A1F3A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : const LinearGradient(
+                    colors: [Color(0xFFEFF6FF), Color(0xFFE0E7FF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark
+                  ? const Color(0xFF3B82F6).withValues(alpha: 0.10)
+                  : const Color(0xFF3B82F6).withValues(alpha: 0.20),
+            ),
+          ),
+          child: Row(
+            children: [
+              // Icon
+              const PremiumIcon(size: 60),
+              const SizedBox(width: 16),
+              // Text
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.profileUpgradeTitle,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.1,
+                        color: isDark
+                            ? const Color(0xFFBFD7FF)
+                            : const Color(0xFF1E3A8A),
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      context.l10n.profileUpgradeSubtitle,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                        color: isDark
+                            ? const Color(0xFFDDE9FF)
+                            : const Color(0xFF1D4ED8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Upgrade button (tap handled by outer GestureDetector)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF3B82F6).withValues(alpha: 0.30),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  context.l10n.profileUpgradeButton,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

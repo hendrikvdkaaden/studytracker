@@ -7,12 +7,15 @@ import '../../providers/app_providers.dart';
 import '../../services/auto_planner_service.dart';
 import '../../services/goal_repository.dart';
 import '../../services/notification_service.dart';
-import '../../services/settings_service.dart'; // also imports SubjectData
+import '../../services/settings_service.dart';
+import '../../services/subscription_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/format_helpers.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
+import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/add_goal_template.dart';
 
 class AddGoalScreen extends ConsumerStatefulWidget {
@@ -137,6 +140,18 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   }
 
   Future<void> _autoPlanSessions() async {
+    final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
+    if (!mounted) return;
+    if (!isPremium) {
+      final purchased = await showPremiumGateSheet(
+        context,
+        title: context.l10n.premiumAutoPlanTitle,
+        message: context.l10n.premiumAutoPlanMessage,
+      );
+      if (!purchased || !mounted) return;
+    }
+
+    if (!mounted) return;
     final result = await showAutoPlanWizard(context: context);
     if (result == null || !mounted) return;
 
@@ -160,8 +175,8 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
     if (generated.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No available days found before the deadline.'),
+        SnackBar(
+          content: Text(context.l10n.autoPlanErrorNoAvailableDays),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -176,9 +191,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '${generated.length} session${generated.length != 1 ? 's' : ''} planned!',
-        ),
+        content: Text(context.l10n.autoPlanSuccessSnack(generated.length)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -186,6 +199,20 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
   Future<void> _saveGoal() async {
     if (_formKey.currentState!.validate()) {
+      final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
+      if (!mounted) return;
+      if (!isPremium) {
+        final goals = _goalRepo.getAllGoals();
+        if (goals.length >= SubscriptionService.freeGoalLimit) {
+          final purchased = await showPremiumGateSheet(
+            context,
+            title: context.l10n.premiumGoalLimitTitle,
+            message: context.l10n.premiumGoalLimitMessage,
+          );
+          if (!purchased || !mounted) return;
+        }
+      }
+
       final totalMinutes = _calculateTotalStudyTime();
       final subjectValue = _subjects.isNotEmpty
           ? (_selectedSubject ?? '')
@@ -223,11 +250,8 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            _plannedSessions.isEmpty
-                ? 'Deadline added successfully!'
-                : 'Deadline and ${_plannedSessions.length} session${_plannedSessions.length != 1 ? 's' : ''} added!',
-          ),
+          content: Text(context.l10n.addGoalSuccessSnack(_plannedSessions.length)),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
@@ -275,7 +299,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        'Create Deadline',
+        context.l10n.addGoalScreenTitle,
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -287,7 +311,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         child: Container(
           color: isDark
               ? Colors.white.withValues(alpha: 0.08)
-              : const Color(0xFFE5E7EB),
+              : AppColors.dividerLight,
           height: 1,
         ),
       ),

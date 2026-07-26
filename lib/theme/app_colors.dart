@@ -69,6 +69,13 @@ class AppColors {
   static const Color textSecondary = Color(0xFF64748B);
   static const Color textTertiary = Color(0xFF94A3B8);
 
+  // Premium gradient
+  static const Color premiumBlue = Color(0xFF135BEC);
+  static const Color premiumGradientEnd = Color(0xFF4648D4);
+  static const Color premiumDark = Color(0xFF0045BD);
+  static const Color premiumText = Color(0xFF161C28);
+  static const Color premiumCardBorder = Color(0xFFC3C5D8);
+
   // Divider colors
   static const Color dividerDark = Color(0xFF334155);
   static const Color dividerLight = Color(0xFFE2E8F0);

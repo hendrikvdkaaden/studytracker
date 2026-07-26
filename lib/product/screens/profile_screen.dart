@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
+import '../../services/subscription_service.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/l10n_extension.dart';
+import '../../widgets/common/paywall_bottom_sheet.dart';
 import '../../widgets/profile/add_subject_modal.dart';
 import '../../widgets/profile/edit_name_dialog.dart';
 import '../templates/profile_template.dart';
@@ -66,6 +68,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _addSubject() async {
+    final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
+    if (!mounted) return;
+    if (!isPremium && _subjects.length >= SubscriptionService.freeSubjectLimit) {
+      final purchased = await showPaywallBottomSheet(context);
+      if (!purchased || !mounted) return;
+      ref.invalidate(isPremiumProvider);
+    }
+
     final result = await showModalBottomSheet<SubjectData>(
       context: context,
       isScrollControlled: true,
@@ -203,9 +213,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
-                      'Confirm',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.btnConfirm,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
@@ -326,9 +336,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
-                      'Confirm',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.btnConfirm,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
@@ -502,7 +512,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFFEF4444),
+              foregroundColor: AppColors.error,
             ),
             child: Text(confirmLabel),
           ),
@@ -511,8 +521,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  Future<void> _onSubscriptionTap() async {
+    final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
+    if (!mounted) return;
+    if (isPremium) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.profileManageSubscription),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      final purchased = await showPaywallBottomSheet(context);
+      if (purchased && mounted) ref.invalidate(isPremiumProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.watch(isPremiumProvider).valueOrNull ?? false;
+
     return ProfileTemplate(
       userName: _userName,
       sessionReminderMinutes: _sessionReminderMinutes,
@@ -521,6 +549,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appVersion: _appVersion,
       subjects: _subjects,
       schoolName: _schoolName,
+      isPremium: isPremium,
+      onSubscriptionTap: _onSubscriptionTap,
       onEditName: _editProfile,
       onSessionReminderTap: _pickSessionReminder,
       onDeadlineReminderTap: _pickDeadlineReminder,

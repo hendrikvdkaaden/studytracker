@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
-import 'product/navigation/home_page.dart';
-import 'product/screens/onboarding_screen.dart';
-import 'services/hive_service.dart';
-import 'services/notification_service.dart';
-import 'services/settings_service.dart';
+import 'product/screens/splash_screen.dart';
 import 'theme/app_colors.dart';
 
 final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await HiveService.init();
-  await NotificationService.init();
-  themeModeNotifier.value = SettingsService.themeMode;
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -52,9 +45,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           themeMode: themeMode,
-          home: SettingsService.onboardingCompleted
-              ? const HomePage()
-              : const OnboardingScreen(),
+          home: const SplashScreen(),
         );
       },
     );

@@ -332,5 +332,55 @@
   "onboardingStep3Subtitle": "Get notified before your study sessions and deadlines",
   "onboardingStep3Note": "You can change this later in your Profile.",
   "onboardingSessionReminder": "Session reminder",
-  "onboardingDeadlineReminder": "Deadline reminder"
+  "onboardingDeadlineReminder": "Deadline reminder",
+
+  "paywallTitle": "Unlock Deadly Premium",
+  "paywallSubtitle": "Accelerate your learning with smart planning",
+  "paywallFeature1": "Unlimited deadlines & subjects",
+  "paywallFeature2": "Smart auto-planning for your study sessions",
+  "paywallFeature3": "Distributes sessions evenly before your deadline",
+  "paywallYearlyLabel": "Yearly",
+  "paywallYearlySubtitle": "€1.66 / month, billed annually",
+  "paywallYearlySaveBadge": "SAVE 45%",
+  "paywallYearlyValueBadge": "BEST VALUE",
+  "paywallMonthlyLabel": "Monthly",
+  "paywallMonthlySubtitle": "Cancel anytime",
+  "paywallPeriodMonth": "per month",
+  "paywallPeriodYear": "per year",
+  "paywallNoOfferings": "No offerings available. Please check back later.",
+  "paywallCtaButton": "UPGRADE TO PREMIUM",
+  "paywallRestorePurchases": "Restore Purchases",
+  "paywallDisclaimerText": "Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.",
+  "paywallErrorGeneric": "Something went wrong. Please try again.",
+  "paywallErrorNoPurchases": "No previous purchases found.",
+  "paywallErrorRestoreFailed": "Restore failed. Please try again.",
+
+  "profilePremiumTitle": "Deadly Premium",
+  "profileUpgradeTitle": "DEADLY PREMIUM",
+  "profilePremiumSubtitle": "Manage your subscription",
+  "profileUpgradeSubtitle": "Unlock all features",
+  "profileUpgradeButton": "Upgrade",
+  "profileManageSubscription": "Manage your subscription via the App Store settings.",
+
+  "autoPlanErrorNoAvailableDays": "No available days found before the deadline.",
+  "autoPlanSuccessSnack": "{count, plural, =1{1 session planned!} other{{count} sessions planned!}}",
+  "@autoPlanSuccessSnack": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addGoalSuccessSnack": "{count, plural, =0{Deadline added successfully!} =1{Deadline and 1 session added!} other{Deadline and {count} sessions added!}}",
+  "@addGoalSuccessSnack": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addGoalScreenTitle": "Create Deadline",
+
+  "premiumAutoPlanTitle": "Premium Feature",
+  "premiumAutoPlanMessage": "Auto-planning is a Deadly Premium feature. Upgrade to automatically schedule your study sessions.",
+  "premiumGoalLimitTitle": "Deadline Limit Reached",
+  "premiumGoalLimitMessage": "You've reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.",
+  "premiumDialogUpgradeButton": "Upgrade to Premium",
+  "premiumDialogNotNow": "Not Now"
 }

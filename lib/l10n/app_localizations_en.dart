@@ -812,4 +812,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDeadlineReminder => 'Deadline reminder';
+
+  @override
+  String get paywallTitle => 'Unlock Deadly Premium';
+
+  @override
+  String get paywallSubtitle => 'Accelerate your learning with smart planning';
+
+  @override
+  String get paywallFeature1 => 'Unlimited deadlines & subjects';
+
+  @override
+  String get paywallFeature2 => 'Smart auto-planning for your study sessions';
+
+  @override
+  String get paywallFeature3 =>
+      'Distributes sessions evenly before your deadline';
+
+  @override
+  String get paywallYearlyLabel => 'Yearly';
+
+  @override
+  String get paywallYearlySubtitle => '€1.66 / month, billed annually';
+
+  @override
+  String get paywallYearlySaveBadge => 'SAVE 45%';
+
+  @override
+  String get paywallYearlyValueBadge => 'BEST VALUE';
+
+  @override
+  String get paywallMonthlyLabel => 'Monthly';
+
+  @override
+  String get paywallMonthlySubtitle => 'Cancel anytime';
+
+  @override
+  String get paywallPeriodMonth => 'per month';
+
+  @override
+  String get paywallPeriodYear => 'per year';
+
+  @override
+  String get paywallNoOfferings =>
+      'No offerings available. Please check back later.';
+
+  @override
+  String get paywallCtaButton => 'UPGRADE TO PREMIUM';
+
+  @override
+  String get paywallRestorePurchases => 'Restore Purchases';
+
+  @override
+  String get paywallDisclaimerText =>
+      'Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.';
+
+  @override
+  String get paywallErrorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get paywallErrorNoPurchases => 'No previous purchases found.';
+
+  @override
+  String get paywallErrorRestoreFailed => 'Restore failed. Please try again.';
+
+  @override
+  String get profilePremiumTitle => 'Deadly Premium';
+
+  @override
+  String get profileUpgradeTitle => 'DEADLY PREMIUM';
+
+  @override
+  String get profilePremiumSubtitle => 'Manage your subscription';
+
+  @override
+  String get profileUpgradeSubtitle => 'Unlock all features';
+
+  @override
+  String get profileUpgradeButton => 'Upgrade';
+
+  @override
+  String get profileManageSubscription =>
+      'Manage your subscription via the App Store settings.';
+
+  @override
+  String get autoPlanErrorNoAvailableDays =>
+      'No available days found before the deadline.';
+
+  @override
+  String autoPlanSuccessSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessions planned!',
+      one: '1 session planned!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String addGoalSuccessSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Deadline and $count sessions added!',
+      one: 'Deadline and 1 session added!',
+      zero: 'Deadline added successfully!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addGoalScreenTitle => 'Create Deadline';
+
+  @override
+  String get premiumAutoPlanTitle => 'Premium Feature';
+
+  @override
+  String get premiumAutoPlanMessage =>
+      'Auto-planning is a Deadly Premium feature. Upgrade to automatically schedule your study sessions.';
+
+  @override
+  String get premiumGoalLimitTitle => 'Deadline Limit Reached';
+
+  @override
+  String get premiumGoalLimitMessage =>
+      'You\'ve reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.';
+
+  @override
+  String get premiumDialogUpgradeButton => 'Upgrade to Premium';
+
+  @override
+  String get premiumDialogNotNow => 'Not Now';
 }

@@ -1473,6 +1473,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deadline reminder'**
   String get onboardingDeadlineReminder;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Deadly Premium'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accelerate your learning with smart planning'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallFeature1.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited deadlines & subjects'**
+  String get paywallFeature1;
+
+  /// No description provided for @paywallFeature2.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart auto-planning for your study sessions'**
+  String get paywallFeature2;
+
+  /// No description provided for @paywallFeature3.
+  ///
+  /// In en, this message translates to:
+  /// **'Distributes sessions evenly before your deadline'**
+  String get paywallFeature3;
+
+  /// No description provided for @paywallYearlyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get paywallYearlyLabel;
+
+  /// No description provided for @paywallYearlySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'€1.66 / month, billed annually'**
+  String get paywallYearlySubtitle;
+
+  /// No description provided for @paywallYearlySaveBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'SAVE 45%'**
+  String get paywallYearlySaveBadge;
+
+  /// No description provided for @paywallYearlyValueBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'BEST VALUE'**
+  String get paywallYearlyValueBadge;
+
+  /// No description provided for @paywallMonthlyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallMonthlyLabel;
+
+  /// No description provided for @paywallMonthlySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel anytime'**
+  String get paywallMonthlySubtitle;
+
+  /// No description provided for @paywallPeriodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'per month'**
+  String get paywallPeriodMonth;
+
+  /// No description provided for @paywallPeriodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'per year'**
+  String get paywallPeriodYear;
+
+  /// No description provided for @paywallNoOfferings.
+  ///
+  /// In en, this message translates to:
+  /// **'No offerings available. Please check back later.'**
+  String get paywallNoOfferings;
+
+  /// No description provided for @paywallCtaButton.
+  ///
+  /// In en, this message translates to:
+  /// **'UPGRADE TO PREMIUM'**
+  String get paywallCtaButton;
+
+  /// No description provided for @paywallRestorePurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get paywallRestorePurchases;
+
+  /// No description provided for @paywallDisclaimerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.'**
+  String get paywallDisclaimerText;
+
+  /// No description provided for @paywallErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get paywallErrorGeneric;
+
+  /// No description provided for @paywallErrorNoPurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous purchases found.'**
+  String get paywallErrorNoPurchases;
+
+  /// No description provided for @paywallErrorRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed. Please try again.'**
+  String get paywallErrorRestoreFailed;
+
+  /// No description provided for @profilePremiumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly Premium'**
+  String get profilePremiumTitle;
+
+  /// No description provided for @profileUpgradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DEADLY PREMIUM'**
+  String get profileUpgradeTitle;
+
+  /// No description provided for @profilePremiumSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your subscription'**
+  String get profilePremiumSubtitle;
+
+  /// No description provided for @profileUpgradeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock all features'**
+  String get profileUpgradeSubtitle;
+
+  /// No description provided for @profileUpgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get profileUpgradeButton;
+
+  /// No description provided for @profileManageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your subscription via the App Store settings.'**
+  String get profileManageSubscription;
+
+  /// No description provided for @autoPlanErrorNoAvailableDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No available days found before the deadline.'**
+  String get autoPlanErrorNoAvailableDays;
+
+  /// No description provided for @autoPlanSuccessSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 session planned!} other{{count} sessions planned!}}'**
+  String autoPlanSuccessSnack(int count);
+
+  /// No description provided for @addGoalSuccessSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Deadline added successfully!} =1{Deadline and 1 session added!} other{Deadline and {count} sessions added!}}'**
+  String addGoalSuccessSnack(int count);
+
+  /// No description provided for @addGoalScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Deadline'**
+  String get addGoalScreenTitle;
+
+  /// No description provided for @premiumAutoPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Feature'**
+  String get premiumAutoPlanTitle;
+
+  /// No description provided for @premiumAutoPlanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-planning is a Deadly Premium feature. Upgrade to automatically schedule your study sessions.'**
+  String get premiumAutoPlanMessage;
+
+  /// No description provided for @premiumGoalLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline Limit Reached'**
+  String get premiumGoalLimitTitle;
+
+  /// No description provided for @premiumGoalLimitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.'**
+  String get premiumGoalLimitMessage;
+
+  /// No description provided for @premiumDialogUpgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium'**
+  String get premiumDialogUpgradeButton;
+
+  /// No description provided for @premiumDialogNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Now'**
+  String get premiumDialogNotNow;
 }
 
 class _AppLocalizationsDelegate

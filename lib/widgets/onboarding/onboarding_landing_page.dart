@@ -20,30 +20,21 @@ class OnboardingLandingPage extends StatelessWidget {
           children: [
             const SizedBox(height: 48),
             Container(
-              width: 96,
-              height: 96,
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(32),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0F766E), Color(0xFF04B4A2)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(
-                      alpha: isDark ? 0.4 : 0.2,
-                    ),
-                    blurRadius: isDark ? 32 : 40,
-                    offset: const Offset(0, 20),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(40),
+
               ),
-              child: const Icon(Icons.school, color: Colors.white, size: 48),
+              padding: const EdgeInsets.fromLTRB(12, 35, 12, 0),
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.contain,
+              ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 12),
             Text(
-              'StudyTracker',
+              'Deadly',
               style: TextStyle(
                 color: isDark ? Colors.white : AppColors.lightNavy,
                 fontSize: 48,
@@ -51,7 +42,7 @@ class OnboardingLandingPage extends StatelessWidget {
                 letterSpacing: -1,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Text(
               l10n.onboardingLandingTagline,
               style: const TextStyle(

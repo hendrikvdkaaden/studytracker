@@ -66,7 +66,6 @@ class _SplashScreenState extends State<SplashScreen>
       themeModeNotifier.value = SettingsService.themeMode;
     } catch (e) {
       debugPrint('Initialization error: $e');
-      return;
     }
 
     _initialized = true;

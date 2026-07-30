@@ -198,7 +198,7 @@
   "profileThemeDark": "Dark",
   "profileDeleteSessionsLabel": "Delete all study sessions",
   "profileDeleteEverythingLabel": "Delete everything",
-  "profileVersionLabel": "StudyTracker {version}",
+  "profileVersionLabel": "Deadly {version}",
   "@profileVersionLabel": {
     "placeholders": {
       "version": { "type": "String" }

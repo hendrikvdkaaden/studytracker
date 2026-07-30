@@ -63,7 +63,7 @@ class _EditNameDialogState extends State<EditNameDialog> {
 
     final sheetBackground = isDark ? AppColors.darkCard : AppColors.lightCard;
     final fieldFill = isDark
-        ? const Color(0xFF1E293B)
+        ? const Color(0xFF334155)
         : const Color(0xFFF1F5F9);
     final labelColor = Colors.grey[500]!;
     final titleColor = isDark ? AppColors.lightText : AppColors.darkText;

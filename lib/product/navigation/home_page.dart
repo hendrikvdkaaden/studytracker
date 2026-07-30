@@ -37,28 +37,19 @@ class _HomePageState extends State<HomePage> {
     themeModeNotifier.value = SettingsService.themeMode;
   }
 
-  List<String> _buildTitles(BuildContext context) => [
-    context.l10n.navHome,
-    context.l10n.navCalendar,
-    context.l10n.navDeadlines,
-    context.l10n.navProfile,
-  ];
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final titles = _buildTitles(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          titles[_currentIndex],
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            letterSpacing: -0.3,
-          ),
+        title: Image.asset(
+          'assets/images/logo.png',
+          width: 32,
+          height: 32,
+          fit: BoxFit.contain,
         ),
+        centerTitle: true,
         backgroundColor: isDark
             ? AppColors.darkBackground.withValues(alpha: 0.8)
             : AppColors.lightBackground.withValues(alpha: 0.8),

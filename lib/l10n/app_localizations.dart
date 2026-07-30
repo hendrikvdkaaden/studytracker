@@ -973,7 +973,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileVersionLabel.
   ///
   /// In en, this message translates to:
-  /// **'StudyTracker {version}'**
+  /// **'Deadly {version}'**
   String profileVersionLabel(String version);
 
   /// No description provided for @profileSessionReminderFormat.

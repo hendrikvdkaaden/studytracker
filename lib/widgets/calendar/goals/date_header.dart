@@ -1,38 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../theme/app_colors.dart';
+import '../../../utils/calendar_helpers.dart';
+import '../../../utils/l10n_extension.dart';
 
 class DateHeader extends StatelessWidget {
   final DateTime selectedDate;
-
-  static const _darkBorder = AppColors.sectionDarkBg;
-  static const _lightBorder = AppColors.lightFieldBackground;
-  static const _darkText = Color(0xFFF8FCFB);
-  static const _lightText = Color(0xFF0D1C1B);
-
-  static const _weekdays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ];
-
-  static const _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
 
   const DateHeader({
     super.key,
@@ -42,30 +15,72 @@ class DateHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isToday = CalendarHelpers.isSameDay(selectedDate, DateTime.now());
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: isDark ? _darkBorder : _lightBorder),
+          bottom: BorderSide(color: AppColors.getBorderColor(context)),
         ),
       ),
-      child: Text(
-        _formatSelectedDate(selectedDate),
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          letterSpacing: -0.015,
-          color: isDark ? _darkText : _lightText,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppColors.calendarAccent.withValues(
+              alpha: isDark ? 0.16 : 0.12,
+            ),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.calendarAccent,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                _formatSelectedDate(selectedDate),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.01,
+                  color: AppColors.getTextColor(context),
+                ),
+              ),
+              if (isToday) ...[
+                const SizedBox(width: 6),
+                Text(
+                  '·',
+                  style: TextStyle(color: AppColors.getSecondaryText(context)),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  context.l10n.calendarTodayButton,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.calendarAccent,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   String _formatSelectedDate(DateTime date) {
-    final weekday = _weekdays[date.weekday - 1];
-    final month = _months[date.month - 1];
-    return '$weekday, $month ${date.day}';
+    // TODO: use ambient locale once non-English locales are added (requires initializeDateFormatting()).
+    return DateFormat('EEE, MMM d', 'en_US').format(date);
   }
 }

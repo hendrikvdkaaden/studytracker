@@ -29,18 +29,25 @@ class CalendarDayCell extends StatelessWidget {
         height: 48,
         decoration: BoxDecoration(
           color: isToday
-              ? const Color(0xFF0DF2DF)
+              ? AppColors.calendarAccent
               : isSelected
-                  ? (isDark
-                      ? const Color(0xFF0DF2DF).withValues(alpha: 0.2)
-                      : const Color(0xFF0DF2DF).withValues(alpha: 0.1))
+                  ? AppColors.calendarAccent.withValues(alpha: isDark ? 0.24 : 0.14)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
           border: isSelected && !isToday
               ? Border.all(
-                  color: const Color(0xFF0DF2DF),
-                  width: 2,
+                  color: AppColors.calendarAccent,
+                  width: 2.5,
                 )
+              : null,
+          boxShadow: isSelected && !isToday
+              ? [
+                  BoxShadow(
+                    color: AppColors.calendarAccent.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ]
               : null,
         ),
         child: Column(

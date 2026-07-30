@@ -212,7 +212,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
         ),
         const SizedBox(height: 6),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF102221) : const Color(0xFFF5F8F8),
             borderRadius: BorderRadius.circular(8),
@@ -231,7 +231,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                   }
                 },
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
               ),
               Text(
                 value.toString().padLeft(2, '0'),
@@ -249,7 +249,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                   }
                 },
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
               ),
             ],
           ),

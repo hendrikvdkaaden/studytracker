@@ -9,6 +9,7 @@ class PlannedSessionsSection extends StatefulWidget {
   final List<StudySession> sessions;
   final String goalTitle;
   final VoidCallback onAddSession;
+  final VoidCallback? onAutoplan;
   final void Function(StudySession session)? onEditSession;
   final void Function(StudySession session)? onDeleteSession;
 
@@ -17,6 +18,7 @@ class PlannedSessionsSection extends StatefulWidget {
     required this.sessions,
     required this.goalTitle,
     required this.onAddSession,
+    this.onAutoplan,
     this.onEditSession,
     this.onDeleteSession,
   });
@@ -68,7 +70,49 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   ),
                 ),
               ),
-              if (completedCount > 0)
+              if (widget.onAutoplan != null)
+                GestureDetector(
+                  onTap: widget.onAutoplan,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.iconPurple.withValues(alpha: 0.15)
+                          : AppColors.iconBgPurple,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.iconPurple.withValues(alpha: 0.3)
+                            : AppColors.iconPurple.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.auto_awesome,
+                          size: 13,
+                          color: isDark
+                              ? AppColors.iconPurple.withValues(alpha: 0.9)
+                              : AppColors.iconPurple,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          context.l10n.addGoalAutoPlanButton,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.iconPurple.withValues(alpha: 0.9)
+                                : AppColors.iconPurple,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (completedCount > 0) ...[
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () => setState(() => _showCompleted = !_showCompleted),
                   child: Text(
@@ -82,6 +126,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                     ),
                   ),
                 ),
+              ],
             ],
           ),
           const SizedBox(height: 10),

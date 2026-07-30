@@ -4,6 +4,7 @@ import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/l10n_extension.dart';
 import '../templates/plan_template.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
@@ -75,9 +76,9 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         onPressed: _goToToday,
         backgroundColor: AppColors.calendarAccent,
         foregroundColor: AppColors.calendarDarkBackground,
-        child: const Text(
-          'Today',
-          style: TextStyle(
+        child: Text(
+          context.l10n.calendarTodayButton,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 12,
           ),

@@ -5,14 +5,18 @@ import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
+import '../../services/auto_planner_service.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
 import '../../widgets/goal_details_modern/progress/edit_progress_dialog.dart';
 import '../../widgets/goal_details_modern/info/goal_info_edit_modal.dart';
+import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
+import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/goal_details_template.dart';
 
 class GoalDetailsScreen extends ConsumerStatefulWidget {
@@ -182,6 +186,63 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     );
   }
 
+  Future<void> _autoPlanSessions() async {
+    final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
+    if (!mounted) return;
+    if (!isPremium) {
+      final purchased = await showPremiumGateSheet(
+        context,
+        title: context.l10n.premiumAutoPlanTitle,
+        message: context.l10n.premiumAutoPlanMessage,
+      );
+      if (!purchased || !mounted) return;
+    }
+
+    if (!mounted) return;
+    final result = await showAutoPlanWizard(context: context);
+    if (result == null || !mounted) return;
+
+    final generated = AutoPlannerService.generateSessions(
+      goalId: _goal.id,
+      deadline: _goal.date,
+      totalMinutes: result.totalMinutes,
+      weekdays: result.weekdays,
+      startHour: result.startHour,
+      startMinute: result.startMinute,
+      endHour: result.endHour,
+      endMinute: result.endMinute,
+      sessionDuration: result.sessionDuration,
+      breakMinutes: result.breakMinutes,
+      existingSessions: _plannedSessions,
+    );
+
+    if (!mounted) return;
+    if (generated.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.autoPlanErrorNoAvailableDays),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    for (final session in generated) {
+      await _sessionRepo.addSession(session);
+      await NotificationService.scheduleSessionReminder(session, _goal.title);
+    }
+
+    if (!mounted) return;
+    setState(() => _refreshData());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.autoPlanSuccessSnack(generated.length)),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,6 +255,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
         onEditProgress: _showEditProgressDialog,
         onMarkComplete: _toggleComplete,
         onAddSession: _addSession,
+        onAutoplan: _autoPlanSessions,
         onEditSession: _editSession,
         onDeleteSession: _deleteSession,
         onEditInfo: _showEditInfoModal,

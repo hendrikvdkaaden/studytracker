@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../providers/app_providers.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/legal_links.dart';
 import 'premium_icon.dart';
 
 Future<bool> showPaywallBottomSheet(BuildContext context) async {
@@ -189,8 +191,8 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
             _buildPackageCard(
               package: annual,
               label: l10n.paywallYearlyLabel,
-              subtitle: l10n.paywallYearlySubtitle,
-              badge: l10n.paywallYearlySaveBadge,
+              subtitle: _yearlySubtitle(l10n, annual),
+              badge: _yearlySaveBadge(l10n, annual, monthly),
               valueBadge: l10n.paywallYearlyValueBadge,
               period: l10n.paywallPeriodYear,
             ),
@@ -214,6 +216,38 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
   }
 
   Widget _buildIcon() => const PremiumIcon();
+
+  /// Derives the per-month price from the store's own annual price so the
+  /// figure is correct in every storefront and currency. Falls back to a
+  /// generic label when the store gives us no usable price data.
+  String _yearlySubtitle(AppLocalizations l10n, Package annual) {
+    final product = annual.storeProduct;
+    final monthlyPrice = product.price / 12;
+    if (monthlyPrice <= 0) return l10n.paywallYearlySubtitleFallback;
+
+    final formatted = NumberFormat.simpleCurrency(
+      name: product.currencyCode,
+    ).format(monthlyPrice);
+    return l10n.paywallYearlySubtitle(formatted);
+  }
+
+  /// Only shows a savings badge when both packages are available and the
+  /// annual plan is genuinely cheaper per month.
+  String? _yearlySaveBadge(
+    AppLocalizations l10n,
+    Package annual,
+    Package? monthly,
+  ) {
+    if (monthly == null) return null;
+    final monthlyPrice = monthly.storeProduct.price;
+    if (monthlyPrice <= 0) return null;
+
+    final annualPerMonth = annual.storeProduct.price / 12;
+    final percent = ((1 - (annualPerMonth / monthlyPrice)) * 100).round();
+    if (percent <= 0) return null;
+
+    return l10n.paywallYearlySaveBadge(percent);
+  }
 
   Widget _buildFeatureList(AppLocalizations l10n) {
     final features = [
@@ -493,8 +527,39 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
             ),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 10),
+          _buildLegalLinks(l10n),
         ],
       ),
+    );
+  }
+
+  /// Terms of Use and Privacy Policy links are required by App Store Review
+  /// Guideline 3.1.2 for apps offering auto-renewing subscriptions.
+  Widget _buildLegalLinks(AppLocalizations l10n) {
+    final linkStyle = TextStyle(
+      fontSize: 11,
+      color: context.colors.textSecondary,
+      decoration: TextDecoration.underline,
+      decorationColor: context.colors.textTertiary,
+    );
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: LegalLinks.openTermsOfUse,
+          child: Text(l10n.paywallTermsOfUse, style: linkStyle),
+        ),
+        Text(
+          l10n.paywallLegalSeparator,
+          style: TextStyle(fontSize: 11, color: context.colors.textTertiary),
+        ),
+        GestureDetector(
+          onTap: LegalLinks.openPrivacyPolicy,
+          child: Text(l10n.paywallPrivacyPolicy, style: linkStyle),
+        ),
+      ],
     );
   }
 }

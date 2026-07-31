@@ -340,8 +340,15 @@
   "paywallFeature2": "Smart auto-planning for your study sessions",
   "paywallFeature3": "Distributes sessions evenly before your deadline",
   "paywallYearlyLabel": "Yearly",
-  "paywallYearlySubtitle": "€1.66 / month, billed annually",
-  "paywallYearlySaveBadge": "SAVE 45%",
+  "paywallYearlySubtitle": "{pricePerMonth} / month, billed annually",
+  "@paywallYearlySubtitle": {
+    "placeholders": { "pricePerMonth": { "type": "String" } }
+  },
+  "paywallYearlySubtitleFallback": "Billed annually",
+  "paywallYearlySaveBadge": "SAVE {percent}%",
+  "@paywallYearlySaveBadge": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
   "paywallYearlyValueBadge": "BEST VALUE",
   "paywallMonthlyLabel": "Monthly",
   "paywallMonthlySubtitle": "Cancel anytime",
@@ -350,7 +357,10 @@
   "paywallNoOfferings": "No offerings available. Please check back later.",
   "paywallCtaButton": "UPGRADE TO PREMIUM",
   "paywallRestorePurchases": "Restore Purchases",
-  "paywallDisclaimerText": "Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.",
+  "paywallDisclaimerText": "Payment will be charged to your Apple ID account at confirmation of purchase. The subscription automatically renews unless it is cancelled at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period. You can manage and cancel your subscription in your Apple ID Account Settings.",
+  "paywallTermsOfUse": "Terms of Use",
+  "paywallPrivacyPolicy": "Privacy Policy",
+  "paywallLegalSeparator": " · ",
   "paywallErrorGeneric": "Something went wrong. Please try again.",
   "paywallErrorNoPurchases": "No previous purchases found.",
   "paywallErrorRestoreFailed": "Restore failed. Please try again.",

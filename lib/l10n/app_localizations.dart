@@ -1513,14 +1513,20 @@ abstract class AppLocalizations {
   /// No description provided for @paywallYearlySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'€1.66 / month, billed annually'**
-  String get paywallYearlySubtitle;
+  /// **'{pricePerMonth} / month, billed annually'**
+  String paywallYearlySubtitle(String pricePerMonth);
+
+  /// No description provided for @paywallYearlySubtitleFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed annually'**
+  String get paywallYearlySubtitleFallback;
 
   /// No description provided for @paywallYearlySaveBadge.
   ///
   /// In en, this message translates to:
-  /// **'SAVE 45%'**
-  String get paywallYearlySaveBadge;
+  /// **'SAVE {percent}%'**
+  String paywallYearlySaveBadge(int percent);
 
   /// No description provided for @paywallYearlyValueBadge.
   ///
@@ -1573,8 +1579,26 @@ abstract class AppLocalizations {
   /// No description provided for @paywallDisclaimerText.
   ///
   /// In en, this message translates to:
-  /// **'Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.'**
+  /// **'Payment will be charged to your Apple ID account at confirmation of purchase. The subscription automatically renews unless it is cancelled at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period. You can manage and cancel your subscription in your Apple ID Account Settings.'**
   String get paywallDisclaimerText;
+
+  /// No description provided for @paywallTermsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get paywallTermsOfUse;
+
+  /// No description provided for @paywallPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get paywallPrivacyPolicy;
+
+  /// No description provided for @paywallLegalSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **' · '**
+  String get paywallLegalSeparator;
 
   /// No description provided for @paywallErrorGeneric.
   ///

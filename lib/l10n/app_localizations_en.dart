@@ -833,10 +833,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paywallYearlyLabel => 'Yearly';
 
   @override
-  String get paywallYearlySubtitle => '€1.66 / month, billed annually';
+  String paywallYearlySubtitle(String pricePerMonth) {
+    return '$pricePerMonth / month, billed annually';
+  }
 
   @override
-  String get paywallYearlySaveBadge => 'SAVE 45%';
+  String get paywallYearlySubtitleFallback => 'Billed annually';
+
+  @override
+  String paywallYearlySaveBadge(int percent) {
+    return 'SAVE $percent%';
+  }
 
   @override
   String get paywallYearlyValueBadge => 'BEST VALUE';
@@ -865,7 +872,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paywallDisclaimerText =>
-      'Subscriptions auto-renew. Manage your subscription and turn off auto-renewal in your Apple ID Account Settings.';
+      'Payment will be charged to your Apple ID account at confirmation of purchase. The subscription automatically renews unless it is cancelled at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period. You can manage and cancel your subscription in your Apple ID Account Settings.';
+
+  @override
+  String get paywallTermsOfUse => 'Terms of Use';
+
+  @override
+  String get paywallPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get paywallLegalSeparator => ' · ';
 
   @override
   String get paywallErrorGeneric => 'Something went wrong. Please try again.';

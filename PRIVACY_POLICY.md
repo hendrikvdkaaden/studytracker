@@ -79,4 +79,4 @@ We may update this Privacy Policy from time to time. When we do, we will revise 
 
 If you have questions about this Privacy Policy or about how your data is handled, contact us at:
 
-**hendrik@safedrivepod.com**
+**hendrikvdkaaden@gmail.com**

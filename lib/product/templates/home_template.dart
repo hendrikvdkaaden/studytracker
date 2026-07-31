@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/home/date_selector.dart';
 import '../../widgets/home/home_section_header.dart';
@@ -38,7 +39,6 @@ class HomeTemplate extends StatelessWidget {
     final totalSessions = sessions.length;
     final completedSessionsCount = sessions.where((s) => isSessionCompleted(s)).length;
     final hasAnyItems = deadlines.isNotEmpty || totalSessions > 0;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return CustomScrollView(
       slivers: [
@@ -60,7 +60,7 @@ class HomeTemplate extends StatelessWidget {
                     Icon(
                       Icons.event_available,
                       size: 64,
-                      color: isDark ? Colors.grey[700] : Colors.grey[300],
+                      color: context.colors.textTertiary,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -68,7 +68,7 @@ class HomeTemplate extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.grey[600] : Colors.grey[400],
+                        color: context.colors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -77,7 +77,7 @@ class HomeTemplate extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.grey[700] : Colors.grey[400],
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],

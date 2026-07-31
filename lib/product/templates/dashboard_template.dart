@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/deadlines/cards/overdue_goal_card.dart';
 import '../../widgets/deadlines/cards/upcoming_goal_card.dart';
@@ -37,8 +38,7 @@ class DashboardTemplate extends StatelessWidget {
     required Color iconBg,
     required String label,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtleText = isDark ? Colors.grey[500]! : Colors.grey[500]!;
+    final subtleText = context.colors.textSecondary;
 
     return Row(
       children: [
@@ -67,8 +67,6 @@ class DashboardTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
       children: [
@@ -86,7 +84,7 @@ class DashboardTemplate extends StatelessWidget {
             context: context,
             icon: Icons.error_outline,
             iconColor: AppColors.overdue,
-            iconBg: isDark
+            iconBg: context.colors.isDark
                 ? AppColors.overdue.withValues(alpha: 0.1)
                 : const Color(0xFFFFEDED),
             label: context.l10n.dashboardSectionOverdue,
@@ -107,7 +105,7 @@ class DashboardTemplate extends StatelessWidget {
             context: context,
             icon: Icons.calendar_month,
             iconColor: AppColors.iconPurple,
-            iconBg: isDark
+            iconBg: context.colors.isDark
                 ? AppColors.iconBgPurple.withValues(alpha: 0.1)
                 : const Color(0xFFFFEDED),
             label: context.l10n.dashboardSectionUpcoming,
@@ -129,7 +127,7 @@ class DashboardTemplate extends StatelessWidget {
             context: context,
             icon: Icons.check_circle_outline,
             iconColor: AppColors.completed,
-            iconBg: isDark
+            iconBg: context.colors.isDark
                 ? AppColors.completed.withValues(alpha: 0.1)
                 : const Color(0xFFECFDF5),
             label: context.l10n.dashboardSectionCompleted,
@@ -154,7 +152,7 @@ class DashboardTemplate extends StatelessWidget {
                 Icon(
                   Icons.assignment_outlined,
                   size: 64,
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: context.colors.textTertiary,
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -162,7 +160,7 @@ class DashboardTemplate extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[600] : Colors.grey[400],
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -170,7 +168,7 @@ class DashboardTemplate extends StatelessWidget {
                   context.l10n.dashboardEmptySubtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color: isDark ? Colors.grey[700] : Colors.grey[400],
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],

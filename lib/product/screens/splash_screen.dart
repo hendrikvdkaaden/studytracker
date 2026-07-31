@@ -4,7 +4,7 @@ import '../../services/hive_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../navigation/home_page.dart';
 import 'onboarding_screen.dart';
 
@@ -101,11 +101,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: context.colors.background,
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, _) {

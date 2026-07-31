@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 
 class EditProfileResult {
@@ -59,18 +60,14 @@ class _EditNameDialogState extends State<EditNameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = context.colors;
 
-    final sheetBackground = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final fieldFill = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFF1F5F9);
-    final labelColor = Colors.grey[500]!;
-    final titleColor = isDark ? AppColors.lightText : AppColors.darkText;
+    final sheetBackground = colors.modalBackground;
+    final fieldFill = colors.fieldBackground;
+    final labelColor = colors.textSecondary;
+    final titleColor = colors.textPrimary;
     final subtitleColor = labelColor;
-    final handleColor = isDark
-        ? const Color(0xFF475569)
-        : const Color(0xFFCBD5E1);
+    final handleColor = colors.dragHandle;
 
     return Container(
       width: double.infinity,
@@ -140,7 +137,6 @@ class _EditNameDialogState extends State<EditNameDialog> {
               focusNode: _nameFocusNode,
               hintText: context.l10n.editNameDisplayHint,
               fieldFill: fieldFill,
-              isDark: isDark,
               textInputAction: TextInputAction.next,
               onSubmitted: (_) => _schoolFocusNode.requestFocus(),
             ),
@@ -155,7 +151,6 @@ class _EditNameDialogState extends State<EditNameDialog> {
               focusNode: _schoolFocusNode,
               hintText: context.l10n.editNameSchoolHint,
               fieldFill: fieldFill,
-              isDark: isDark,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _submit(),
             ),
@@ -243,7 +238,6 @@ class _SheetTextField extends StatelessWidget {
   final FocusNode focusNode;
   final String hintText;
   final Color fieldFill;
-  final bool isDark;
   final TextInputAction textInputAction;
   final ValueChanged<String>? onSubmitted;
 
@@ -252,17 +246,15 @@ class _SheetTextField extends StatelessWidget {
     required this.focusNode,
     required this.hintText,
     required this.fieldFill,
-    required this.isDark,
     required this.textInputAction,
     this.onSubmitted,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textColor = isDark ? AppColors.lightText : AppColors.darkText;
-    final hintTextColor = isDark
-        ? const Color(0xFF64748B)
-        : const Color(0xFF94A3B8);
+    final colors = context.colors;
+    final textColor = colors.textPrimary;
+    final hintTextColor = colors.textTertiary;
 
     return TextField(
       controller: controller,

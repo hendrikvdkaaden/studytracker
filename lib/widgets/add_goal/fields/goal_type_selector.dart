@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class GoalTypeSelector extends StatelessWidget {
@@ -15,8 +16,7 @@ class GoalTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final subtleText = context.colors.textSecondary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,9 +27,10 @@ class GoalTypeSelector extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF7C3AED).withValues(alpha: 0.15)
-                    : const Color(0xFFF5F3FF),
+                color: context.colors.iconChipBackground(
+                  AppColors.iconPurple,
+                  AppColors.iconBgPurple,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.category_outlined,
@@ -62,14 +63,14 @@ class GoalTypeSelector extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.primary
-                      : (isDark
+                      : (context.colors.isDark
                           ? Colors.white.withValues(alpha: 0.06)
                           : Colors.white),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? AppColors.primary
-                        : (isDark
+                        : (context.colors.isDark
                             ? Colors.white.withValues(alpha: 0.1)
                             : const Color(0xFFE5E7EB)),
                   ),
@@ -91,7 +92,7 @@ class GoalTypeSelector extends StatelessWidget {
                       size: 15,
                       color: isSelected
                           ? Colors.white
-                          : (isDark ? Colors.grey[300] : Colors.grey[600]),
+                          : context.colors.textSecondary,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -101,7 +102,7 @@ class GoalTypeSelector extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         color: isSelected
                             ? Colors.white
-                            : (isDark ? Colors.grey[300] : Colors.grey[700]),
+                            : context.colors.textPrimary,
                       ),
                     ),
                   ],

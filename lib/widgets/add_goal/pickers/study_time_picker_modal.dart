@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class StudyTimePickerModal extends StatefulWidget {
   final int initialHours;
@@ -31,12 +32,10 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.sectionDarkBg : Colors.white,
+        color: context.colors.modalBackground,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -50,7 +49,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark ? AppColors.dividerDark : AppColors.lightBorder,
+                  color: context.colors.border,
                 ),
               ),
             ),
@@ -106,7 +105,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: context.colors.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -141,7 +140,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                 Container(
                   width: 1,
                   height: 200,
-                  color: isDark ? AppColors.dividerDark : AppColors.dividerLight,
+                  color: context.colors.divider,
                 ),
                 // Minutes Picker
                 Expanded(
@@ -154,7 +153,7 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: context.colors.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 8),

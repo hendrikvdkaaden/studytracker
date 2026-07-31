@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../common/planned_session_item.dart';
 
 class PlannedSessionsList extends StatelessWidget {
@@ -17,8 +18,6 @@ class PlannedSessionsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sessions.isEmpty) return const SizedBox.shrink();
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +43,7 @@ class PlannedSessionsList extends StatelessWidget {
                     Divider(
                       height: 1,
                       thickness: 1,
-                      color: isDark
+                      color: context.colors.isDark
                           ? const Color(0xFF2d4a48)
                           : const Color(0xFFcee8e6),
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class FixedFooterButton extends StatelessWidget {
   final String text;
@@ -13,8 +14,6 @@ class FixedFooterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Positioned(
       left: 0,
       right: 0,
@@ -22,12 +21,10 @@ class FixedFooterButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark
-              ? AppColors.darkBackground.withValues(alpha: 0.8)
-              : AppColors.lightBackground.withValues(alpha: 0.8),
+          color: context.colors.background.withValues(alpha: 0.8),
           border: Border(
             top: BorderSide(
-              color: isDark ? AppColors.dividerDark : AppColors.lightBorder,
+              color: context.colors.divider,
             ),
           ),
         ),

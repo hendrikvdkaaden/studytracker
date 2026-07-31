@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 /// AppBar for the goal details screen
 class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -12,10 +13,8 @@ class GoalDetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return AppBar(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: context.colors.background,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),

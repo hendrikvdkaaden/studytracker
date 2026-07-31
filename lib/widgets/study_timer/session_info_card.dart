@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_theme_extension.dart';
 
 class SessionInfoCard extends StatelessWidget {
   final int targetMinutes;
@@ -34,15 +35,13 @@ class SessionInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[100]!,
+          color: context.colors.cardBorder,
         ),
         boxShadow: [
           BoxShadow(
@@ -63,7 +62,7 @@ class SessionInfoCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[500],
+                    color: context.colors.textSecondary,
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -73,7 +72,7 @@ class SessionInfoCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
-                    color: isDark ? Colors.white : Colors.grey[900],
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
@@ -82,7 +81,7 @@ class SessionInfoCard extends StatelessWidget {
           Container(
             width: 1,
             height: 32,
-            color: isDark ? Colors.grey[800] : Colors.grey[100],
+            color: context.colors.divider,
           ),
           Expanded(
             child: Column(
@@ -93,7 +92,7 @@ class SessionInfoCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[500],
+                    color: context.colors.textSecondary,
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -103,7 +102,7 @@ class SessionInfoCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
-                    color: isDark ? Colors.white : Colors.grey[900],
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../models/study_session.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../widgets/calendar/calendar_section.dart';
 import '../../widgets/calendar/goals/date_header.dart';
 import '../../widgets/calendar/calendar_day_content.dart';
@@ -42,7 +42,7 @@ class PlanTemplate extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            color: AppColors.getBackground(context),
+            color: context.colors.background,
             child: Column(
               children: [
                 DateHeader(selectedDate: selectedDate),

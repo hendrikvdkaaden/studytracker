@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class TimerDisplay extends StatelessWidget {
   final int remainingSeconds;
@@ -19,8 +20,6 @@ class TimerDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       children: [
         Text(
@@ -57,7 +56,7 @@ class TimerDisplay extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  color: context.colors.textPrimary,
                 ),
               ),
             ],

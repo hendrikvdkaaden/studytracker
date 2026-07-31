@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../models/day_status.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
@@ -155,7 +156,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,

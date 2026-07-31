@@ -4,6 +4,7 @@ import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../templates/plan_template.dart';
 
@@ -60,7 +61,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         _sessionRepo.getPlannedSessionsByDate(_selectedDate);
 
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       body: PlanTemplate(
         focusedMonth: _focusedMonth,
         selectedDate: _selectedDate,

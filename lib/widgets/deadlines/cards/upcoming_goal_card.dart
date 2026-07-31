@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../services/settings_service.dart';
 import '../../../utils/goal_helpers.dart';
 import '../../../utils/goal_type_helper.dart';
@@ -32,7 +33,6 @@ class UpcomingGoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final daysLeft = _getDaysLeft();
     final progress = _progressPercentage;
     final percentage = (progress * 100).toInt();
@@ -45,7 +45,9 @@ class UpcomingGoalCard extends StatelessWidget {
     final accentColor = subjectColor ?? typeColor.shade600;
     final iconBg = subjectColor != null
         ? subjectColor.withValues(alpha: 0.15)
-        : (isDark ? typeColor.shade900.withValues(alpha: 0.3) : typeColor.shade50);
+        : (context.colors.isDark
+            ? typeColor.shade900.withValues(alpha: 0.3)
+            : typeColor.shade50);
 
     return GestureDetector(
       onTap: onTap,
@@ -53,10 +55,10 @@ class UpcomingGoalCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.06)
                 : AppColors.lightBorder,
           ),
@@ -110,7 +112,7 @@ class UpcomingGoalCard extends StatelessWidget {
                         formatDate(goal.date),
                         style: TextStyle(
                           fontSize: 11,
-                          color: isDark ? Colors.grey[600] : Colors.grey[500],
+                          color: context.colors.textTertiary,
                         ),
                       ),
                     ],
@@ -151,7 +153,7 @@ class UpcomingGoalCard extends StatelessWidget {
               child: Container(
                 height: 6,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.grey[100],
+                  color: context.colors.fieldBackground,
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -189,7 +191,7 @@ class UpcomingGoalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.grey[400] : Colors.grey[500],
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],

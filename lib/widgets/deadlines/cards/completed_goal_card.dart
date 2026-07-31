@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class CompletedGoalCard extends StatelessWidget {
@@ -15,8 +16,7 @@ class CompletedGoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark ? Colors.grey[500]! : Colors.grey[400]!;
+    final titleColor = context.colors.textTertiary;
 
     return GestureDetector(
       onTap: onTap,
@@ -24,10 +24,10 @@ class CompletedGoalCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.06)
                 : AppColors.lightBorder,
           ),
@@ -38,7 +38,7 @@ class CompletedGoalCard extends StatelessWidget {
               height: 44,
               width: 44,
               decoration: BoxDecoration(
-                color: isDark
+                color: context.colors.isDark
                     ? AppColors.completed.withValues(alpha: 0.1)
                     : AppColors.completed.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
@@ -84,7 +84,7 @@ class CompletedGoalCard extends StatelessWidget {
               height: 28,
               width: 28,
               decoration: BoxDecoration(
-                color: AppColors.completed.withValues(alpha: isDark ? 0.15 : 0.1),
+                color: AppColors.completed.withValues(alpha: context.colors.isDark ? 0.15 : 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

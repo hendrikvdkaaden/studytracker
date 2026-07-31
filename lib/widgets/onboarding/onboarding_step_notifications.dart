@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'onboarding_card_decoration.dart';
 import 'onboarding_landing_button.dart';
@@ -25,7 +26,7 @@ class OnboardingStepNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
 
     final sessionLabel = sessionReminderMinutes == 0
         ? 'Disabled'
@@ -52,7 +53,7 @@ class OnboardingStepNotifications extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.5,
-                  color: AppColors.getTextColor(context),
+                  color: context.colors.textPrimary,
                 ),
                 children: [
                   const TextSpan(text: 'Set up\n'),
@@ -92,16 +93,18 @@ class OnboardingStepNotifications extends StatelessWidget {
                   ),
                   Divider(
                     height: 1,
-                    color: AppColors.getBorderColor(context),
+                    color: context.colors.border,
                     indent: 24,
                     endIndent: 24,
                   ),
                   _buildReminderRow(
                     context: context,
                     icon: Icons.event_note_outlined,
-                    iconBgColor: isDark
-                        ? AppColors.iconPurple.withValues(alpha: 0.2)
-                        : AppColors.iconBgPurple,
+                    iconBgColor: context.colors.iconChipBackground(
+                      AppColors.iconPurple,
+                      AppColors.iconBgPurple,
+                      darkAlpha: 0.2,
+                    ),
                     iconColor: AppColors.iconPurple,
                     label: l10n.onboardingDeadlineReminder,
                     value: deadlineLabel,
@@ -168,7 +171,7 @@ Widget _buildReminderRow({
               child: Text(
                 label,
                 style: TextStyle(
-                  color: AppColors.getTextColor(context),
+                  color: context.colors.textPrimary,
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),

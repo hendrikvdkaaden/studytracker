@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../../../utils/l10n_extension.dart';
 
@@ -19,14 +20,13 @@ class GoalInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = accentColor
         ?? SettingsService.colorForSubject(goal.subject)
         ?? AppColors.calendarAccent;
 
-    final sectionBg = isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
-    final textColor = isDark ? Colors.white : AppColors.darkText;
+    final sectionBg = context.colors.fieldBackground;
+    final subtleText = context.colors.textSecondary;
+    final textColor = context.colors.textPrimary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class GoalInfoCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isDark
+                color: context.colors.isDark
                     ? color.withValues(alpha: 0.15)
                     : color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
@@ -71,9 +71,7 @@ class GoalInfoCard extends StatelessWidget {
               color: sectionBg,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFFE5E7EB),
+                color: context.colors.border,
               ),
             ),
             child: Row(

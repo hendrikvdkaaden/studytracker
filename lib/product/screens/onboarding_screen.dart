@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/onboarding/onboarding_landing_button.dart';
 import '../../widgets/onboarding/onboarding_landing_page.dart';
@@ -158,12 +158,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required String Function(int) itemBuilder,
     required Future<void> Function(int) onConfirm,
   }) {
-    final isDark = Theme.of(ctx).brightness == Brightness.dark;
+    final isDark = ctx.colors.isDark;
     int selectedIndex = initialIndex;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.getCardColor(ctx),
+        color: ctx.colors.card,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: isDark
             ? null
@@ -185,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.getBorderColor(ctx),
+                color: ctx.colors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -200,15 +200,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.getTextColor(ctx),
+                    color: ctx.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textTertiary,
+                    color: ctx.colors.textTertiary,
                   ),
                 ),
               ],
@@ -222,7 +222,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textTheme: CupertinoTextThemeData(
                   pickerTextStyle: TextStyle(
                     fontSize: 20,
-                    color: AppColors.getTextColor(ctx),
+                    color: ctx.colors.textPrimary,
                   ),
                 ),
               ),
@@ -259,7 +259,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),

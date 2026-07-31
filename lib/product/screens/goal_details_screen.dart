@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/auto_planner_service.dart';
@@ -246,7 +247,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       appBar: GoalDetailsAppBar(onDelete: _deleteGoal),
       body: GoalDetailsTemplate(
         goal: _goal,

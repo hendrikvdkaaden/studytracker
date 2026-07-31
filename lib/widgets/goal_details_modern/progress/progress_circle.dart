@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/format_helpers.dart';
 
 class ProgressCircle extends StatelessWidget {
@@ -17,7 +18,7 @@ class ProgressCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
     final progress = targetTime > 0 ? (timeSpent / targetTime).clamp(0.0, 1.0) : 0.0;
     final percentage = (progress * 100).toInt();
     final color = accentColor ?? AppColors.calendarAccent;
@@ -26,12 +27,10 @@ class ProgressCircle extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground,
+        color: context.colors.fieldBackground,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.06)
-              : const Color(0xFFE5E7EB),
+          color: context.colors.border,
         ),
       ),
       child: Column(
@@ -55,7 +54,7 @@ class ProgressCircle extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : AppColors.darkText,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     Text(
@@ -103,7 +102,7 @@ class ProgressCircle extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : AppColors.darkText,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],
@@ -131,7 +130,7 @@ class ProgressCircle extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : AppColors.darkText,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],

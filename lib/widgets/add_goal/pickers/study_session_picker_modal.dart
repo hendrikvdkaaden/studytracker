@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/study_session.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/format_helpers.dart';
 import '../../../utils/l10n_extension.dart';
 import 'package:uuid/uuid.dart';
@@ -195,12 +196,11 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.initialSession != null;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = isDark ? AppColors.darkBackground : AppColors.lightCard;
-    final sectionBg =
-        isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg;
-    final textColor = isDark ? Colors.white : AppColors.darkText;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final colors = context.colors;
+    final bg = colors.modalBackground;
+    final sectionBg = colors.sectionBackground;
+    final textColor = colors.textPrimary;
+    final subtleText = colors.textSecondary;
     final bottomInset = MediaQuery.of(context).padding.bottom;
     final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -218,7 +218,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
             width: 40,
             height: 6,
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[700] : Colors.grey[300],
+              color: context.colors.divider,
               borderRadius: BorderRadius.circular(3),
             ),
           ),
@@ -241,7 +241,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   icon: Icon(Icons.close, color: subtleText),
                   onPressed: () => Navigator.pop(context),
                   style: IconButton.styleFrom(
-                    backgroundColor: isDark
+                    backgroundColor: colors.isDark
                         ? Colors.white.withValues(alpha: 0.08)
                         : Colors.grey[100],
                     shape: const CircleBorder(),
@@ -253,7 +253,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           const SizedBox(height: 12),
           Divider(
             height: 1,
-            color: isDark
+            color: colors.isDark
                 ? Colors.white.withValues(alpha: 0.08)
                 : Colors.grey[100],
           ),
@@ -270,12 +270,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     icon: Icons.calendar_month,
                     iconBg: AppColors.iconBgBlue,
                     iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                    isDark: isDark,
                   ),
                   const SizedBox(height: 12),
                   _buildTappableCard(
                     onTap: _pickDate,
-                    isDark: isDark,
                     sectionBg: sectionBg,
                     child: Row(
                       children: [
@@ -301,7 +299,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     icon: Icons.access_time,
                     iconBg: AppColors.iconBgOrange,
                     iconColor: AppColors.iconOrange,
-                    isDark: isDark,
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -312,7 +309,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       border: Border.all(
                         color: _overlapError != null
                             ? AppColors.overdue
-                            : (isDark
+                            : (colors.isDark
                                 ? Colors.white.withValues(alpha: 0.06)
                                 : AppColors.lightBorder),
                         width: _overlapError != null ? 1.5 : 1,
@@ -322,7 +319,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildStepper(
-                          isDark: isDark,
                           label: context.l10n.sessionPickerHours,
                           value: selectedHour,
                           max: 23,
@@ -338,12 +334,11 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w300,
-                              color: Colors.grey[400],
+                              color: context.colors.textTertiary,
                             ),
                           ),
                         ),
                         _buildStepper(
-                          isDark: isDark,
                           label: context.l10n.sessionPickerMinutes,
                           value: selectedMinute,
                           max: 59,
@@ -380,7 +375,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     icon: Icons.edit_note,
                     iconBg: AppColors.iconBgPurple,
                     iconColor: AppColors.iconPurple,
-                    isDark: isDark,
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -389,7 +383,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       color: sectionBg,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark
+                        color: colors.isDark
                             ? Colors.white.withValues(alpha: 0.06)
                             : AppColors.lightBorder,
                       ),
@@ -419,12 +413,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     icon: Icons.bolt,
                     iconBg: AppColors.iconBgGreen,
                     iconColor: AppColors.iconGreen,
-                    isDark: isDark,
                   ),
                   const SizedBox(height: 12),
                   _buildTappableCard(
                     onTap: _pickDuration,
-                    isDark: isDark,
                     sectionBg: sectionBg,
                     child: Row(
                       children: [
@@ -497,7 +489,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     required IconData icon,
     required Color iconBg,
     required Color iconColor,
-    required bool isDark,
   }) {
     return Row(
       children: [
@@ -505,7 +496,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: isDark ? iconColor.withValues(alpha: 0.15) : iconBg,
+            color: context.colors.iconChipBackground(iconColor, iconBg),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 17, color: iconColor),
@@ -517,7 +508,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.1,
-            color: isDark ? Colors.grey[400] : Colors.grey[500],
+            color: context.colors.textSecondary,
           ),
         ),
       ],
@@ -525,14 +516,13 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   }
 
   Widget _buildStepper({
-    required bool isDark,
     required String label,
     required int value,
     required int max,
     required ValueChanged<int> onChanged,
   }) {
-    final cardColor = isDark ? AppColors.darkCard : Colors.white;
-    final valueColor = isDark ? Colors.white : AppColors.darkText;
+    final cardColor = context.colors.card;
+    final valueColor = context.colors.textPrimary;
 
     return Column(
       children: [
@@ -542,7 +532,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
             fontSize: 10,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
-            color: isDark ? Colors.grey[500] : Colors.grey[400],
+            color: context.colors.textTertiary,
           ),
         ),
         const SizedBox(height: 8),
@@ -552,7 +542,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
             color: cardColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isDark
+              color: context.colors.isDark
                   ? Colors.white.withValues(alpha: 0.08)
                   : Colors.grey[100]!,
             ),
@@ -581,7 +571,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
               onTap: () {
                 if (value > 0) onChanged(value - 1);
               },
-              isDark: isDark,
             ),
             const SizedBox(width: 8),
             _stepButton(
@@ -589,7 +578,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
               onTap: () {
                 if (value < max) onChanged(value + 1);
               },
-              isDark: isDark,
             ),
           ],
         ),
@@ -600,7 +588,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   Widget _stepButton({
     required IconData icon,
     required VoidCallback onTap,
-    required bool isDark,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -608,7 +595,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: isDark
+          color: context.colors.isDark
               ? Colors.white.withValues(alpha: 0.08)
               : Colors.grey[100],
           borderRadius: BorderRadius.circular(8),
@@ -616,7 +603,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
         child: Icon(
           icon,
           size: 16,
-          color: isDark ? Colors.grey[300] : Colors.grey[600],
+          color: context.colors.textSecondary,
         ),
       ),
     );
@@ -624,7 +611,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
 
   Widget _buildTappableCard({
     required VoidCallback onTap,
-    required bool isDark,
     required Color sectionBg,
     required Widget child,
     bool hasError = false,
@@ -639,7 +625,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           border: Border.all(
             color: hasError
                 ? AppColors.overdue
-                : (isDark
+                : (context.colors.isDark
                     ? Colors.white.withValues(alpha: 0.06)
                     : AppColors.lightBorder),
             width: hasError ? 1.5 : 1,

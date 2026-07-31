@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../models/study_session.dart';
-import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/format_helpers.dart';
 
 class SessionListItem extends StatelessWidget {
@@ -53,18 +53,16 @@ class SessionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final thirdLine = _getThirdLine();
 
-    final titleColor = isCompleted
-        ? (isDark ? Colors.grey[500] : Colors.grey[400])
-        : (isDark ? Colors.white : Colors.black87);
+    final titleColor =
+        isCompleted ? context.colors.textTertiary : context.colors.textPrimary;
 
     final subtitleColor = isCompleted
-        ? (isDark ? Colors.grey[600] : Colors.grey[500])
-        : (isDark ? Colors.grey[400] : Colors.grey[600]);
+        ? context.colors.textTertiary
+        : context.colors.textSecondary;
 
-    final thirdLineColor = isDark ? Colors.grey[600] : Colors.grey[500];
+    final thirdLineColor = context.colors.textTertiary;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -73,10 +71,10 @@ class SessionListItem extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey[850]! : AppColors.lightCard,
+            color: context.colors.card,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
+              color: context.colors.border,
             ),
           ),
           child: Row(
@@ -92,7 +90,7 @@ class SessionListItem extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         color: titleColor,
                         decoration: isCompleted ? TextDecoration.lineThrough : null,
-                        decorationColor: isDark ? Colors.grey[600] : Colors.grey[400],
+                        decorationColor: context.colors.textTertiary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -117,7 +115,7 @@ class SessionListItem extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 size: 18,
-                color: isDark ? Colors.grey[600] : Colors.grey[400],
+                color: context.colors.textTertiary,
               ),
             ],
           ),

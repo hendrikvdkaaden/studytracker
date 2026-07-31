@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 enum TimerState { initial, running, paused, completed }
 
@@ -21,8 +22,6 @@ class TimerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Row(
       children: [
         // Stop button
@@ -33,9 +32,9 @@ class TimerControls extends StatelessWidget {
             child: OutlinedButton(
               onPressed: state == TimerState.initial ? null : onStop,
               style: OutlinedButton.styleFrom(
-                backgroundColor: isDark ? Colors.grey[850] : Colors.white,
+                backgroundColor: context.colors.card,
                 side: BorderSide(
-                  color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
+                  color: context.colors.border,
                   width: 2,
                 ),
                 shape: RoundedRectangleBorder(
@@ -47,7 +46,7 @@ class TimerControls extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.stop_circle_outlined,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: context.colors.textSecondary,
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -55,7 +54,7 @@ class TimerControls extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],

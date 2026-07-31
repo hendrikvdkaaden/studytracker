@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../services/settings_service.dart';
 import 'onboarding_card_decoration.dart';
@@ -24,7 +25,6 @@ class OnboardingStepSubjects extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -44,14 +44,14 @@ class OnboardingStepSubjects extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.5,
-                  color: AppColors.getTextColor(context),
+                  color: context.colors.textPrimary,
                 ),
                 children: [
                   const TextSpan(text: 'Add your\n'),
                   TextSpan(
                     text: 'subjects',
                     style: TextStyle(
-                      color: isDark
+                      color: context.colors.isDark
                           ? AppColors.primaryVeryLight
                           : AppColors.primary,
                     ),
@@ -142,7 +142,7 @@ class OnboardingStepSubjects extends StatelessWidget {
   }
 
   Widget _buildSubjectChip(BuildContext context, SubjectData subject) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -173,7 +173,7 @@ class OnboardingStepSubjects extends StatelessWidget {
           Text(
             subject.name,
             style: TextStyle(
-              color: AppColors.getTextColor(context),
+              color: context.colors.textPrimary,
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),

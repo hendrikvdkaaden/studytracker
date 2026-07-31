@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
 
 class ProgressSectionHeader extends StatelessWidget {
@@ -12,8 +13,7 @@ class ProgressSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final subtleText = context.colors.textSecondary;
 
     return Row(
       children: [
@@ -21,7 +21,7 @@ class ProgressSectionHeader extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: isDark
+            color: context.colors.isDark
                 ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.12)
                 : AppColors.iconBgTeal,
             borderRadius: BorderRadius.circular(8),
@@ -49,12 +49,13 @@ class ProgressSectionHeader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.primary.withValues(alpha: 0.15)
-                  : AppColors.iconBgTeal,
+              color: context.colors.iconChipBackground(
+                AppColors.primary,
+                AppColors.iconBgTeal,
+              ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isDark
+                color: context.colors.isDark
                     ? AppColors.primary.withValues(alpha: 0.3)
                     : AppColors.primary.withValues(alpha: 0.2),
               ),
@@ -65,7 +66,7 @@ class ProgressSectionHeader extends StatelessWidget {
                 Icon(
                   Icons.edit_outlined,
                   size: 14,
-                  color: isDark
+                  color: context.colors.isDark
                       ? AppColors.primary.withValues(alpha: 0.9)
                       : AppColors.primary,
                 ),
@@ -75,7 +76,7 @@ class ProgressSectionHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: isDark
+                    color: context.colors.isDark
                         ? AppColors.primary.withValues(alpha: 0.9)
                         : AppColors.primary,
                   ),

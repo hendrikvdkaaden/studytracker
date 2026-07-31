@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class DateSelector extends StatefulWidget {
   final DateTime selectedDate;
@@ -58,7 +59,6 @@ class _DateSelectorState extends State<DateSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final today = DateTime.now();
 
     return SizedBox(
@@ -94,16 +94,12 @@ class _DateSelectorState extends State<DateSelector> {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppColors.primary
-                              : isDark
-                                  ? Colors.grey[850]
-                                  : Colors.white,
+                              : context.colors.card,
                           borderRadius: BorderRadius.circular(16),
                           border: isSelected
                               ? null
                               : Border.all(
-                                  color: isDark
-                                      ? Colors.grey[700]!
-                                      : Colors.grey[200]!,
+                                  color: context.colors.border,
                                 ),
                           boxShadow: isSelected
                               ? [
@@ -131,7 +127,7 @@ class _DateSelectorState extends State<DateSelector> {
                                 fontWeight: FontWeight.bold,
                                 color: isSelected
                                     ? Colors.white.withValues(alpha: 0.8)
-                                    : Colors.grey[400],
+                                    : context.colors.textTertiary,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -143,9 +139,7 @@ class _DateSelectorState extends State<DateSelector> {
                                 fontWeight: FontWeight.bold,
                                 color: isSelected
                                     ? Colors.white
-                                    : isDark
-                                        ? Colors.white
-                                        : Colors.black87,
+                                    : context.colors.textPrimary,
                               ),
                             ),
                             if (isToday && !isSelected) ...[

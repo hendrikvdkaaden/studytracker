@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class HomeDeadlineCard extends StatelessWidget {
   final Goal goal;
@@ -17,7 +18,7 @@ class HomeDeadlineCard extends StatelessWidget {
     if (goal.isOverdue()) {
       return AppColors.overdue;
     }
-    return Colors.amber;
+    return AppColors.warning;
   }
 
   String _getPriorityLabel() {
@@ -44,7 +45,6 @@ class HomeDeadlineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final subjectColor = SettingsService.colorForSubject(goal.subject);
     final borderColor = subjectColor ?? _getBorderColor();
 
@@ -53,7 +53,7 @@ class HomeDeadlineCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? Colors.grey[850] : Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(16),
           border: Border(
             left: BorderSide(
@@ -87,7 +87,7 @@ class HomeDeadlineCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -96,7 +96,7 @@ class HomeDeadlineCard extends StatelessWidget {
                 Icon(
                   Icons.schedule,
                   size: 18,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: context.colors.textSecondary,
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -104,7 +104,7 @@ class HomeDeadlineCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],

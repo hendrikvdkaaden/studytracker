@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'onboarding_card_decoration.dart';
 import 'onboarding_landing_button.dart';
@@ -25,7 +26,6 @@ class OnboardingStepName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -45,14 +45,14 @@ class OnboardingStepName extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.5,
-                  color: AppColors.getTextColor(context),
+                  color: context.colors.textPrimary,
                 ),
                 children: [
                   const TextSpan(text: "What's your\n"),
                   TextSpan(
                     text: 'name?',
                     style: TextStyle(
-                      color: isDark
+                      color: context.colors.isDark
                           ? AppColors.primaryVeryLight
                           : AppColors.primary,
                     ),
@@ -114,10 +114,10 @@ Widget _buildTextField({
   bool hasError = false,
   ValueChanged<String>? onChanged,
 }) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final isDark = context.colors.isDark;
   return TextField(
     controller: controller,
-    style: TextStyle(color: AppColors.getTextColor(context)),
+    style: TextStyle(color: context.colors.textPrimary),
     textCapitalization: TextCapitalization.words,
     onChanged: onChanged,
     decoration: InputDecoration(
@@ -131,7 +131,7 @@ Widget _buildTextField({
       errorStyle: const TextStyle(color: AppColors.overdue, fontSize: 12),
       filled: true,
       fillColor: isDark
-          ? AppColors.getFieldBackground(context)
+          ? context.colors.fieldBackground
           : AppColors.lightChipBg,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

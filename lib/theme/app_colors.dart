@@ -88,45 +88,4 @@ class AppColors {
   static Color withOpacity(Color color, double opacity) {
     return color.withValues(alpha: opacity);
   }
-
-  // Context-aware color getters
-  static Color getBackground(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? darkBackground : lightBackground;
-  }
-
-  static Color getCardColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? darkCard : lightCard;
-  }
-
-  static Color getBorderColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? darkBorder : lightBorder;
-  }
-
-  static Color getTextColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? lightText : lightNavy;
-  }
-
-  static Color getCalendarBackground(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? calendarDarkBackground : calendarLightBackground;
-  }
-
-  static Color getFieldBackground(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? darkFieldBackground : lightFieldBackground;
-  }
-
-  static Color getModalBackground(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? sectionDarkBg : Colors.white;
-  }
-
-  static Color getSecondaryText(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? const Color(0xFF94A3B8) : textSecondary;
-  }
 }

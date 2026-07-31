@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
 
 class AutoPlanWizardResult {
@@ -116,13 +117,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final screenHeight = MediaQuery.of(context).size.height;
     final bottomInset = MediaQuery.of(context).padding.bottom;
-    final bg = isDark ? AppColors.darkBackground : AppColors.lightCard;
-    final sectionBg = isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg;
-    final textColor = isDark ? Colors.white : AppColors.darkText;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final bg = context.colors.modalBackground;
+    final sectionBg = context.colors.sectionBackground;
+    final textColor = context.colors.textPrimary;
+    final subtleText = context.colors.textSecondary;
 
     return Container(
       height: screenHeight * 0.85,
@@ -138,7 +138,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             width: 40,
             height: 6,
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[700] : Colors.grey[300],
+              color: context.colors.dragHandle,
               borderRadius: BorderRadius.circular(3),
             ),
           ),
@@ -161,7 +161,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icon(Icons.close, color: subtleText),
                   onPressed: () => Navigator.pop(context),
                   style: IconButton.styleFrom(
-                    backgroundColor: isDark
+                    backgroundColor: context.colors.isDark
                         ? Colors.white.withValues(alpha: 0.08)
                         : Colors.grey[100],
                     shape: const CircleBorder(),
@@ -173,7 +173,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           const SizedBox(height: 12),
           Divider(
             height: 1,
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.08)
                 : Colors.grey[100],
           ),
@@ -188,11 +188,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icons.schedule,
                   iconBg: AppColors.iconBgOrange,
                   iconColor: AppColors.iconOrange,
-                  isDark: isDark,
                 ),
                 const SizedBox(height: 12),
                 _buildTimeStepperCard(
-                  isDark: isDark,
                   sectionBg: sectionBg,
                   hours: _totalHours,
                   minutes: _totalMinutes,
@@ -208,7 +206,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icons.calendar_month,
                   iconBg: AppColors.iconBgBlue,
                   iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                  isDark: isDark,
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -225,14 +222,14 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                           decoration: BoxDecoration(
                             color: selected
                                 ? AppColors.primary
-                                : (isDark
+                                : (context.colors.isDark
                                     ? Colors.white.withValues(alpha: 0.06)
                                     : Colors.white),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: selected
                                   ? AppColors.primary
-                                  : (isDark
+                                  : (context.colors.isDark
                                       ? Colors.white.withValues(alpha: 0.1)
                                       : Colors.grey[200]!),
                             ),
@@ -272,10 +269,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icons.wb_sunny_outlined,
                   iconBg: AppColors.iconBgPurple,
                   iconColor: AppColors.iconPurple,
-                  isDark: isDark,
                 ),
                 const SizedBox(height: 12),
-                _buildTimeRangeCard(isDark: isDark, sectionBg: sectionBg, subtleText: subtleText),
+                _buildTimeRangeCard(sectionBg: sectionBg, subtleText: subtleText),
                 const SizedBox(height: 28),
 
                 // 4. Sessieduur
@@ -284,11 +280,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icons.bolt,
                   iconBg: AppColors.iconBgGreen,
                   iconColor: AppColors.iconGreen,
-                  isDark: isDark,
                 ),
                 const SizedBox(height: 12),
                 _buildTimeStepperCard(
-                  isDark: isDark,
                   sectionBg: sectionBg,
                   hours: _sessionDurationHours,
                   minutes: _sessionDurationMinutes,
@@ -306,10 +300,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   icon: Icons.coffee_outlined,
                   iconBg: AppColors.iconBgOrange,
                   iconColor: AppColors.iconOrange,
-                  isDark: isDark,
                 ),
                 const SizedBox(height: 12),
-                _buildBreakPicker(isDark: isDark, sectionBg: sectionBg, subtleText: subtleText),
+                _buildBreakPicker(sectionBg: sectionBg, subtleText: subtleText),
                 const SizedBox(height: 24),
               ],
             ),
@@ -317,7 +310,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           // Footer
           Divider(
             height: 1,
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.08)
                 : Colors.grey[100],
           ),
@@ -392,7 +385,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     required IconData icon,
     required Color iconBg,
     required Color iconColor,
-    required bool isDark,
   }) {
     return Row(
       children: [
@@ -400,7 +392,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: isDark ? iconColor.withValues(alpha: 0.15) : iconBg,
+            color: context.colors.iconChipBackground(iconColor, iconBg),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: iconColor),
@@ -412,7 +404,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             fontSize: 11,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.1,
-            color: isDark ? Colors.grey[400] : Colors.grey[500],
+            color: context.colors.textSecondary,
           ),
         ),
       ],
@@ -420,7 +412,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   }
 
   Widget _buildTimeStepperCard({
-    required bool isDark,
     required Color sectionBg,
     required int hours,
     required int minutes,
@@ -434,9 +425,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         color: sectionBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.06)
-              : AppColors.lightBorder,
+          color: context.colors.border,
           style: BorderStyle.solid,
         ),
       ),
@@ -444,7 +433,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildStepper(
-            isDark: isDark,
             label: context.l10n.sessionPickerHours,
             value: hours,
             max: maxHours,
@@ -462,7 +450,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             ),
           ),
           _buildStepper(
-            isDark: isDark,
             label: context.l10n.sessionPickerMinutes,
             value: minutes,
             max: 59,
@@ -474,14 +461,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   }
 
   Widget _buildStepper({
-    required bool isDark,
     required String label,
     required int value,
     required int max,
     required ValueChanged<int> onChanged,
   }) {
     return _InlineStepper(
-      isDark: isDark,
       label: label,
       value: value,
       max: max,
@@ -490,7 +475,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   }
 
   Widget _buildBreakPicker({
-    required bool isDark,
     required Color sectionBg,
     required Color subtleText,
   }) {
@@ -509,9 +493,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         color: sectionBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.06)
-              : AppColors.lightBorder,
+          color: context.colors.border,
         ),
       ),
       child: Row(
@@ -527,14 +509,14 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 decoration: BoxDecoration(
                   color: selected
                       ? AppColors.primary
-                      : (isDark
+                      : (context.colors.isDark
                           ? Colors.white.withValues(alpha: 0.06)
                           : Colors.white),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
                         ? AppColors.primary
-                        : (isDark
+                        : (context.colors.isDark
                             ? Colors.white.withValues(alpha: 0.1)
                             : Colors.grey[200]!),
                   ),
@@ -558,7 +540,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   }
 
   Widget _buildTimeRangeCard({
-    required bool isDark,
     required Color sectionBg,
     required Color subtleText,
   }) {
@@ -572,9 +553,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         color: sectionBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.06)
-              : AppColors.lightBorder,
+          color: context.colors.border,
         ),
       ),
       child: Column(
@@ -605,12 +584,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                       decoration: BoxDecoration(
                         color: active
                             ? AppColors.primary.withValues(alpha: 0.8)
-                            : (isDark
+                            : (context.colors.isDark
                                 ? Colors.white.withValues(alpha: 0.08)
                                 : AppColors.lightBorder),
                         border: Border(
                           right: BorderSide(
-                            color: isDark
+                            color: context.colors.isDark
                                 ? Colors.black.withValues(alpha: 0.2)
                                 : Colors.white.withValues(alpha: 0.6),
                             width: 1,
@@ -659,7 +638,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isDark ? Colors.grey[300] : AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -669,14 +648,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 }
 
 class _InlineStepper extends StatefulWidget {
-  final bool isDark;
   final String label;
   final int value;
   final int max;
   final ValueChanged<int> onChanged;
 
   const _InlineStepper({
-    required this.isDark,
     required this.label,
     required this.value,
     required this.max,
@@ -736,8 +713,8 @@ class _InlineStepperState extends State<_InlineStepper> {
 
   @override
   Widget build(BuildContext context) {
-    final cardColor = widget.isDark ? AppColors.darkCard : Colors.white;
-    final valueColor = widget.isDark ? Colors.white : AppColors.darkText;
+    final cardColor = context.colors.card;
+    final valueColor = context.colors.textPrimary;
 
     return Column(
       children: [
@@ -747,7 +724,7 @@ class _InlineStepperState extends State<_InlineStepper> {
             fontSize: 10,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
-            color: widget.isDark ? Colors.grey[500] : Colors.grey[400],
+            color: context.colors.textTertiary,
           ),
         ),
         const SizedBox(height: 8),
@@ -762,7 +739,7 @@ class _InlineStepperState extends State<_InlineStepper> {
               border: Border.all(
                 color: _editing
                     ? AppColors.primary
-                    : (widget.isDark
+                    : (context.colors.isDark
                         ? Colors.white.withValues(alpha: 0.08)
                         : Colors.grey[100]!),
                 width: _editing ? 2 : 1,
@@ -809,7 +786,6 @@ class _InlineStepperState extends State<_InlineStepper> {
           children: [
             _StepButton(
               icon: Icons.remove,
-              isDark: widget.isDark,
               onTap: () {
                 if (widget.value > 0) widget.onChanged(widget.value - 1);
               },
@@ -817,7 +793,6 @@ class _InlineStepperState extends State<_InlineStepper> {
             const SizedBox(width: 8),
             _StepButton(
               icon: Icons.add,
-              isDark: widget.isDark,
               onTap: () {
                 if (widget.value < widget.max) {
                   widget.onChanged(widget.value + 1);
@@ -834,12 +809,10 @@ class _InlineStepperState extends State<_InlineStepper> {
 class _StepButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  final bool isDark;
 
   const _StepButton({
     required this.icon,
     required this.onTap,
-    required this.isDark,
   });
 
   @override
@@ -850,7 +823,7 @@ class _StepButton extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: isDark
+          color: context.colors.isDark
               ? Colors.white.withValues(alpha: 0.08)
               : Colors.grey[100],
           borderRadius: BorderRadius.circular(8),
@@ -858,7 +831,7 @@ class _StepButton extends StatelessWidget {
         child: Icon(
           icon,
           size: 16,
-          color: isDark ? Colors.grey[300] : Colors.grey[600],
+          color: context.colors.textSecondary,
         ),
       ),
     );

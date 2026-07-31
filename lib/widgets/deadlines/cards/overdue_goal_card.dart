@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class OverdueGoalCard extends StatelessWidget {
@@ -22,7 +23,6 @@ class OverdueGoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final daysOverdue = _getDaysOverdue();
 
     return GestureDetector(
@@ -31,10 +31,10 @@ class OverdueGoalCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.06)
                 : AppColors.lightBorder,
           ),
@@ -45,7 +45,7 @@ class OverdueGoalCard extends StatelessWidget {
               height: 44,
               width: 44,
               decoration: BoxDecoration(
-                color: isDark
+                color: context.colors.isDark
                     ? AppColors.overdue.withValues(alpha: 0.1)
                     : AppColors.overdue.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
@@ -87,7 +87,7 @@ class OverdueGoalCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: isDark
+                color: context.colors.isDark
                     ? AppColors.overdue.withValues(alpha: 0.1)
                     : AppColors.overdue.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(999),

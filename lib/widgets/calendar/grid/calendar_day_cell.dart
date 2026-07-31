@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class CalendarDayCell extends StatelessWidget {
   final int day;
@@ -21,8 +22,6 @@ class CalendarDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -31,7 +30,7 @@ class CalendarDayCell extends StatelessWidget {
           color: isToday
               ? AppColors.calendarAccent
               : isSelected
-                  ? AppColors.calendarAccent.withValues(alpha: isDark ? 0.24 : 0.14)
+                  ? AppColors.calendarAccent.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
           border: isSelected && !isToday
@@ -61,8 +60,8 @@ class CalendarDayCell extends StatelessWidget {
                 color: isToday
                     ? const Color(0xFF0D1C1B)
                     : !isCurrentMonth
-                        ? (isDark ? Colors.grey[600] : Colors.grey[400])
-                        : (isDark ? const Color(0xFFF8FCFB) : const Color(0xFF0D1C1B)),
+                        ? context.colors.textTertiary
+                        : context.colors.textPrimary,
               ),
             ),
             if (statuses.isNotEmpty) ...[
@@ -91,9 +90,9 @@ class CalendarDayCell extends StatelessWidget {
   Color _getStatusColor(GoalStatus status) {
     switch (status) {
       case GoalStatus.overdue:
-        return const Color(0xFFFF5252);
+        return AppColors.overdue;
       case GoalStatus.upcoming:
-        return const Color(0xFF499C95);
+        return AppColors.primaryLight;
       case GoalStatus.completed:
         return AppColors.completed;
       case GoalStatus.session:

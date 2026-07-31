@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../../../utils/l10n_extension.dart';
 import '../grid/calendar_day_cell.dart';
@@ -54,7 +55,6 @@ class DeadlineListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final status = _getGoalStatus();
     final subtitle = _getSubtitle(context);
     final subjectColor = SettingsService.colorForSubject(goal.subject);
@@ -69,10 +69,10 @@ class DeadlineListItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg,
+          color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.white.withValues(alpha: 0.06)
                 : AppColors.lightBorder,
           ),
@@ -84,7 +84,7 @@ class DeadlineListItem extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: isDark ? 0.15 : 0.1),
+                color: iconColor.withValues(alpha: context.colors.isDark ? 0.15 : 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -104,7 +104,7 @@ class DeadlineListItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : AppColors.darkText,
+                      color: context.colors.textPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -139,7 +139,7 @@ class DeadlineListItem extends StatelessWidget {
                 const SizedBox(width: 6),
                 Icon(
                   Icons.chevron_right,
-                  color: isDark ? Colors.grey[600] : Colors.grey[400],
+                  color: context.colors.textTertiary,
                   size: 18,
                 ),
               ],

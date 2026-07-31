@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class SessionProgressBar extends StatelessWidget {
   final int elapsedSeconds;
@@ -30,7 +31,6 @@ class SessionProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final percentage = (_progressPercentage * 100).toInt();
     final targetSeconds = targetMinutes * 60;
 
@@ -44,7 +44,7 @@ class SessionProgressBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: context.colors.textSecondary,
               ),
             ),
             Text(
@@ -63,7 +63,7 @@ class SessionProgressBar extends StatelessWidget {
           child: Container(
             height: 8,
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[800] : Colors.grey[200],
+              color: context.colors.sectionBackground,
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -92,7 +92,7 @@ class SessionProgressBar extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: isDark ? Colors.grey[500] : Colors.grey[400],
+            color: context.colors.textTertiary,
           ),
         ),
       ],

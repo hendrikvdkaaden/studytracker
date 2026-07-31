@@ -5,7 +5,7 @@ import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../templates/home_template.dart';
 import 'goal_details_screen.dart';
 import 'study_timer_screen.dart';
@@ -117,7 +117,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     final sessionGoals = _getSessionGoals(allSessions);
 
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: HomeTemplate(
           selectedDate: _selectedDate,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../add_goal/fields/custom_text_field.dart';
 
 class SubjectSelectorField extends StatelessWidget {
@@ -58,8 +59,7 @@ class _SubjectDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sectionBg = isDark ? AppColors.sectionDarkBg : AppColors.sectionLightBg;
+    final sectionBg = context.colors.sectionBackground;
 
     return DropdownButtonFormField<String>(
       initialValue: selectedSubject,
@@ -70,15 +70,11 @@ class _SubjectDropdown extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
-            color: isDark ? Colors.white.withValues(alpha: 0.06) : AppColors.lightBorder,
-          ),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
-            color: isDark ? Colors.white.withValues(alpha: 0.06) : AppColors.lightBorder,
-          ),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
@@ -93,13 +89,13 @@ class _SubjectDropdown extends StatelessWidget {
           borderSide: const BorderSide(color: AppColors.overdue, width: 1.5),
         ),
       ),
-      dropdownColor: isDark ? AppColors.darkCard : AppColors.lightCard,
+      dropdownColor: context.colors.card,
       borderRadius: BorderRadius.circular(16),
       hint: Text(
         'Select a subject',
         style: TextStyle(
           fontSize: 15,
-          color: isDark ? Colors.grey[500] : Colors.grey[400],
+          color: context.colors.textTertiary,
         ),
       ),
       selectedItemBuilder: (context) => subjects.map((s) {
@@ -119,7 +115,7 @@ class _SubjectDropdown extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
-                color: isDark ? Colors.white : AppColors.darkText,
+                color: context.colors.textPrimary,
               ),
             ),
           ],
@@ -144,7 +140,7 @@ class _SubjectDropdown extends StatelessWidget {
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   color: isSelected
                       ? AppColors.primary
-                      : (isDark ? Colors.white : AppColors.darkText),
+                      : context.colors.textPrimary,
                 ),
               ),
             ],
@@ -156,7 +152,7 @@ class _SubjectDropdown extends StatelessWidget {
       },
       icon: Icon(
         Icons.keyboard_arrow_down_rounded,
-        color: isDark ? Colors.grey[400] : Colors.grey[500],
+        color: context.colors.textSecondary,
       ),
     );
   }

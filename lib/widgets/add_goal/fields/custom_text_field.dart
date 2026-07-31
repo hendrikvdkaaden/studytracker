@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -23,21 +24,19 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sectionBg =
-        isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final sectionBg = context.colors.fieldBackground;
+    final subtleText = context.colors.textSecondary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(context, isDark, subtleText),
+        _buildHeader(context, subtleText),
         const SizedBox(height: 10),
         TextFormField(
           controller: controller,
           style: TextStyle(
             fontSize: 15,
-            color: isDark ? Colors.white : AppColors.darkText,
+            color: context.colors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hintText,
@@ -49,17 +48,13 @@ class CustomTextField extends StatelessWidget {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : AppColors.lightBorder,
+                color: context.colors.border,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : AppColors.lightBorder,
+                color: context.colors.border,
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -85,7 +80,7 @@ class CustomTextField extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, bool isDark, Color subtleText) {
+  Widget _buildHeader(BuildContext context, Color subtleText) {
     if (icon != null) {
       return Row(
         children: [
@@ -93,9 +88,10 @@ class CustomTextField extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isDark
-                  ? (iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.15)
-                  : (iconBg ?? AppColors.iconBgTeal),
+              color: context.colors.iconChipBackground(
+                iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                iconBg ?? AppColors.iconBgTeal,
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, size: 17,

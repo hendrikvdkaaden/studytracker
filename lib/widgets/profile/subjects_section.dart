@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class SubjectsSection extends StatefulWidget {
   final List<SubjectData> subjects;
@@ -56,18 +57,15 @@ class _SubjectsSectionState extends State<SubjectsSection>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dividerColor = isDark
-        ? Colors.white.withValues(alpha: 0.06)
-        : Colors.black.withValues(alpha: 0.06);
+    final dividerColor = context.colors.overlay(darkAlpha: 0.06, lightAlpha: 0.06);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.lightCard,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.getBorderColor(context)),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           children: [
@@ -109,8 +107,8 @@ class _SubjectsSectionState extends State<SubjectsSection>
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           color: _isExpanded || widget.subjects.isEmpty
-                              ? (isDark ? Colors.white : AppColors.darkBackground)
-                              : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                              ? context.colors.textPrimary
+                              : context.colors.textSecondary,
                         ),
                       ),
                     ),
@@ -136,7 +134,7 @@ class _SubjectsSectionState extends State<SubjectsSection>
                       child: Icon(
                         Icons.keyboard_arrow_down,
                         size: 20,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -178,9 +176,7 @@ class _SubjectsSectionState extends State<SubjectsSection>
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
-                                color: isDark
-                                    ? Colors.white
-                                    : AppColors.darkBackground,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ),

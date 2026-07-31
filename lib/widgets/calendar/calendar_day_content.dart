@@ -7,6 +7,7 @@ import '../../product/screens/study_timer_screen.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import 'goals/deadline_list_item.dart';
 import 'sessions/session_list_item.dart';
 
@@ -45,7 +46,7 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
     ).then((_) => widget.onGoalUpdated());
   }
 
-  Widget _buildEmptyState(bool isDark) {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -53,14 +54,14 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
           Icon(
             Icons.event_available,
             size: 56,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
+            color: context.colors.textTertiary,
           ),
           const SizedBox(height: 12),
           Text(
             'No deadlines or sessions',
             style: TextStyle(
               fontSize: 15,
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -70,13 +71,12 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
 
   Widget _buildSectionLabel(
     BuildContext context,
-    bool isDark,
     String title,
     IconData icon,
     Color iconColor,
     Color iconBg,
   ) {
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final subtleText = context.colors.textSecondary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -85,7 +85,7 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isDark ? iconColor.withValues(alpha: 0.15) : iconBg,
+              color: context.colors.iconChipBackground(iconColor, iconBg),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, size: 17, color: iconColor),
@@ -107,10 +107,8 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     if (widget.goals.isEmpty && widget.sessions.isEmpty) {
-      return _buildEmptyState(isDark);
+      return _buildEmptyState(context);
     }
 
     return ListView(
@@ -120,7 +118,6 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
         if (widget.goals.isNotEmpty) ...[
           _buildSectionLabel(
             context,
-            isDark,
             'Deadlines',
             Icons.calendar_month,
             AppColors.iconOrange,
@@ -144,7 +141,6 @@ class _CalendarDayContentState extends ConsumerState<CalendarDayContent> {
           if (widget.goals.isNotEmpty) const SizedBox(height: 24),
           _buildSectionLabel(
             context,
-            isDark,
             'Study Sessions',
             Icons.bolt,
             AppColors.iconPurple,

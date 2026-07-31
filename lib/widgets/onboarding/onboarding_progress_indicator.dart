@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 
 class OnboardingProgressIndicator extends StatelessWidget {
@@ -9,7 +10,7 @@ class OnboardingProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

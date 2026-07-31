@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/study_session.dart';
 import '../../models/goal.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 
 class HomeSessionItem extends StatelessWidget {
@@ -64,7 +65,7 @@ class HomeSessionItem extends StatelessWidget {
     return null;
   }
 
-  Widget _buildCircle(bool isDark) {
+  Widget _buildCircle(BuildContext context) {
     if (isCompleted) {
       return Container(
         width: 32,
@@ -84,7 +85,7 @@ class HomeSessionItem extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: isDark ? Colors.grey[600]! : Colors.grey[350]!,
+            color: context.colors.border,
             width: 2,
           ),
         ),
@@ -108,50 +109,31 @@ class HomeSessionItem extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: isDark ? Colors.grey[600]! : Colors.grey[350]!,
+          color: context.colors.border,
           width: 2,
         ),
       ),
     );
   }
 
-  Color _getLineColor(bool isDark) {
-    return isDark ? Colors.grey[700]! : Colors.grey[300]!;
+  Color _getLineColor(BuildContext context) {
+    return context.colors.divider;
   }
 
-  Widget _buildCard(BuildContext context, bool isDark) {
-    Color cardColor;
-    Border cardBorder;
+  Widget _buildCard(BuildContext context) {
+    Color cardColor = context.colors.card;
+    Border cardBorder = Border.all(color: context.colors.border);
     List<BoxShadow>? cardShadow;
 
-    if (isCompleted) {
-      cardColor = isDark
-          ? Colors.grey[850]!
-          : AppColors.lightCard;
-      cardBorder = Border.all(
-        color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-      );
-    } else if (_isActive) {
-      cardColor = isDark ? Colors.grey[850]! : AppColors.lightCard;
-      cardBorder = Border.all(
-        color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-      );
-    } else {
-      cardColor = isDark ? Colors.grey[850]! : AppColors.lightCard;
-      cardBorder = Border.all(
-        color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-      );
-    }
-
     final titleColor = isCompleted
-        ? (isDark ? Colors.grey[500] : Colors.grey[400])
-        : (isDark ? Colors.white : Colors.black87);
+        ? context.colors.textTertiary
+        : context.colors.textPrimary;
 
     final subtitleColor = isCompleted
-        ? (isDark ? Colors.grey[600] : Colors.grey[500])
-        : (isDark ? Colors.grey[400] : Colors.grey[600]);
+        ? context.colors.textTertiary
+        : context.colors.textSecondary;
 
-    final thirdLineColor = isDark ? Colors.grey[600] : Colors.grey[500];
+    final thirdLineColor = context.colors.textTertiary;
 
     final thirdLine = _getThirdLine();
 
@@ -178,7 +160,7 @@ class HomeSessionItem extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       color: titleColor,
                       decoration: isCompleted ? TextDecoration.lineThrough : null,
-                      decorationColor: isDark ? Colors.grey[600] : Colors.grey[400],
+                      decorationColor: context.colors.textTertiary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -203,7 +185,7 @@ class HomeSessionItem extends StatelessWidget {
             Icon(
               Icons.chevron_right,
               size: 18,
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: context.colors.textTertiary,
             ),
           ],
         ),
@@ -213,7 +195,6 @@ class HomeSessionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: IntrinsicHeight(
@@ -225,14 +206,14 @@ class HomeSessionItem extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 4),
-                  _buildCircle(isDark),
+                  _buildCircle(context),
                   if (!isLast)
                     Expanded(
                       child: Container(
                         width: 2,
                         margin: const EdgeInsets.symmetric(vertical: 2),
                         decoration: BoxDecoration(
-                          color: _getLineColor(isDark),
+                          color: _getLineColor(context),
                           borderRadius: BorderRadius.circular(1),
                         ),
                       ),
@@ -241,7 +222,7 @@ class HomeSessionItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(child: _buildCard(context, isDark)),
+            Expanded(child: _buildCard(context)),
           ],
         ),
       ),

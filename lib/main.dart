@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'product/screens/splash_screen.dart';
 import 'theme/app_colors.dart';
+import 'theme/app_theme_extension.dart';
 
 final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: AppColors.lightBackground,
             useMaterial3: true,
             fontFamily: 'Roboto',
+            extensions: const [AppTheme.light],
           ),
           darkTheme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
             cardColor: AppColors.darkCard,
             useMaterial3: true,
             fontFamily: 'Roboto',
+            extensions: const [AppTheme.dark],
           ),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

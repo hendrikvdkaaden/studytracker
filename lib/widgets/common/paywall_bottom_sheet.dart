@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../providers/app_providers.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'premium_icon.dart';
 
@@ -87,8 +88,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sheetBg = isDark ? AppColors.darkCard : Colors.white;
+    final sheetBg = context.colors.modalBackground;
 
     return Container(
       decoration: BoxDecoration(
@@ -105,7 +105,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               width: 48,
               height: 4,
               decoration: BoxDecoration(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.12),
+                color: context.colors.overlay(darkAlpha: 0.12, lightAlpha: 0.12),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -121,13 +121,13 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06),
+                    color: context.colors.overlay(darkAlpha: 0.06, lightAlpha: 0.06),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.close,
                     size: 18,
-                    color: isDark ? Colors.white70 : Colors.black54,
+                    color: context.colors.isDark ? Colors.white70 : Colors.black54,
                   ),
                 ),
               ),
@@ -141,16 +141,16 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                       padding: EdgeInsets.symmetric(vertical: 60),
                       child: Center(child: CircularProgressIndicator()),
                     )
-                  : _buildContent(isDark),
+                  : _buildContent(),
             ),
           ),
-          _buildFooter(isDark),
+          _buildFooter(),
         ],
       ),
     );
   }
 
-  Widget _buildContent(bool isDark) {
+  Widget _buildContent() {
     final l10n = context.l10n;
     final current = _offerings?.current;
     final monthly = current?.monthly;
@@ -166,7 +166,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white : AppColors.premiumText,
+            color: context.colors.textPrimary,
             letterSpacing: -0.4,
           ),
           textAlign: TextAlign.center,
@@ -176,13 +176,13 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
           l10n.paywallSubtitle,
           style: TextStyle(
             fontSize: 15,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            color: context.colors.textSecondary,
             height: 1.4,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 24),
-        _buildFeatureList(isDark, l10n),
+        _buildFeatureList(l10n),
         const SizedBox(height: 24),
         if (monthly != null || annual != null) ...[
           if (annual != null)
@@ -193,7 +193,6 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               badge: l10n.paywallYearlySaveBadge,
               valueBadge: l10n.paywallYearlyValueBadge,
               period: l10n.paywallPeriodYear,
-              isDark: isDark,
             ),
           const SizedBox(height: 12),
           if (monthly != null)
@@ -202,12 +201,11 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               label: l10n.paywallMonthlyLabel,
               subtitle: l10n.paywallMonthlySubtitle,
               period: l10n.paywallPeriodMonth,
-              isDark: isDark,
             ),
         ] else
           Text(
             l10n.paywallNoOfferings,
-            style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600]),
+            style: TextStyle(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
         const SizedBox(height: 24),
@@ -217,7 +215,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
 
   Widget _buildIcon() => const PremiumIcon();
 
-  Widget _buildFeatureList(bool isDark, AppLocalizations l10n) {
+  Widget _buildFeatureList(AppLocalizations l10n) {
     final features = [
       l10n.paywallFeature1,
       l10n.paywallFeature2,
@@ -248,7 +246,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                       f,
                       style: TextStyle(
                         fontSize: 15,
-                        color: isDark ? Colors.grey[200] : AppColors.premiumText,
+                        color: context.colors.textPrimary,
                         height: 1.4,
                       ),
                     ),
@@ -266,7 +264,6 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
     required String label,
     required String subtitle,
     required String period,
-    required bool isDark,
     String? badge,
     String? valueBadge,
   }) {
@@ -280,12 +277,12 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
                 ? AppColors.premiumBlue
-                : (isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.premiumCardBorder),
+                : (context.colors.isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.premiumCardBorder),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -314,7 +311,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.white : AppColors.premiumText,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                         if (valueBadge != null) ...[
@@ -341,7 +338,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                     const SizedBox(height: 3),
                     Text(
                       subtitle,
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
+                      style: TextStyle(fontSize: 13, color: context.colors.textSecondary),
                     ),
                   ],
                 ),
@@ -353,7 +350,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : AppColors.premiumText,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     Text(
@@ -361,7 +358,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: isSelected ? AppColors.premiumBlue : Colors.grey,
+                        color: isSelected ? AppColors.premiumBlue : context.colors.textSecondary,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -403,16 +400,16 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
     );
   }
 
-  Widget _buildFooter(bool isDark) {
+  Widget _buildFooter() {
     final l10n = context.l10n;
 
     return Container(
       padding: EdgeInsets.fromLTRB(24, 16, 24, MediaQuery.of(context).padding.bottom + 24),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : Colors.white,
+        color: context.colors.modalBackground,
         border: Border(
           top: BorderSide(
-            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06),
+            color: context.colors.overlay(darkAlpha: 0.06, lightAlpha: 0.06),
           ),
         ),
       ),
@@ -480,9 +477,9 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               l10n.paywallRestorePurchases,
               style: TextStyle(
                 fontSize: 13,
-                color: isDark ? Colors.grey[500] : Colors.grey[600],
+                color: context.colors.textSecondary,
                 decoration: TextDecoration.underline,
-                decorationColor: isDark ? Colors.grey[600] : Colors.grey[400],
+                decorationColor: context.colors.textTertiary,
               ),
             ),
           ),
@@ -491,7 +488,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
             l10n.paywallDisclaimerText,
             style: TextStyle(
               fontSize: 11,
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: context.colors.textTertiary,
               height: 1.5,
             ),
             textAlign: TextAlign.center,

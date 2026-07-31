@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/day_status.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
 import 'day_status_circle.dart';
 
@@ -47,13 +48,14 @@ class StudyConsistencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final status = _buildStatusText(context);
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2b2930) : const Color(0xFFF3EDF7),
+        color: context.colors.isDark
+            ? const Color(0xFF2b2930)
+            : const Color(0xFFF3EDF7),
         borderRadius: BorderRadius.circular(32),
         border: Border.all(
           color: const Color(0xFF6750A4).withValues(alpha: 0.1),
@@ -81,7 +83,9 @@ class StudyConsistencyCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.amber.shade400 : Colors.amber.shade700,
+                      color: context.colors.isDark
+                          ? Colors.amber.shade400
+                          : Colors.amber.shade700,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -95,7 +99,7 @@ class StudyConsistencyCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF1d1b20),
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -103,7 +107,7 @@ class StudyConsistencyCard extends StatelessWidget {
                 status.subtitle,
                 style: TextStyle(
                   fontSize: 11,
-                  color: isDark ? Colors.grey[400] : Colors.grey[500],
+                  color: context.colors.textSecondary,
                 ),
               ),
               const SizedBox(height: 20),
@@ -122,7 +126,7 @@ class StudyConsistencyCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade400,
+                          color: context.colors.textTertiary,
                         ),
                       ),
                       const SizedBox(height: 4),

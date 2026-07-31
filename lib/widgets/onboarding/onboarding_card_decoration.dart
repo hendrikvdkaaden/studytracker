@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 BoxDecoration onboardingCardDecoration(BuildContext context) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final isDark = context.colors.isDark;
   return BoxDecoration(
-    color: AppColors.getCardColor(context),
+    color: context.colors.card,
     borderRadius: BorderRadius.circular(24),
     border: isDark
         ? null

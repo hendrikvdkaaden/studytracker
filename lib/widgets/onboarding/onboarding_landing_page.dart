@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'onboarding_landing_button.dart';
 
@@ -11,7 +12,6 @@ class OnboardingLandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -36,7 +36,7 @@ class OnboardingLandingPage extends StatelessWidget {
             Text(
               'Deadly',
               style: TextStyle(
-                color: isDark ? Colors.white : AppColors.lightNavy,
+                color: context.colors.isDark ? Colors.white : AppColors.lightNavy,
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -1,

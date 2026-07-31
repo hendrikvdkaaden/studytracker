@@ -1,6 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../widgets/study_timer/timer_display.dart';
 import '../../widgets/study_timer/session_info_card.dart';
 import '../../widgets/study_timer/session_progress_bar.dart';
@@ -64,10 +64,8 @@ class StudyTimerTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.sectionLightBg,
+      backgroundColor: context.colors.background,
       body: Stack(
         children: [
           SafeArea(
@@ -83,9 +81,8 @@ class StudyTimerTemplate extends StatelessWidget {
                         onPressed: onBack,
                         icon: const Icon(Icons.arrow_back_ios_new),
                         style: IconButton.styleFrom(
-                          backgroundColor: isDark
-                              ? Colors.grey[800]?.withValues(alpha: 0.5)
-                              : Colors.grey[200]?.withValues(alpha: 0.5),
+                          backgroundColor:
+                              context.colors.sectionBackground.withValues(alpha: 0.5),
                         ),
                       ),
                       Expanded(
@@ -96,7 +93,7 @@ class StudyTimerTemplate extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey[500],
+                                color: context.colors.textSecondary,
                                 letterSpacing: 2,
                               ),
                             ),
@@ -106,7 +103,7 @@ class StudyTimerTemplate extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.grey[900],
+                                color: context.colors.textPrimary,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),

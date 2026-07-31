@@ -6,6 +6,7 @@ import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/common/paywall_bottom_sheet.dart';
 import '../../widgets/profile/add_subject_modal.dart';
@@ -105,7 +106,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _pickSessionReminder() async {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
 
     // Build list of minutes: 1–59
     final minutes = List.generate(59, (i) => i + 1);
@@ -117,7 +118,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       builder: (ctx) {
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : AppColors.lightCard,
+            color: ctx.colors.card,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -130,7 +131,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[700] : Colors.grey[300],
+                    color: ctx.colors.border,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -152,7 +153,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       l10n.profilePickerSessionSubtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                        color: ctx.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -166,7 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     textTheme: CupertinoTextThemeData(
                       pickerTextStyle: TextStyle(
                         fontSize: 20,
-                        color: isDark ? Colors.white : AppColors.darkText,
+                        color: ctx.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -232,7 +233,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _pickDeadlineReminder() async {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.colors.isDark;
 
     final days = List.generate(30, (i) => i + 1);
     int tempValue = _deadlineReminderDays.clamp(1, 30);
@@ -243,7 +244,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       builder: (ctx) {
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : AppColors.lightCard,
+            color: ctx.colors.card,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -254,7 +255,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: ctx.colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -275,7 +276,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       l10n.profilePickerDeadlineSubtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                        color: ctx.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -289,7 +290,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     textTheme: CupertinoTextThemeData(
                       pickerTextStyle: TextStyle(
                         fontSize: 20,
-                        color: isDark ? Colors.white : AppColors.darkText,
+                        color: ctx.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -381,10 +382,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : AppColors.lightCard,
+            color: ctx.colors.card,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -395,7 +395,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: ctx.colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -417,7 +417,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         subtitle,
                         style: TextStyle(
                           fontSize: 13,
-                          color: isDark ? Colors.grey[400] : Colors.grey[500],
+                          color: ctx.colors.textSecondary,
                         ),
                       ),
                     ],

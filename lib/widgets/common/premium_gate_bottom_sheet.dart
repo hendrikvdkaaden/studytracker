@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'paywall_bottom_sheet.dart';
 import 'premium_icon.dart';
@@ -32,8 +33,7 @@ class _PremiumGateSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sheetBg = isDark ? AppColors.darkCard : Colors.white;
+    final sheetBg = context.colors.modalBackground;
 
     return Container(
       decoration: BoxDecoration(
@@ -56,7 +56,7 @@ class _PremiumGateSheet extends StatelessWidget {
               width: 48,
               height: 4,
               decoration: BoxDecoration(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.12),
+                color: context.colors.overlay(darkAlpha: 0.12, lightAlpha: 0.12),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -69,7 +69,7 @@ class _PremiumGateSheet extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : AppColors.premiumText,
+              color: context.colors.textPrimary,
               letterSpacing: -0.3,
             ),
             textAlign: TextAlign.center,
@@ -79,7 +79,7 @@ class _PremiumGateSheet extends StatelessWidget {
             message,
             style: TextStyle(
               fontSize: 15,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: context.colors.textSecondary,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -133,7 +133,7 @@ class _PremiumGateSheet extends StatelessWidget {
               context.l10n.premiumDialogNotNow,
               style: TextStyle(
                 fontSize: 15,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: context.colors.textSecondary,
               ),
             ),
           ),

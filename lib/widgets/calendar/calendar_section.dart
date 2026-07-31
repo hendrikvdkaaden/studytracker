@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import 'grid/calendar_grid.dart';
 import 'grid/month_navigation.dart';
 
@@ -9,9 +9,6 @@ class CalendarSection extends StatelessWidget {
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
   final Function(DateTime) onDateSelected;
-
-  static const _darkBorder = AppColors.sectionDarkBg;
-  static const _lightBorder = AppColors.lightFieldBackground;
 
   const CalendarSection({
     super.key,
@@ -24,12 +21,10 @@ class CalendarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: isDark ? _darkBorder : _lightBorder),
+          bottom: BorderSide(color: context.colors.sectionBackground),
         ),
       ),
       child: Column(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/day_status.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class DayStatusCircle extends StatelessWidget {
   final DayStatus status;
@@ -9,13 +10,11 @@ class DayStatusCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final emptyBorder = Border.all(
-      color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+      color: context.colors.border,
       width: 2,
     );
-    final emptyColor = isDark
+    final emptyColor = context.colors.isDark
         ? Colors.black.withValues(alpha: 0.2)
         : Colors.white.withValues(alpha: 0.5);
 
@@ -37,12 +36,12 @@ class DayStatusCircle extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: isDark
+              color: context.colors.isDark
                   ? Colors.red.shade900.withValues(alpha: 0.5)
                   : Colors.red.shade200,
               width: 2,
             ),
-            color: isDark
+            color: context.colors.isDark
                 ? Colors.red.shade900.withValues(alpha: 0.1)
                 : Colors.red.shade50.withValues(alpha: 0.5),
           ),
@@ -71,7 +70,7 @@ class DayStatusCircle extends StatelessWidget {
             child: Container(
               width: 12,
               height: 2,
-              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+              color: context.colors.textTertiary,
             ),
           ),
         );

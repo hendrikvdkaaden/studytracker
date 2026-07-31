@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 
 class HomeSectionHeader extends StatelessWidget {
   final String title;
@@ -17,8 +18,6 @@ class HomeSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -27,19 +26,19 @@ class HomeSectionHeader extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
+            color: context.colors.textPrimary,
           ),
         ),
         if (remainingCount != null)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isDark
+              color: context.colors.isDark
                   ? AppColors.overdue.withValues(alpha: 0.2)
                   : AppColors.overdue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isDark
+                color: context.colors.isDark
                     ? AppColors.overdue.withValues(alpha: 0.3)
                     : AppColors.overdue.withValues(alpha: 0.2),
               ),
@@ -62,7 +61,7 @@ class HomeSectionHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.grey[500] : Colors.grey[400],
+                  color: context.colors.textTertiary,
                   letterSpacing: 0.3,
                 ),
               ),

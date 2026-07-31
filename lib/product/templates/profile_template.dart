@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/common/premium_icon.dart';
 import '../../widgets/profile/subjects_section.dart';
@@ -70,16 +71,15 @@ class ProfileTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 40),
       children: [
-        _buildProfileHeader(context, isDark),
+        _buildProfileHeader(context),
         const SizedBox(height: 24),
-        _buildPremiumCard(context, isDark),
+        _buildPremiumCard(context),
         const SizedBox(height: 24),
-        _buildSectionLabel(l10n.profileSectionSubjects, isDark),
+        _buildSectionLabel(context, l10n.profileSectionSubjects),
         const SizedBox(height: 8),
         SubjectsSection(
           subjects: subjects,
@@ -87,25 +87,22 @@ class ProfileTemplate extends StatelessWidget {
           onDeleteSubject: onDeleteSubject,
         ),
         const SizedBox(height: 24),
-        _buildSectionLabel(l10n.profileSectionNotifications, isDark),
+        _buildSectionLabel(context, l10n.profileSectionNotifications),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
-          isDark,
           children: [
             _buildSettingsRow(
               context,
-              isDark,
               icon: Icons.notifications_outlined,
               iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
               label: l10n.profileSessionReminderLabel,
               value: l10n.profileSessionReminderFormat(sessionReminderMinutes),
               onTap: onSessionReminderTap,
             ),
-            _buildDivider(isDark),
+            _buildDivider(context),
             _buildSettingsRow(
               context,
-              isDark,
               icon: Icons.event_note_outlined,
               iconColor: AppColors.iconPurple,
               label: l10n.profileDeadlineReminderLabel,
@@ -115,15 +112,13 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        _buildSectionLabel(l10n.profileSectionAppearance, isDark),
+        _buildSectionLabel(context, l10n.profileSectionAppearance),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
-          isDark,
           children: [
             _buildSettingsRow(
               context,
-              isDark,
               icon: Icons.palette_outlined,
               iconColor: AppColors.iconGreen,
               label: l10n.profileThemeLabel,
@@ -133,15 +128,13 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        _buildSectionLabel(l10n.profileSectionData, isDark),
+        _buildSectionLabel(context, l10n.profileSectionData),
         const SizedBox(height: 8),
         _buildGroupCard(
           context,
-          isDark,
           children: [
             _buildSettingsRow(
               context,
-              isDark,
               icon: Icons.timer_off_outlined,
               iconColor: AppColors.overdue,
               label: l10n.profileDeleteSessionsLabel,
@@ -149,10 +142,9 @@ class ProfileTemplate extends StatelessWidget {
               onTap: onDeleteSessions,
               showChevron: false,
             ),
-            _buildDivider(isDark),
+            _buildDivider(context),
             _buildSettingsRow(
               context,
-              isDark,
               icon: Icons.delete_outline,
               iconColor: AppColors.overdue,
               label: l10n.profileDeleteEverythingLabel,
@@ -168,7 +160,7 @@ class ProfileTemplate extends StatelessWidget {
             l10n.profileVersionLabel(appVersion),
             style: TextStyle(
               fontSize: 12,
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: context.colors.textSecondary,
             ),
           ),
         ),
@@ -176,7 +168,7 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, bool isDark) {
+  Widget _buildProfileHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       child: Row(
@@ -216,8 +208,8 @@ class ProfileTemplate extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: userName.isEmpty
-                        ? (isDark ? Colors.grey[500] : Colors.grey[400])
-                        : (isDark ? Colors.white : AppColors.darkBackground),
+                        ? context.colors.textTertiary
+                        : context.colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -227,7 +219,7 @@ class ProfileTemplate extends StatelessWidget {
                     schoolName.isEmpty ? context.l10n.profileSchoolNamePlaceholder : schoolName,
                     style: TextStyle(
                       fontSize: 13,
-                      color: isDark ? Colors.grey[500] : Colors.grey[400],
+                      color: context.colors.textTertiary,
                     ),
                   ),
                 ),
@@ -240,7 +232,7 @@ class ProfileTemplate extends StatelessWidget {
             icon: Icon(
               Icons.edit_outlined,
               size: 20,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -248,7 +240,7 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionLabel(String label, bool isDark) {
+  Widget _buildSectionLabel(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Text(
@@ -257,25 +249,24 @@ class ProfileTemplate extends StatelessWidget {
           fontSize: 11,
           fontWeight: FontWeight.bold,
           letterSpacing: 1.2,
-          color: isDark ? Colors.grey[500] : Colors.grey[400],
+          color: context.colors.textSecondary,
         ),
       ),
     );
   }
 
   Widget _buildGroupCard(
-    BuildContext context,
-    bool isDark, {
+    BuildContext context, {
     required List<Widget> children,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.lightCard,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.getBorderColor(context),
+            color: context.colors.border,
           ),
         ),
         child: Column(
@@ -286,8 +277,7 @@ class ProfileTemplate extends StatelessWidget {
   }
 
   Widget _buildSettingsRow(
-    BuildContext context,
-    bool isDark, {
+    BuildContext context, {
     required IconData icon,
     required Color iconColor,
     required String label,
@@ -321,8 +311,7 @@ class ProfileTemplate extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
-                  color: labelColor ??
-                      (isDark ? Colors.white : AppColors.darkBackground),
+                  color: labelColor ?? context.colors.textPrimary,
                 ),
               ),
             ),
@@ -332,7 +321,7 @@ class ProfileTemplate extends StatelessWidget {
                 value,
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDark ? Colors.grey[400] : Colors.grey[500],
+                  color: context.colors.textSecondary,
                 ),
               ),
               const SizedBox(width: 4),
@@ -341,7 +330,7 @@ class ProfileTemplate extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 size: 20,
-                color: isDark ? Colors.grey[600] : Colors.grey[400],
+                color: context.colors.textTertiary,
               ),
           ],
         ),
@@ -349,7 +338,8 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildPremiumCard(BuildContext context, bool isDark) {
+  Widget _buildPremiumCard(BuildContext context) {
+    final isDark = context.colors.isDark;
     if (isPremium) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -497,14 +487,12 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider(bool isDark) {
+  Widget _buildDivider(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 66),
       child: Divider(
         height: 1,
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.06)
-            : Colors.black.withValues(alpha: 0.06),
+        color: context.colors.divider,
       ),
     );
   }

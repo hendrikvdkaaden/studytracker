@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../product/screens/goal_details_screen.dart';
+import '../../../theme/app_theme_extension.dart';
 import 'deadline_list_item.dart';
 
 class GoalsList extends StatelessWidget {
@@ -27,8 +28,6 @@ class GoalsList extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -36,14 +35,14 @@ class GoalsList extends StatelessWidget {
           Icon(
             Icons.event_available,
             size: 64,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
+            color: context.colors.textTertiary,
           ),
           const SizedBox(height: 16),
           Text(
             'No deadlines for this day',
             style: TextStyle(
               fontSize: 16,
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: context.colors.textSecondary,
             ),
           ),
         ],

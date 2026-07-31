@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
 
 class EditProgressDialog extends StatefulWidget {
@@ -34,10 +36,8 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Dialog(
-      backgroundColor: isDark ? const Color(0xFF1A2E2D) : Colors.white,
+      backgroundColor: context.colors.modalBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -53,7 +53,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                color: context.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 24),
@@ -61,10 +61,10 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
             // Target Time Section
             Text(
               context.l10n.progressEditTargetTime,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF499C95),
+                color: AppColors.primaryLight,
               ),
             ),
             const SizedBox(height: 12),
@@ -76,7 +76,6 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     value: _targetHours,
                     max: 100,
                     onChanged: (value) => setState(() => _targetHours = value),
-                    isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -87,7 +86,6 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     max: 55,
                     step: 5,
                     onChanged: (value) => setState(() => _targetMinutes = value),
-                    isDark: isDark,
                   ),
                 ),
               ],
@@ -98,10 +96,10 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
             // Time Spent Section
             Text(
               context.l10n.progressEditTimeSpent,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF499C95),
+                color: AppColors.primaryLight,
               ),
             ),
             const SizedBox(height: 12),
@@ -113,7 +111,6 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     value: _spentHours,
                     max: 100,
                     onChanged: (value) => setState(() => _spentHours = value),
-                    isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -124,7 +121,6 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     max: 55,
                     step: 5,
                     onChanged: (value) => setState(() => _spentMinutes = value),
-                    isDark: isDark,
                   ),
                 ),
               ],
@@ -140,7 +136,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
-                        color: isDark ? const Color(0xFF2D4A48) : const Color(0xFFCEE8E6),
+                        color: context.colors.border,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -150,7 +146,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                     child: Text(
                       context.l10n.btnCancel,
                       style: TextStyle(
-                        color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                        color: context.colors.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -196,7 +192,6 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
     required int max,
     int step = 1,
     required ValueChanged<int> onChanged,
-    required bool isDark,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,17 +202,17 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            color: context.colors.textSecondary,
           ),
         ),
         const SizedBox(height: 6),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF102221) : const Color(0xFFF5F8F8),
+            color: context.colors.fieldBackground,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isDark ? const Color(0xFF2D4A48) : const Color(0xFFCEE8E6),
+              color: context.colors.border,
             ),
           ),
           child: Row(
@@ -238,7 +233,7 @@ class _EditProgressDialogState extends State<EditProgressDialog> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF0D1C1B),
+                  color: context.colors.textPrimary,
                 ),
               ),
               IconButton(

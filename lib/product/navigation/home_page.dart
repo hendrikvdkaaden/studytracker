@@ -3,6 +3,7 @@ import '../../main.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
@@ -39,8 +40,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -50,9 +49,7 @@ class _HomePageState extends State<HomePage> {
           fit: BoxFit.contain,
         ),
         centerTitle: true,
-        backgroundColor: isDark
-            ? AppColors.darkBackground.withValues(alpha: 0.8)
-            : AppColors.lightBackground.withValues(alpha: 0.8),
+        backgroundColor: context.colors.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -64,7 +61,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: AppColors.getBorderColor(context),
+              color: context.colors.border,
               width: 1,
             ),
           ),
@@ -80,11 +77,9 @@ class _HomePageState extends State<HomePage> {
             }
           },
           type: BottomNavigationBarType.fixed,
-          backgroundColor: isDark
-              ? AppColors.darkCard.withValues(alpha: 0.8)
-              : AppColors.lightCard.withValues(alpha: 0.8),
+          backgroundColor: context.colors.card.withValues(alpha: 0.8),
           selectedItemColor: AppColors.primary,
-          unselectedItemColor: Colors.grey,
+          unselectedItemColor: context.colors.textSecondary,
           selectedFontSize: 10,
           unselectedFontSize: 10,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),

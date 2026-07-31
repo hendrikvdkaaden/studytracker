@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/difficulty_helper.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../../../utils/l10n_extension.dart';
@@ -87,17 +88,11 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDark ? AppColors.calendarDarkCard : AppColors.lightCard;
-    final textColor = isDark ? AppColors.lightText : AppColors.darkText;
+    final backgroundColor = context.colors.modalBackground;
+    final textColor = context.colors.textPrimary;
     final subTextColor = AppColors.upcoming;
-    final fieldFill = isDark
-        ? AppColors.calendarDarkBackground
-        : AppColors.calendarLightBackground;
-    final borderColor = isDark
-        ? const Color(0xFF2A4340)
-        : const Color(0xFFDDE8E7);
+    final fieldFill = context.colors.fieldBackground;
+    final borderColor = context.colors.border;
 
     return Container(
       decoration: BoxDecoration(

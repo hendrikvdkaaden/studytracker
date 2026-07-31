@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class WeeklyProgressCard extends StatelessWidget {
   final int completedHours;
@@ -17,13 +18,14 @@ class WeeklyProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final percentage = (_progressPercentage * 100).toInt();
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2b2930) : const Color(0xFFf3edf7),
+        color: context.colors.isDark
+            ? const Color(0xFF2b2930)
+            : const Color(0xFFf3edf7),
         borderRadius: BorderRadius.circular(32),
         border: Border.all(
           color: const Color(0xFF6750A4).withValues(alpha: 0.1),
@@ -73,7 +75,7 @@ class WeeklyProgressCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF1d1b20),
+                  color: context.colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -82,7 +84,7 @@ class WeeklyProgressCard extends StatelessWidget {
                 child: Container(
                   height: 8,
                   decoration: BoxDecoration(
-                    color: isDark
+                    color: context.colors.isDark
                         ? Colors.black.withValues(alpha: 0.2)
                         : Colors.white.withValues(alpha: 0.5),
                   ),

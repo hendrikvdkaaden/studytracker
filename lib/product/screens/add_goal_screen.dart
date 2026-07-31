@@ -11,6 +11,7 @@ import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
@@ -260,11 +261,9 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: AppColors.getBackground(context),
-      appBar: _buildAppBar(isDark),
+      backgroundColor: context.colors.background,
+      appBar: _buildAppBar(context),
       body: AddGoalTemplate(
         formKey: _formKey,
         titleController: _titleController,
@@ -287,14 +286,14 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
     );
   }
 
-  AppBar _buildAppBar(bool isDark) {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.getBackground(context),
+      backgroundColor: context.colors.background,
       elevation: 0,
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
-          color: isDark ? Colors.white : AppColors.darkText,
+          color: context.colors.textPrimary,
         ),
         onPressed: () => Navigator.pop(context),
       ),
@@ -303,15 +302,13 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white : AppColors.darkText,
+          color: context.colors.textPrimary,
         ),
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : AppColors.dividerLight,
+          color: context.colors.divider,
           height: 1,
         ),
       ),

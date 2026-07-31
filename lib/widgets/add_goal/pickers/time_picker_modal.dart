@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 Future<({int hour, int minute})?> showTimePickerModal({
   required BuildContext context,
   required int initialHour,
   required int initialMinute,
 }) async {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
   int tempHour = initialHour;
   int tempMinute = initialMinute;
 
@@ -18,7 +18,7 @@ Future<({int hour, int minute})?> showTimePickerModal({
       return Container(
         height: 300,
         decoration: BoxDecoration(
-          color: isDark ? AppColors.sectionDarkBg : Colors.white,
+          color: context.colors.modalBackground,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -39,7 +39,6 @@ Future<({int hour, int minute})?> showTimePickerModal({
                 children: [
                   _PickerColumn(
                     label: 'HOUR',
-                    isDark: isDark,
                     itemCount: 24,
                     initialItem: tempHour,
                     onChanged: (index) => tempHour = index,
@@ -48,13 +47,10 @@ Future<({int hour, int minute})?> showTimePickerModal({
                   Container(
                     width: 1,
                     height: 150,
-                    color: isDark
-                        ? AppColors.dividerDark
-                        : AppColors.dividerLight,
+                    color: context.colors.divider,
                   ),
                   _PickerColumn(
                     label: 'MINUTE',
-                    isDark: isDark,
                     itemCount: 12,
                     initialItem: tempMinute ~/ 5,
                     onChanged: (index) => tempMinute = index * 5,
@@ -84,13 +80,12 @@ class _PickerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: isDark ? AppColors.dividerDark : AppColors.lightBorder,
+            color: context.colors.border,
           ),
         ),
       ),
@@ -99,9 +94,9 @@ class _PickerHeader extends StatelessWidget {
         children: [
           TextButton(
             onPressed: onCancel,
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
+              style: TextStyle(color: context.colors.textSecondary, fontSize: 16),
             ),
           ),
           Text(
@@ -127,7 +122,6 @@ class _PickerHeader extends StatelessWidget {
 
 class _PickerColumn extends StatelessWidget {
   final String label;
-  final bool isDark;
   final int itemCount;
   final int initialItem;
   final ValueChanged<int> onChanged;
@@ -135,7 +129,6 @@ class _PickerColumn extends StatelessWidget {
 
   const _PickerColumn({
     required this.label,
-    required this.isDark,
     required this.itemCount,
     required this.initialItem,
     required this.onChanged,
@@ -154,7 +147,7 @@ class _PickerColumn extends StatelessWidget {
               fontSize: 10,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: context.colors.textSecondary,
             ),
           ),
           const SizedBox(height: 8),

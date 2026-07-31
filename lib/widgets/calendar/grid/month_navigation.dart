@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class MonthNavigation extends StatelessWidget {
   final DateTime focusedMonth;
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
-
-  static const _darkText = Color(0xFFF8FCFB);
-  static const _lightText = Color(0xFF0D1C1B);
 
   static const _months = [
     'January',
@@ -32,8 +30,6 @@ class MonthNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -42,20 +38,18 @@ class MonthNavigation extends StatelessWidget {
           _buildNavigationButton(
             icon: Icons.chevron_left,
             onPressed: onPreviousMonth,
-            isDark: isDark,
           ),
           Text(
             _formatMonthYear(focusedMonth),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isDark ? _darkText : _lightText,
+              color: context.colors.textPrimary,
             ),
           ),
           _buildNavigationButton(
             icon: Icons.chevron_right,
             onPressed: onNextMonth,
-            isDark: isDark,
           ),
         ],
       ),
@@ -65,7 +59,6 @@ class MonthNavigation extends StatelessWidget {
   Widget _buildNavigationButton({
     required IconData icon,
     required VoidCallback onPressed,
-    required bool isDark,
   }) {
     return IconButton(
       icon: Icon(icon),

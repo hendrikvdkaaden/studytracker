@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class ClickableField extends StatelessWidget {
   final String label;
@@ -23,11 +24,9 @@ class ClickableField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sectionBg =
-        isDark ? AppColors.darkFieldBackground : AppColors.lightFieldBackground;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
-    final textColor = isDark ? Colors.white : AppColors.darkText;
+    final sectionBg = context.colors.fieldBackground;
+    final subtleText = context.colors.textSecondary;
+    final textColor = context.colors.textPrimary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,9 +37,10 @@ class ClickableField extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isDark
-                    ? (iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.15)
-                    : (iconBg ?? AppColors.iconBgTeal),
+                color: context.colors.iconChipBackground(
+                  iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                  iconBg ?? AppColors.iconBgTeal,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, size: 17,
@@ -79,9 +79,7 @@ class ClickableField extends StatelessWidget {
               color: sectionBg,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : AppColors.lightBorder,
+                color: context.colors.border,
               ),
             ),
             child: Row(

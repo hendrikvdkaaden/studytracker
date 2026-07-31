@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 
 
@@ -37,14 +38,13 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final name = _controller.text.trim();
     final showError = _submitted && name.isEmpty;
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.lightCard,
+        color: context.colors.card,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomInset),
@@ -58,7 +58,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[700] : Colors.grey[300],
+                color: context.colors.divider,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -72,13 +72,13 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.grey[100],
+                  color: context.colors.sectionBackground,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.school_outlined,
                   size: 22,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: context.colors.textSecondary,
                 ),
               ),
               const SizedBox(width: 14),
@@ -90,14 +90,14 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : AppColors.darkBackground,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   Text(
                     context.l10n.addSubjectSubtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey[500],
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -113,7 +113,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
               fontSize: 11,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.1,
-              color: Colors.grey[500],
+              color: context.colors.textSecondary,
             ),
           ),
           const SizedBox(height: 8),
@@ -130,37 +130,33 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
             decoration: InputDecoration(
               hintText: context.l10n.addSubjectHint,
               hintStyle: TextStyle(
-                color: isDark ? Colors.grey[600] : Colors.grey[400],
+                color: context.colors.textTertiary,
               ),
               filled: true,
-              fillColor: isDark ? AppColors.darkText : AppColors.lightFieldBackground,
+              fillColor: context.colors.fieldBackground,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: showError
-                      ? Colors.red
-                      : isDark
-                          ? AppColors.textSecondary
-                          : const Color(0xFFE5E7EB),
+                  color: showError ? AppColors.error : context.colors.border,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: showError ? Colors.red : const Color(0xFF7C3AED),
+                  color: showError ? AppColors.error : AppColors.iconPurple,
                   width: 2,
                 ),
               ),
               errorText: showError ? context.l10n.addSubjectErrorEmpty : null,
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.red),
+                borderSide: const BorderSide(color: AppColors.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.red, width: 2),
+                borderSide: const BorderSide(color: AppColors.error, width: 2),
               ),
             ),
           ),
@@ -173,7 +169,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
               fontSize: 11,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.1,
-              color: Colors.grey[500],
+              color: context.colors.textSecondary,
             ),
           ),
           const SizedBox(height: 12),
@@ -221,8 +217,7 @@ class _AddSubjectModalState extends State<AddSubjectModal> {
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
-                    foregroundColor:
-                        isDark ? Colors.grey[400] : Colors.grey[600],
+                    foregroundColor: context.colors.textSecondary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

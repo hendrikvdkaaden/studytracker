@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/study_session.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 
 class PlannedSessionItem extends StatelessWidget {
@@ -53,19 +54,18 @@ class PlannedSessionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final dateText = _getDateText(today);
     final timeText = _getTimeText();
-    final subtleColor = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final subtleColor = context.colors.textSecondary;
 
     return Opacity(
       opacity: _isCompleted ? 0.75 : 1.0,
       child: GestureDetector(
         onTap: onEdit,
         child: Container(
-          color: isDark ? AppColors.darkFieldBackground : Colors.white,
+          color: context.colors.card,
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,9 +80,7 @@ class PlannedSessionItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.white
-                            : AppColors.darkText,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -93,11 +91,11 @@ class PlannedSessionItem extends StatelessWidget {
                       child: Icon(
                         Icons.delete_outline,
                         size: 18,
-                        color: isDark ? Colors.grey[500] : Colors.grey[400],
+                        color: context.colors.textSecondary,
                       ),
                     )
                   else
-                    _buildStatusBadge(isDark, today),
+                    _buildStatusBadge(context, today),
                 ],
               ),
               const SizedBox(height: 8),
@@ -126,8 +124,7 @@ class PlannedSessionItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color:
-                          isDark ? Colors.white : AppColors.darkText,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                 ],
@@ -139,7 +136,8 @@ class PlannedSessionItem extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(bool isDark, DateTime today) {
+  Widget _buildStatusBadge(BuildContext context, DateTime today) {
+    final isDark = context.colors.isDark;
     if (_isCompleted) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -184,7 +182,7 @@ class PlannedSessionItem extends StatelessWidget {
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.bold,
-          color: isDark ? AppColors.calendarAccent : AppColors.darkText,
+          color: isDark ? AppColors.calendarAccent : context.colors.textPrimary,
         ),
       ),
     );

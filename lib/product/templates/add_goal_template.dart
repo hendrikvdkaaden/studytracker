@@ -3,6 +3,7 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/add_goal/fields/clickable_field.dart';
 import '../../widgets/add_goal/fields/custom_text_field.dart';
@@ -53,8 +54,7 @@ class AddGoalTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtleText = isDark ? Colors.grey[400]! : Colors.grey[500]!;
+    final subtleText = context.colors.textSecondary;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Form(
@@ -80,7 +80,7 @@ class AddGoalTemplate extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Subject
-          _buildSubjectSection(context, isDark, subtleText),
+          _buildSubjectSection(context, subtleText),
           const SizedBox(height: 24),
 
           // Deadline
@@ -102,7 +102,7 @@ class AddGoalTemplate extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Sessions
-          _buildSessionsSection(context, isDark, subtleText),
+          _buildSessionsSection(context, subtleText),
           const SizedBox(height: 32),
 
           // Save button
@@ -145,8 +145,7 @@ class AddGoalTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildSubjectSection(
-      BuildContext context, bool isDark, Color subtleText) {
+  Widget _buildSubjectSection(BuildContext context, Color subtleText) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -156,9 +155,8 @@ class AddGoalTemplate extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.iconGreen.withValues(alpha: 0.15)
-                    : AppColors.iconBgGreen,
+                color: context.colors.iconChipBackground(
+                    AppColors.iconGreen, AppColors.iconBgGreen),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.book_outlined,
@@ -199,8 +197,8 @@ class AddGoalTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionsSection(
-      BuildContext context, bool isDark, Color subtleText) {
+  Widget _buildSessionsSection(BuildContext context, Color subtleText) {
+    final isDark = context.colors.isDark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -211,9 +209,8 @@ class AddGoalTemplate extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.iconPurple.withValues(alpha: 0.15)
-                    : AppColors.iconBgPurple,
+                color: context.colors.iconChipBackground(
+                    AppColors.iconPurple, AppColors.iconBgPurple),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.bolt,
@@ -238,9 +235,8 @@ class AddGoalTemplate extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.iconPurple.withValues(alpha: 0.15)
-                      : AppColors.iconBgPurple,
+                  color: context.colors.iconChipBackground(
+                      AppColors.iconPurple, AppColors.iconBgPurple),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isDark
@@ -289,14 +285,10 @@ class AddGoalTemplate extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.sectionDarkBg
-                    : AppColors.sectionLightBg,
+                color: context.colors.sectionBackground,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.06)
-                      : AppColors.lightBorder,
+                  color: context.colors.border,
                 ),
               ),
               child: Row(
@@ -307,12 +299,12 @@ class AddGoalTemplate extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: isDark ? Colors.white : AppColors.darkText,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ),
                   Icon(Icons.add,
-                      color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      color: context.colors.textSecondary,
                       size: 20),
                 ],
               ),
@@ -326,7 +318,7 @@ class AddGoalTemplate extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.grey[300] : AppColors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ),
             const SizedBox(width: 6),
@@ -334,7 +326,7 @@ class AddGoalTemplate extends StatelessWidget {
               '•',
               style: TextStyle(
                 fontSize: 13,
-                color: isDark ? Colors.grey[500] : Colors.grey[400],
+                color: context.colors.textTertiary,
               ),
             ),
             const SizedBox(width: 6),
@@ -345,7 +337,7 @@ class AddGoalTemplate extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.grey[300] : AppColors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ),
             const Spacer(),
@@ -354,9 +346,8 @@ class AddGoalTemplate extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.primary.withValues(alpha: 0.15)
-                      : AppColors.iconBgTeal,
+                  color: context.colors.iconChipBackground(
+                      AppColors.primary, AppColors.iconBgTeal),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isDark

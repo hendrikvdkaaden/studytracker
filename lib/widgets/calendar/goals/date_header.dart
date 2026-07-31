@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_theme_extension.dart';
 import '../../../utils/calendar_helpers.dart';
 import '../../../utils/l10n_extension.dart';
 
@@ -14,7 +15,6 @@ class DateHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isToday = CalendarHelpers.isSameDay(selectedDate, DateTime.now());
 
     return Container(
@@ -22,7 +22,7 @@ class DateHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.getBorderColor(context)),
+          bottom: BorderSide(color: context.colors.border),
         ),
       ),
       child: Align(
@@ -31,7 +31,7 @@ class DateHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: AppColors.calendarAccent.withValues(
-              alpha: isDark ? 0.16 : 0.12,
+              alpha: context.colors.isDark ? 0.16 : 0.12,
             ),
             borderRadius: BorderRadius.circular(999),
           ),
@@ -53,14 +53,14 @@ class DateHeader extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.01,
-                  color: AppColors.getTextColor(context),
+                  color: context.colors.textPrimary,
                 ),
               ),
               if (isToday) ...[
                 const SizedBox(width: 6),
                 Text(
                   '·',
-                  style: TextStyle(color: AppColors.getSecondaryText(context)),
+                  style: TextStyle(color: context.colors.textSecondary),
                 ),
                 const SizedBox(width: 6),
                 Text(

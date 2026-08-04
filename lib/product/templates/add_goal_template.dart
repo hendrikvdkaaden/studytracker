@@ -19,12 +19,14 @@ class AddGoalTemplate extends StatelessWidget {
   final DateTime selectedDate;
   final GoalType selectedType;
   final String formattedDate;
+  final String formattedTime;
   final List<StudySession> plannedSessions;
   final List<SubjectData> subjects;
   final String? selectedSubject;
   final ValueChanged<String> onSubjectSelected;
   final Function(GoalType) onTypeSelected;
   final VoidCallback onDateTap;
+  final VoidCallback onTimeTap;
   final VoidCallback onSessionTap;
   final VoidCallback onAutoplan;
   final Function(int) onSessionDelete;
@@ -39,11 +41,13 @@ class AddGoalTemplate extends StatelessWidget {
     required this.selectedDate,
     required this.selectedType,
     required this.formattedDate,
+    required this.formattedTime,
     required this.plannedSessions,
     required this.subjects,
     required this.onSubjectSelected,
     required this.onTypeSelected,
     required this.onDateTap,
+    required this.onTimeTap,
     required this.onSessionTap,
     required this.onAutoplan,
     required this.onSessionDelete,
@@ -83,14 +87,34 @@ class AddGoalTemplate extends StatelessWidget {
           _buildSubjectSection(context, subtleText),
           const SizedBox(height: 24),
 
-          // Deadline
-          ClickableField(
-            label: context.l10n.addGoalDeadlineLabel,
-            displayText: formattedDate,
-            icon: Icons.calendar_month,
-            iconBg: AppColors.iconBgOrange,
-            iconColor: AppColors.iconOrange,
-            onTap: onDateTap,
+          // Deadline date and time
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: ClickableField(
+                  label: context.l10n.addGoalDeadlineLabel,
+                  displayText: formattedDate,
+                  icon: Icons.calendar_month,
+                  iconBg: AppColors.iconBgOrange,
+                  iconColor: AppColors.iconOrange,
+                  onTap: onDateTap,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ClickableField(
+                  label: context.l10n.addGoalDeadlineTimeLabel,
+                  displayText: formattedTime,
+                  icon: Icons.schedule,
+                  iconBg: AppColors.iconBgOrange,
+                  iconColor: AppColors.iconOrange,
+                  onTap: onTimeTap,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 24),
 

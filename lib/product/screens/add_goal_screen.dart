@@ -16,6 +16,7 @@ import '../../utils/format_helpers.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
+import '../../widgets/add_goal/pickers/time_picker_modal.dart';
 import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/add_goal_template.dart';
 
@@ -33,7 +34,10 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
   StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
 
-  DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
+  // New deadlines default to midday; the user can change the time explicitly.
+  DateTime _selectedDate = _atNoon(DateTime.now().add(const Duration(days: 7)));
+
+  static DateTime _atNoon(DateTime d) => DateTime(d.year, d.month, d.day, 12, 0);
   GoalType _selectedType = GoalType.exam;
   final List<StudySession> _plannedSessions = [];
   List<SubjectData> _subjects = [];
@@ -72,7 +76,34 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
 
     if (pickedDate != null) {
       setState(() {
-        _selectedDate = pickedDate;
+        // Keep the time the user picked; showDatePicker returns midnight.
+        _selectedDate = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          _selectedDate.hour,
+          _selectedDate.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final picked = await showTimePickerModal(
+      context: context,
+      initialHour: _selectedDate.hour,
+      initialMinute: _selectedDate.minute,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _selectedDate = DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+          picked.hour,
+          picked.minute,
+        );
       });
     }
   }
@@ -156,7 +187,12 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
     final result = await showAutoPlanWizard(context: context);
     if (result == null || !mounted) return;
 
-    final existing = _sessionRepo.getAllPlannedSessions();
+    // Sessions added in this screen are not saved yet, so they must be passed
+    // in explicitly or the planner would schedule straight over them.
+    final existing = [
+      ..._sessionRepo.getAllPlannedSessions(),
+      ..._plannedSessions,
+    ];
 
     final generated = AutoPlannerService.generateSessions(
       goalId: '',
@@ -185,7 +221,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
     }
 
     setState(() {
-      _plannedSessions.clear();
+      // Append rather than replace: sessions the user planned by hand stay.
       _plannedSessions.addAll(generated);
       _sortSessions();
     });
@@ -271,12 +307,17 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         selectedDate: _selectedDate,
         selectedType: _selectedType,
         formattedDate: FormatHelpers.formatDate(_selectedDate),
+        formattedTime: FormatHelpers.formatTimeOfDay(
+          _selectedDate.hour,
+          _selectedDate.minute,
+        ),
         plannedSessions: _plannedSessions,
         subjects: _subjects,
         selectedSubject: _selectedSubject,
         onSubjectSelected: _onSubjectSelected,
         onTypeSelected: (type) => setState(() => _selectedType = type),
         onDateTap: () => _selectDate(context),
+        onTimeTap: () => _selectTime(context),
         onSessionTap: _showStudySessionPicker,
         onAutoplan: _autoPlanSessions,
         onSessionDelete: _deleteSession,

@@ -14,7 +14,6 @@ class GoalDetailsTemplate extends StatelessWidget {
   final Goal goal;
   final int timeSpent;
   final List<StudySession> plannedSessions;
-  final VoidCallback onEditProgress;
   final VoidCallback onMarkComplete;
   final VoidCallback onAddSession;
   final VoidCallback onAutoplan;
@@ -28,7 +27,6 @@ class GoalDetailsTemplate extends StatelessWidget {
     required this.goal,
     required this.timeSpent,
     required this.plannedSessions,
-    required this.onEditProgress,
     required this.onMarkComplete,
     required this.onAddSession,
     required this.onAutoplan,
@@ -61,7 +59,7 @@ class GoalDetailsTemplate extends StatelessWidget {
             onDeleteSession: onDeleteSession,
           ),
           const SizedBox(height: 24),
-          ProgressSectionHeader(onEdit: onEditProgress),
+          const ProgressSectionHeader(),
           const SizedBox(height: 10),
           ProgressCircle(
             timeSpent: timeSpent,

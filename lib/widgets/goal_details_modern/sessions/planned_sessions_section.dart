@@ -71,7 +71,10 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                   ),
                 ),
               ),
-              if (widget.onAutoplan != null)
+              // Auto-planning is only offered while there is nothing planned
+              // yet; once sessions exist it would compete for space with the
+              // show/hide completed toggle.
+              if (widget.onAutoplan != null && widget.sessions.isEmpty)
                 GestureDetector(
                   onTap: widget.onAutoplan,
                   child: Container(

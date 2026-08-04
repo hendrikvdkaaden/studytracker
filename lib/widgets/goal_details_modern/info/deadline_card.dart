@@ -101,7 +101,8 @@ class DeadlineCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        FormatHelpers.formatDate(goal.date),
+                        '${FormatHelpers.formatDate(goal.date)} · '
+                        '${FormatHelpers.formatTimeOfDay(goal.date.hour, goal.date.minute)}',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

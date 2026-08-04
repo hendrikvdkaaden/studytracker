@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../common/inline_time_stepper.dart';
 
 class AutoPlanWizardResult {
   final int totalMinutes;
@@ -419,58 +420,13 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     required ValueChanged<int> onHoursChanged,
     required ValueChanged<int> onMinutesChanged,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: BoxDecoration(
-        color: sectionBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: context.colors.border,
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildStepper(
-            label: context.l10n.sessionPickerHours,
-            value: hours,
-            max: maxHours,
-            onChanged: onHoursChanged,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              ' : ',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w300,
-                color: Colors.grey[400],
-              ),
-            ),
-          ),
-          _buildStepper(
-            label: context.l10n.sessionPickerMinutes,
-            value: minutes,
-            max: 59,
-            onChanged: onMinutesChanged,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepper({
-    required String label,
-    required int value,
-    required int max,
-    required ValueChanged<int> onChanged,
-  }) {
-    return _InlineStepper(
-      label: label,
-      value: value,
-      max: max,
-      onChanged: onChanged,
+    return InlineTimeStepper(
+      backgroundColor: sectionBg,
+      hours: hours,
+      minutes: minutes,
+      maxHours: maxHours,
+      onHoursChanged: onHoursChanged,
+      onMinutesChanged: onMinutesChanged,
     );
   }
 
@@ -642,197 +598,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _InlineStepper extends StatefulWidget {
-  final String label;
-  final int value;
-  final int max;
-  final ValueChanged<int> onChanged;
-
-  const _InlineStepper({
-    required this.label,
-    required this.value,
-    required this.max,
-    required this.onChanged,
-  });
-
-  @override
-  State<_InlineStepper> createState() => _InlineStepperState();
-}
-
-class _InlineStepperState extends State<_InlineStepper> {
-  bool _editing = false;
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value.toString());
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (!_focusNode.hasFocus && _editing) _commit();
-    });
-  }
-
-  @override
-  void didUpdateWidget(_InlineStepper old) {
-    super.didUpdateWidget(old);
-    if (!_editing && old.value != widget.value) {
-      _controller.text = widget.value.toString();
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _startEditing() {
-    setState(() {
-      _editing = true;
-      _controller.text = widget.value.toString();
-      _controller.selection =
-          TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
-    });
-    _focusNode.requestFocus();
-  }
-
-  void _commit() {
-    final parsed = int.tryParse(_controller.text.trim());
-    final clamped = (parsed ?? widget.value).clamp(0, widget.max);
-    setState(() => _editing = false);
-    widget.onChanged(clamped);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cardColor = context.colors.card;
-    final valueColor = context.colors.textPrimary;
-
-    return Column(
-      children: [
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-            color: context.colors.textTertiary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        GestureDetector(
-          onTap: _editing ? null : _startEditing,
-          child: Container(
-            width: 88,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _editing
-                    ? AppColors.primary
-                    : (context.colors.isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.grey[100]!),
-                width: _editing ? 2 : 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: _editing
-                ? TextField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w300,
-                      color: valueColor,
-                    ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    onSubmitted: (_) => _commit(),
-                  )
-                : Text(
-                    widget.value.toString().padLeft(2, '0'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w300,
-                      color: valueColor,
-                    ),
-                  ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            _StepButton(
-              icon: Icons.remove,
-              onTap: () {
-                if (widget.value > 0) widget.onChanged(widget.value - 1);
-              },
-            ),
-            const SizedBox(width: 8),
-            _StepButton(
-              icon: Icons.add,
-              onTap: () {
-                if (widget.value < widget.max) {
-                  widget.onChanged(widget.value + 1);
-                }
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _StepButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _StepButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: context.colors.isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: context.colors.textSecondary,
-        ),
       ),
     );
   }

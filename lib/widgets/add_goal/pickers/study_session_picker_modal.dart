@@ -5,7 +5,7 @@ import '../../../theme/app_theme_extension.dart';
 import '../../../utils/format_helpers.dart';
 import '../../../utils/l10n_extension.dart';
 import 'package:uuid/uuid.dart';
-import 'duration_picker_modal.dart';
+import '../../common/inline_time_stepper.dart';
 
 class StudySessionPickerModal extends StatefulWidget {
   final void Function(StudySession session) onSessionAdded;
@@ -78,20 +78,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     });
   }
 
-  Future<void> _pickDuration() async {
-    final result = await showDurationPickerModal(
-      context: context,
-      initialHours: durationHours,
-      initialMinutes: durationMinutes,
-    );
-    if (result != null) {
-      setState(() {
-        durationHours = result.hours;
-        durationMinutes = result.minutes;
-        _overlapError = null;
-      });
-    }
-  }
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
@@ -301,54 +287,20 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     iconColor: AppColors.iconOrange,
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    decoration: BoxDecoration(
-                      color: sectionBg,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: _overlapError != null
-                            ? AppColors.overdue
-                            : (colors.isDark
-                                ? Colors.white.withValues(alpha: 0.06)
-                                : AppColors.lightBorder),
-                        width: _overlapError != null ? 1.5 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildStepper(
-                          label: context.l10n.sessionPickerHours,
-                          value: selectedHour,
-                          max: 23,
-                          onChanged: (v) => setState(() {
-                            selectedHour = v;
-                            _overlapError = null;
-                          }),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Text(
-                            ' : ',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w300,
-                              color: context.colors.textTertiary,
-                            ),
-                          ),
-                        ),
-                        _buildStepper(
-                          label: context.l10n.sessionPickerMinutes,
-                          value: selectedMinute,
-                          max: 59,
-                          onChanged: (v) => setState(() {
-                            selectedMinute = v;
-                            _overlapError = null;
-                          }),
-                        ),
-                      ],
-                    ),
+                  InlineTimeStepper(
+                    backgroundColor: sectionBg,
+                    hours: selectedHour,
+                    minutes: selectedMinute,
+                    maxHours: 23,
+                    hasError: _overlapError != null,
+                    onHoursChanged: (v) => setState(() {
+                      selectedHour = v;
+                      _overlapError = null;
+                    }),
+                    onMinutesChanged: (v) => setState(() {
+                      selectedMinute = v;
+                      _overlapError = null;
+                    }),
                   ),
                   if (_overlapError != null) ...[
                     const SizedBox(height: 6),
@@ -415,24 +367,19 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     iconColor: AppColors.iconGreen,
                   ),
                   const SizedBox(height: 12),
-                  _buildTappableCard(
-                    onTap: _pickDuration,
-                    sectionBg: sectionBg,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${durationHours}u ${durationMinutes}m',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: textColor,
-                            ),
-                          ),
-                        ),
-                        Icon(Icons.chevron_right, color: subtleText, size: 20),
-                      ],
-                    ),
+                  InlineTimeStepper(
+                    backgroundColor: sectionBg,
+                    hours: durationHours,
+                    minutes: durationMinutes,
+                    maxHours: 8,
+                    onHoursChanged: (v) => setState(() {
+                      durationHours = v;
+                      _overlapError = null;
+                    }),
+                    onMinutesChanged: (v) => setState(() {
+                      durationMinutes = v;
+                      _overlapError = null;
+                    }),
                   ),
                   const SizedBox(height: 32),
 
@@ -515,99 +462,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     );
   }
 
-  Widget _buildStepper({
-    required String label,
-    required int value,
-    required int max,
-    required ValueChanged<int> onChanged,
-  }) {
-    final cardColor = context.colors.card;
-    final valueColor = context.colors.textPrimary;
-
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-            color: context.colors.textTertiary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: context.colors.isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.grey[100]!,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Text(
-            value.toString().padLeft(2, '0'),
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w300,
-              color: valueColor,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            _stepButton(
-              icon: Icons.remove,
-              onTap: () {
-                if (value > 0) onChanged(value - 1);
-              },
-            ),
-            const SizedBox(width: 8),
-            _stepButton(
-              icon: Icons.add,
-              onTap: () {
-                if (value < max) onChanged(value + 1);
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _stepButton({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: context.colors.isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: context.colors.textSecondary,
-        ),
-      ),
-    );
-  }
 
   Widget _buildTappableCard({
     required VoidCallback onTap,

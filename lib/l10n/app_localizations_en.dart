@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navCalendar => 'Calendar';
 
   @override
-  String get navDeadlines => 'Goals';
+  String get navDeadlines => 'Deadlines';
 
   @override
   String get navProfile => 'Profile';
@@ -54,10 +54,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonNoData => 'No data available';
 
   @override
-  String get addGoalTitle => 'Add Goal';
+  String get addGoalTitle => 'Add Deadline';
 
   @override
-  String get editGoalTitle => 'Edit Goal';
+  String get editGoalTitle => 'Edit Deadline';
 
   @override
   String get addGoalSubjectLabel => 'Subject';
@@ -75,7 +75,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGoalDeadlineLabel => 'Deadline';
 
   @override
-  String get addGoalTypeLabel => 'Goal Type';
+  String get addGoalDeadlineTimeLabel => 'Time';
+
+  @override
+  String get addGoalTypeLabel => 'Deadline Type';
 
   @override
   String get addGoalDifficultyLabel => 'Difficulty';
@@ -90,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGoalSessionsLabel => 'Planned Sessions';
 
   @override
-  String get addGoalSaveButton => 'Save Goal';
+  String get addGoalSaveButton => 'Save Deadline';
 
   @override
   String get addGoalValidateSubject => 'Please enter a subject';
@@ -102,7 +105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGoalValidateDeadline => 'Please select a deadline';
 
   @override
-  String get addGoalValidateType => 'Please select a goal type';
+  String get addGoalValidateType => 'Please select a deadline type';
 
   @override
   String get addGoalValidateDifficulty => 'Please select a difficulty';
@@ -270,7 +273,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timerSnackSessionCompleted => 'Session completed!';
 
   @override
-  String get goalDetailsSectionInfo => 'Goal Info';
+  String get goalDetailsSectionInfo => 'Deadline Info';
 
   @override
   String get goalDetailsSectionStudySessions => 'Study Sessions';
@@ -294,14 +297,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goalDetailsMarkIncomplete => 'Mark as Incomplete';
 
   @override
-  String get goalDetailsDeleteGoal => 'Delete Goal';
+  String get goalDetailsDeleteGoal => 'Delete Deadline';
 
   @override
-  String get goalDetailsDeleteConfirmTitle => 'Delete Goal';
+  String get goalDetailsDeleteConfirmTitle => 'Delete Deadline';
 
   @override
   String get goalDetailsDeleteConfirmBody =>
-      'Are you sure you want to delete this goal?';
+      'Are you sure you want to delete this deadline?';
 
   @override
   String get goalDetailsProgressLabel => 'Progress';
@@ -341,7 +344,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get goalInfoCardLabel => 'GOAL INFO';
+  String get goalInfoCardLabel => 'DEADLINE INFO';
 
   @override
   String get goalInfoDeadlineLabel => 'DEADLINE';
@@ -408,7 +411,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deadlineStatusCompleted => 'Completed';
 
   @override
-  String get dashboardTitle => 'Goals';
+  String get dashboardTitle => 'Deadlines';
 
   @override
   String get dashboardSectionOverdue => 'Overdue';
@@ -657,11 +660,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editNameSaveButton => 'Update';
 
   @override
-  String get goalDialogDeleteTitle => 'Delete Goal';
+  String get goalDialogDeleteTitle => 'Delete Deadline';
 
   @override
   String get goalDialogDeleteBody =>
-      'Are you sure you want to delete this goal?';
+      'Are you sure you want to delete this deadline?';
 
   @override
   String get homeNoTasksTitle => 'No tasks for this day';
@@ -676,13 +679,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStudySessions => 'Study Sessions';
 
   @override
-  String get calendarSectionGoals => 'Goals';
+  String get calendarSectionGoals => 'Deadlines';
 
   @override
   String get calendarSectionSessions => 'Sessions';
 
   @override
-  String get calendarNoGoals => 'No goals on this day';
+  String get calendarNoGoals => 'No deadlines on this day';
 
   @override
   String get calendarNoSessions => 'No sessions on this day';

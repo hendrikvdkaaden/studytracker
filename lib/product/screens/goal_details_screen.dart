@@ -13,10 +13,10 @@ import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
-import '../../widgets/goal_details_modern/progress/edit_progress_dialog.dart';
 import '../../widgets/goal_details_modern/info/goal_info_edit_modal.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
+import '../../widgets/add_goal/pickers/time_picker_modal.dart';
 import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/goal_details_template.dart';
 
@@ -60,31 +60,6 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     setState(() {});
   }
 
-  Future<void> _showEditProgressDialog() async {
-    await showDialog(
-      context: context,
-      builder: (dialogContext) => EditProgressDialog(
-        initialTargetTimeMinutes: _goal.studyTime,
-        initialTimeSpentMinutes: _timeSpent,
-        onSave: (targetTime, timeSpent) async {
-          final updatedGoal = await _operationsService.updateProgress(
-            goal: _goal,
-            newTargetTimeMinutes: targetTime,
-            newTimeSpentMinutes: timeSpent,
-          );
-          if (!mounted) return;
-          _goal = updatedGoal;
-          _refreshData();
-          setState(() {});
-          GoalDialogService.showSuccessMessage(
-            context,
-            'Progress updated successfully!',
-          );
-        },
-      ),
-    );
-  }
-
   Future<void> _showEditInfoModal() async {
     final updated = await showGoalInfoEditModal(context, _goal);
     if (updated == null) return;
@@ -115,8 +90,21 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
       },
     );
     if (date == null) return;
+    if (!mounted) return;
 
-    final updated = _goal.copyWith(date: date);
+    // Follow up with the time so editing a deadline can change both parts.
+    // Cancelling here abandons the whole edit — the date is not saved either,
+    // since backing out of the second step reads as cancelling the change.
+    final time = await showTimePickerModal(
+      context: context,
+      initialHour: _goal.date.hour,
+      initialMinute: _goal.date.minute,
+    );
+    if (time == null || !mounted) return;
+
+    final updated = _goal.copyWith(
+      date: DateTime(date.year, date.month, date.day, time.hour, time.minute),
+    );
     await _operationsService.updateGoalData(updated);
     if (!mounted) return;
     setState(() {
@@ -253,7 +241,6 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
         goal: _goal,
         timeSpent: _timeSpent,
         plannedSessions: _plannedSessions,
-        onEditProgress: _showEditProgressDialog,
         onMarkComplete: _toggleComplete,
         onAddSession: _addSession,
         onAutoplan: _autoPlanSessions,

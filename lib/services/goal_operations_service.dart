@@ -1,11 +1,9 @@
-import 'package:uuid/uuid.dart';
 import '../models/goal.dart';
-import '../models/study_session.dart';
 import 'goal_repository.dart';
 import 'notification_service.dart';
 import 'study_session_repository.dart';
 
-/// Service for handling goal operations (update, delete, progress adjustments)
+/// Service for handling goal operations (update, delete, completion)
 class GoalOperationsService {
   final GoalRepository _goalRepo;
   final StudySessionRepository _sessionRepo;
@@ -49,34 +47,6 @@ class GoalOperationsService {
 
     // Then delete the goal itself
     await _goalRepo.deleteGoal(goalId);
-  }
-
-  /// Updates the goal's target time and adjusts time spent
-  Future<Goal> updateProgress({
-    required Goal goal,
-    required int newTargetTimeMinutes,
-    required int newTimeSpentMinutes,
-  }) async {
-    // Update goal's target time
-    final updatedGoal = goal.copyWith(studyTime: newTargetTimeMinutes);
-    await _goalRepo.updateGoal(updatedGoal);
-
-    // Calculate difference in time spent and adjust sessions
-    final currentTimeSpent = _sessionRepo.getTotalStudyTimeForGoal(goal.id);
-    final difference = newTimeSpentMinutes - currentTimeSpent;
-
-    if (difference != 0) {
-      // Create adjustment session
-      final adjustmentSession = StudySession(
-        id: const Uuid().v4(),
-        goalId: goal.id,
-        date: DateTime.now(),
-        duration: difference,
-      );
-      await _sessionRepo.addSession(adjustmentSession);
-    }
-
-    return updatedGoal;
   }
 
   /// Updates a goal's basic data (title, subject, type, difficulty, date, etc.)

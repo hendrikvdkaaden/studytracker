@@ -160,7 +160,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.primary.withValues(alpha: 0.96),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: DashboardTemplate(

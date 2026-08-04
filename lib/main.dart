@@ -22,6 +22,9 @@ class MyApp extends StatelessWidget {
       builder: (context, themeMode, _) {
         return MaterialApp(
           title: 'Deadly',
+          // Release builds never show this banner anyway; disabling it keeps
+          // debug builds usable for App Store screenshots.
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: AppColors.primary,

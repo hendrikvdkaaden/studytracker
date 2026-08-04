@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
-import '../../utils/l10n_extension.dart';
 import '../templates/plan_template.dart';
 
 class PlanScreen extends ConsumerStatefulWidget {
@@ -30,12 +28,6 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   void _nextMonth() {
     setState(() {
       _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month + 1);
-    });
-  }
-  void _goToToday() {
-    setState(() {
-      _selectedDate = DateTime.now();
-      _focusedMonth = DateTime.now();
     });
   }
   void _onDateSelected(DateTime date) {
@@ -71,19 +63,6 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         onNextMonth: _nextMonth,
         onDateSelected: _onDateSelected,
         onGoalUpdated: () => setState(() {}),
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'plan_fab',
-        onPressed: _goToToday,
-        backgroundColor: AppColors.calendarAccent,
-        foregroundColor: AppColors.calendarDarkBackground,
-        child: Text(
-          context.l10n.calendarTodayButton,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
       ),
     );
   }

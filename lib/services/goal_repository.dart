@@ -41,16 +41,25 @@ class GoalRepository {
     return _box.values.where((goal) => goal.isOverdue()).toList();
   }
 
-  /// Get upcoming goals (within next N days)
+  /// Get upcoming goals (within next N days), including goals due today.
+  ///
+  /// Compares whole days rather than exact timestamps so this stays the exact
+  /// complement of [Goal.isOverdue], which is also day-based. Comparing
+  /// timestamps would drop a goal due today as soon as its time of day passed,
+  /// while it is not yet overdue — leaving it in neither section.
   List<Goal> getUpcomingGoals(int days) {
     final now = DateTime.now();
-    final futureDate = now.add(Duration(days: days));
+    final today = DateTime(now.year, now.month, now.day);
+    final lastDay = today.add(Duration(days: days));
 
     return _box.values
-        .where((goal) =>
-            !goal.isCompleted &&
-            goal.date.isAfter(now) &&
-            goal.date.isBefore(futureDate))
+        .where((goal) {
+          final deadlineDay =
+              DateTime(goal.date.year, goal.date.month, goal.date.day);
+          return !goal.isCompleted &&
+              !deadlineDay.isBefore(today) &&
+              !deadlineDay.isAfter(lastDay);
+        })
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
   }

@@ -109,7 +109,7 @@ abstract class AppLocalizations {
   /// No description provided for @navDeadlines.
   ///
   /// In en, this message translates to:
-  /// **'Goals'**
+  /// **'Deadlines'**
   String get navDeadlines;
 
   /// No description provided for @navProfile.
@@ -187,13 +187,13 @@ abstract class AppLocalizations {
   /// No description provided for @addGoalTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Goal'**
+  /// **'Add Deadline'**
   String get addGoalTitle;
 
   /// No description provided for @editGoalTitle.
   ///
   /// In en, this message translates to:
-  /// **'Edit Goal'**
+  /// **'Edit Deadline'**
   String get editGoalTitle;
 
   /// No description provided for @addGoalSubjectLabel.
@@ -226,10 +226,16 @@ abstract class AppLocalizations {
   /// **'Deadline'**
   String get addGoalDeadlineLabel;
 
+  /// No description provided for @addGoalDeadlineTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get addGoalDeadlineTimeLabel;
+
   /// No description provided for @addGoalTypeLabel.
   ///
   /// In en, this message translates to:
-  /// **'Goal Type'**
+  /// **'Deadline Type'**
   String get addGoalTypeLabel;
 
   /// No description provided for @addGoalDifficultyLabel.
@@ -259,7 +265,7 @@ abstract class AppLocalizations {
   /// No description provided for @addGoalSaveButton.
   ///
   /// In en, this message translates to:
-  /// **'Save Goal'**
+  /// **'Save Deadline'**
   String get addGoalSaveButton;
 
   /// No description provided for @addGoalValidateSubject.
@@ -283,7 +289,7 @@ abstract class AppLocalizations {
   /// No description provided for @addGoalValidateType.
   ///
   /// In en, this message translates to:
-  /// **'Please select a goal type'**
+  /// **'Please select a deadline type'**
   String get addGoalValidateType;
 
   /// No description provided for @addGoalValidateDifficulty.
@@ -583,7 +589,7 @@ abstract class AppLocalizations {
   /// No description provided for @goalDetailsSectionInfo.
   ///
   /// In en, this message translates to:
-  /// **'Goal Info'**
+  /// **'Deadline Info'**
   String get goalDetailsSectionInfo;
 
   /// No description provided for @goalDetailsSectionStudySessions.
@@ -631,19 +637,19 @@ abstract class AppLocalizations {
   /// No description provided for @goalDetailsDeleteGoal.
   ///
   /// In en, this message translates to:
-  /// **'Delete Goal'**
+  /// **'Delete Deadline'**
   String get goalDetailsDeleteGoal;
 
   /// No description provided for @goalDetailsDeleteConfirmTitle.
   ///
   /// In en, this message translates to:
-  /// **'Delete Goal'**
+  /// **'Delete Deadline'**
   String get goalDetailsDeleteConfirmTitle;
 
   /// No description provided for @goalDetailsDeleteConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this goal?'**
+  /// **'Are you sure you want to delete this deadline?'**
   String get goalDetailsDeleteConfirmBody;
 
   /// No description provided for @goalDetailsProgressLabel.
@@ -703,7 +709,7 @@ abstract class AppLocalizations {
   /// No description provided for @goalInfoCardLabel.
   ///
   /// In en, this message translates to:
-  /// **'GOAL INFO'**
+  /// **'DEADLINE INFO'**
   String get goalInfoCardLabel;
 
   /// No description provided for @goalInfoDeadlineLabel.
@@ -805,7 +811,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Goals'**
+  /// **'Deadlines'**
   String get dashboardTitle;
 
   /// No description provided for @dashboardSectionOverdue.
@@ -1183,13 +1189,13 @@ abstract class AppLocalizations {
   /// No description provided for @goalDialogDeleteTitle.
   ///
   /// In en, this message translates to:
-  /// **'Delete Goal'**
+  /// **'Delete Deadline'**
   String get goalDialogDeleteTitle;
 
   /// No description provided for @goalDialogDeleteBody.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this goal?'**
+  /// **'Are you sure you want to delete this deadline?'**
   String get goalDialogDeleteBody;
 
   /// No description provided for @homeNoTasksTitle.
@@ -1219,7 +1225,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarSectionGoals.
   ///
   /// In en, this message translates to:
-  /// **'Goals'**
+  /// **'Deadlines'**
   String get calendarSectionGoals;
 
   /// No description provided for @calendarSectionSessions.
@@ -1231,7 +1237,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarNoGoals.
   ///
   /// In en, this message translates to:
-  /// **'No goals on this day'**
+  /// **'No deadlines on this day'**
   String get calendarNoGoals;
 
   /// No description provided for @calendarNoSessions.

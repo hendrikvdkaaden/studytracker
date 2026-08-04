@@ -13,7 +13,7 @@ class CalendarDayCell extends StatelessWidget {
   const CalendarDayCell({
     super.key,
     required this.day,
-    this.isCurrentMonth = true,
+    required this.isCurrentMonth,
     this.isToday = false,
     this.isSelected = false,
     this.statuses = const [],
@@ -22,24 +22,26 @@ class CalendarDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = !isCurrentMonth
+        ? context.colors.textTertiary
+        : context.colors.textPrimary;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 48,
         decoration: BoxDecoration(
-          color: isToday
-              ? AppColors.calendarAccent
-              : isSelected
-                  ? AppColors.calendarAccent.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
-                  : Colors.transparent,
+          color: isSelected
+              ? AppColors.calendarAccent.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
-          border: isSelected && !isToday
+          border: isSelected
               ? Border.all(
                   color: AppColors.calendarAccent,
                   width: 2.5,
                 )
               : null,
-          boxShadow: isSelected && !isToday
+          boxShadow: isSelected
               ? [
                   BoxShadow(
                     color: AppColors.calendarAccent.withValues(alpha: 0.3),
@@ -52,16 +54,18 @@ class CalendarDayCell extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Today is marked with a text underline rather than a filled circle
+            // so it stays distinguishable from the selected day. Using
+            // TextDecoration keeps the line tight against the digit.
             Text(
               day.toString(),
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.w500,
-                color: isToday
-                    ? const Color(0xFF0D1C1B)
-                    : !isCurrentMonth
-                        ? context.colors.textTertiary
-                        : context.colors.textPrimary,
+                color: textColor,
+                decoration: isToday ? TextDecoration.underline : null,
+                decorationColor: textColor,
+                decorationThickness: 1.5,
               ),
             ),
             if (statuses.isNotEmpty) ...[

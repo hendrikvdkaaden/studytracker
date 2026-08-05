@@ -1,7 +1,7 @@
 name: deadly
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+2
+version: 1.0.0+4
 environment:
   sdk: ^3.9.2
 
@@ -44,6 +44,10 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/logo_icon.png"
+  # App Store rejects icons with an alpha channel, so the transparent logo is
+  # flattened onto a solid white background.
+  remove_alpha_ios: true
+  background_color_ios: "#FFFFFF"
   min_sdk_android: 21
   web:
     generate: false

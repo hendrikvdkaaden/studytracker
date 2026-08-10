@@ -19,20 +19,9 @@ class SessionProgressBar extends StatelessWidget {
     return progress;
   }
 
-  String _formatTime(int seconds) {
-    final hours = seconds ~/ 3600;
-    final minutes = (seconds % 3600) ~/ 60;
-
-    if (hours > 0) {
-      return '${hours}h ${minutes}m';
-    }
-    return '${minutes}m';
-  }
-
   @override
   Widget build(BuildContext context) {
     final percentage = (_progressPercentage * 100).toInt();
-    final targetSeconds = targetMinutes * 60;
 
     return Column(
       children: [
@@ -84,15 +73,6 @@ class SessionProgressBar extends StatelessWidget {
                 );
               },
             ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '${_formatTime(elapsedSeconds)} of ${_formatTime(targetSeconds)}',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: context.colors.textTertiary,
           ),
         ),
       ],

@@ -20,6 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final _homeScreenKey = GlobalKey<HomeScreenState>();
+  final _planScreenKey = GlobalKey<PlanScreenState>();
+  final _dashboardScreenKey = GlobalKey<DashboardScreenState>();
   late final List<Widget> _screens;
 
   @override
@@ -28,8 +30,8 @@ class _HomePageState extends State<HomePage> {
     NotificationService.requestPermission();
     _screens = [
       HomeScreen(key: _homeScreenKey),
-      const PlanScreen(),
-      DashboardScreen(),
+      PlanScreen(key: _planScreenKey),
+      DashboardScreen(key: _dashboardScreenKey),
       ProfileScreen(onThemeChanged: _onThemeChanged),
     ];
   }
@@ -72,8 +74,15 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _currentIndex = index;
             });
-            if (index == 0) {
-              _homeScreenKey.currentState?.refresh();
+            // IndexedStack keeps every tab alive, so switching back does not
+            // rebuild it. Each data-driven tab is refreshed explicitly.
+            switch (index) {
+              case 0:
+                _homeScreenKey.currentState?.refresh();
+              case 1:
+                _planScreenKey.currentState?.refresh();
+              case 2:
+                _dashboardScreenKey.currentState?.refresh();
             }
           },
           type: BottomNavigationBarType.fixed,

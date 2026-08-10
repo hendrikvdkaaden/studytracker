@@ -45,6 +45,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         return;
       }
     }
+    // Advancing swaps pages without disposing the fields, so focus has to be
+    // cleared explicitly or the keyboard stays up over the next step.
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_currentPage < 3) {
       setState(() {
         _nameError = false;

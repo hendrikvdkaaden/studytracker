@@ -11,7 +11,6 @@ class ProfileTemplate extends StatelessWidget {
   final int sessionReminderMinutes;
   final int deadlineReminderDays;
   final int themeModeIndex;
-  final String appVersion;
   final List<SubjectData> subjects;
   final String schoolName;
   final bool isPremium;
@@ -31,7 +30,6 @@ class ProfileTemplate extends StatelessWidget {
     required this.sessionReminderMinutes,
     required this.deadlineReminderDays,
     required this.themeModeIndex,
-    required this.appVersion,
     required this.subjects,
     required this.schoolName,
     required this.isPremium,
@@ -153,16 +151,6 @@ class ProfileTemplate extends StatelessWidget {
               showChevron: false,
             ),
           ],
-        ),
-        const SizedBox(height: 32),
-        Center(
-          child: Text(
-            l10n.profileVersionLabel(appVersion),
-            style: TextStyle(
-              fontSize: 12,
-              color: context.colors.textSecondary,
-            ),
-          ),
         ),
       ],
     );

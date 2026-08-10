@@ -53,6 +53,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _sessionDurationHours = 0;
   int _sessionDurationMinutes = 45;
   int _breakMinutes = 15;
+  String? _errorMessage;
 
   static const _dayLabels = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   static const _dayValues = [1, 2, 3, 4, 5, 6, 7];
@@ -70,6 +71,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
 
   void _confirm() {
     final l10n = context.l10n;
+    setState(() => _errorMessage = null);
     final totalMins = _totalHours * 60 + _totalMinutes;
     final sessionMins = _sessionDurationHours * 60 + _sessionDurationMinutes;
 
@@ -110,10 +112,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     );
   }
 
+  /// Shown inline above the confirm button instead of as a toast.
   void _showSnack(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
-    );
+    setState(() => _errorMessage = msg);
   }
 
   @override
@@ -181,6 +182,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           // Scrollable content
           Expanded(
             child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
               children: [
                 // 1. Totale studietijd
@@ -315,6 +317,27 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 ? Colors.white.withValues(alpha: 0.08)
                 : Colors.grey[100],
           ),
+          if (_errorMessage != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline,
+                      size: 14, color: AppColors.overdue),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.overdue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Padding(
             padding: EdgeInsets.fromLTRB(24, 16, 24, 16 + bottomInset),
             child: Row(

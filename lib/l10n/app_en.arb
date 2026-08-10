@@ -59,6 +59,7 @@
   "sessionPickerSaveButton": "Add Session",
   "sessionPickerSaveEditButton": "Save Changes",
   "sessionPickerOverlapError": "This session overlaps with an existing session.",
+  "sessionPickerDurationError": "Set a duration longer than 0 minutes.",
   "sessionPickerHours": "Hours",
   "sessionPickerMinutes": "Minutes",
 

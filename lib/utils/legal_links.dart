@@ -20,6 +20,10 @@ class LegalLinks {
   static const String privacyPolicy =
       'https://hendrikvdkaaden.github.io/studytracker/privacy.html';
 
+  /// Apple's subscription management screen, where users cancel or switch plan.
+  static const String manageSubscriptions =
+      'https://apps.apple.com/account/subscriptions';
+
   static Future<void> open(String url) async {
     final uri = Uri.parse(url);
     try {

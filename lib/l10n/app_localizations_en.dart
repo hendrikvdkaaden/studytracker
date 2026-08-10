@@ -169,6 +169,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This session overlaps with an existing session.';
 
   @override
+  String get sessionPickerDurationError =>
+      'Set a duration longer than 0 minutes.';
+
+  @override
   String get sessionPickerHours => 'Hours';
 
   @override

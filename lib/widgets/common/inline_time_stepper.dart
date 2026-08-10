@@ -129,11 +129,21 @@ class _InlineStepperState extends State<_InlineStepper> {
     _focusNode.requestFocus();
   }
 
-  void _commit() {
+  /// Commits the typed text and returns the clamped value. The return value
+  /// lets callers keep stepping from the freshly committed number instead of
+  /// the stale [widget.value], which the parent has not rebuilt with yet.
+  int _commit() {
     final parsed = int.tryParse(_controller.text.trim());
     final clamped = (parsed ?? widget.value).clamp(0, widget.max);
+    // Clear _editing before unfocusing so the focus listener's guard is false
+    // and it does not call back into _commit.
     setState(() => _editing = false);
+    // The iOS number pad has no return key, so onSubmitted can never fire.
+    // Releasing focus here is what actually dismisses the keyboard.
+    _focusNode.unfocus();
+    _controller.text = clamped.toString();
     widget.onChanged(clamped);
+    return clamped;
   }
 
   @override
@@ -154,7 +164,10 @@ class _InlineStepperState extends State<_InlineStepper> {
         ),
         const SizedBox(height: 8),
         GestureDetector(
-          onTap: _editing ? null : _startEditing,
+          // Tapping while editing commits, giving the user a visible way out
+          // of the keyboard.
+          onTap: _editing ? _commit : _startEditing,
+          behavior: HitTestBehavior.opaque,
           child: Container(
             width: 88,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -212,15 +225,21 @@ class _InlineStepperState extends State<_InlineStepper> {
             _StepButton(
               icon: Icons.remove,
               onTap: () {
-                if (widget.value > 0) widget.onChanged(widget.value - 1);
+                // Commit first: while editing, didUpdateWidget skips syncing
+                // the controller, so stepping without committing would leave
+                // the visible text out of step with the real value. Step from
+                // the committed value, not the stale widget.value.
+                final current = _editing ? _commit() : widget.value;
+                if (current > 0) widget.onChanged(current - 1);
               },
             ),
             const SizedBox(width: 8),
             _StepButton(
               icon: Icons.add,
               onTap: () {
-                if (widget.value < widget.max) {
-                  widget.onChanged(widget.value + 1);
+                final current = _editing ? _commit() : widget.value;
+                if (current < widget.max) {
+                  widget.onChanged(current + 1);
                 }
               },
             ),

@@ -10,10 +10,17 @@ class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
 
   @override
-  ConsumerState<PlanScreen> createState() => _PlanScreenState();
+  ConsumerState<PlanScreen> createState() => PlanScreenState();
 }
 
-class _PlanScreenState extends ConsumerState<PlanScreen> {
+class PlanScreenState extends ConsumerState<PlanScreen> {
+  /// Recomputes the calendar from Hive. Needed because HomePage keeps this
+  /// screen alive in an IndexedStack, so returning to the tab does not rebuild.
+  /// The selected date and focused month are preserved.
+  void refresh() {
+    if (mounted) setState(() {});
+  }
+
   GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
   StudySessionRepository get _sessionRepo =>
       ref.read(studySessionRepositoryProvider);

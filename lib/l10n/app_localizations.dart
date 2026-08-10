@@ -394,6 +394,12 @@ abstract class AppLocalizations {
   /// **'This session overlaps with an existing session.'**
   String get sessionPickerOverlapError;
 
+  /// No description provided for @sessionPickerDurationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a duration longer than 0 minutes.'**
+  String get sessionPickerDurationError;
+
   /// No description provided for @sessionPickerHours.
   ///
   /// In en, this message translates to:

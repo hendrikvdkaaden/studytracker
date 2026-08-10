@@ -36,6 +36,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
   late Difficulty _selectedDifficulty;
   late List<SubjectData> _subjects;
   String? _selectedSubject;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -65,17 +66,14 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
         : _subjectController.text.trim();
 
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.goalInfoEditValidateTitle)),
-      );
+      setState(() => _errorMessage = l10n.goalInfoEditValidateTitle);
       return;
     }
     if (subject.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.goalInfoEditValidateSubject)),
-      );
+      setState(() => _errorMessage = l10n.goalInfoEditValidateSubject);
       return;
     }
+    setState(() => _errorMessage = null);
 
     final updated = widget.goal.copyWith(
       title: title,
@@ -318,6 +316,27 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                     }).toList(),
                   ),
                   const SizedBox(height: 28),
+
+                  if (_errorMessage != null) ...[
+                    Row(
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 14, color: AppColors.overdue),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.overdue,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
 
                   // Save button
                   SizedBox(

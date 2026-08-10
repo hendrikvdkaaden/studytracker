@@ -59,7 +59,9 @@ class _SubjectDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sectionBg = context.colors.sectionBackground;
+    // fieldBackground, not sectionBackground: inputs share one fill colour so
+    // they match the other fields on the form in dark mode.
+    final sectionBg = context.colors.fieldBackground;
 
     return DropdownButtonFormField<String>(
       initialValue: selectedSubject,

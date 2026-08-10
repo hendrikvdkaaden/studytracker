@@ -309,7 +309,7 @@ class AddGoalTemplate extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                color: context.colors.sectionBackground,
+                color: context.colors.fieldBackground,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: context.colors.border,
@@ -323,7 +323,7 @@ class AddGoalTemplate extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: context.colors.textPrimary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ),
@@ -384,18 +384,14 @@ class AddGoalTemplate extends StatelessWidget {
                   children: [
                     Icon(Icons.add,
                         size: 14,
-                        color: isDark
-                            ? AppColors.primary.withValues(alpha: 0.9)
-                            : AppColors.primary),
+                        color: isDark ? Colors.white : AppColors.primary),
                     const SizedBox(width: 4),
                     Text(
                       context.l10n.addGoalAddSessionShort,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.primary.withValues(alpha: 0.9)
-                            : AppColors.primary,
+                        color: isDark ? Colors.white : AppColors.primary,
                       ),
                     ),
                   ],

@@ -9,6 +9,7 @@ import '../../providers/app_providers.dart';
 import '../../services/notification_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/l10n_extension.dart';
+import '../../widgets/common/app_dialog.dart';
 import '../../widgets/study_timer/timer_controls.dart';
 import '../templates/study_timer_template.dart';
 
@@ -42,7 +43,9 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
   void initState() {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 3));
-    if (widget.session.elapsedSeconds != null) {
+    // A completed session starts fresh: resuming it would otherwise open on a
+    // timer that already reads 00:00 with no way to run it but "Restart".
+    if (!widget.session.isCompleted && widget.session.elapsedSeconds != null) {
       _elapsedSeconds = widget.session.elapsedSeconds!;
     }
     WidgetsBinding.instance.addObserver(this);
@@ -118,30 +121,23 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
   Future<void> _stopTimer() async {
     final l10n = context.l10n;
     final elapsedTime = _formatElapsedTime();
-    final confirm = await showDialog<bool>(
+    final confirm = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.timerDialogCompleteTitle),
-        content: Text(l10n.timerDialogCompleteBody(elapsedTime)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.timerDialogCompleteCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.timerDialogCompleteConfirm),
-          ),
-        ],
-      ),
+      title: l10n.timerDialogCompleteTitle,
+      message: l10n.timerDialogCompleteBody(elapsedTime),
+      confirmLabel: l10n.timerDialogCompleteConfirm,
+      cancelLabel: l10n.timerDialogCompleteCancel,
+      icon: Icons.save_outlined,
     );
 
-    if (confirm == true) {
+    if (confirm) {
       _timer?.cancel();
       final actualMinutes = _elapsedSeconds ~/ 60;
       final updatedSession = widget.session.copyWith(
+        // Time studied is kept in actualDuration; elapsedSeconds only exists to
+        // resume a running timer, so a finished session resets it.
         actualDuration: actualMinutes,
-        elapsedSeconds: _elapsedSeconds,
+        elapsedSeconds: 0,
         isCompleted: true,
         completedAt: DateTime.now(),
       );
@@ -151,43 +147,27 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
       if (!mounted) return;
 
       Navigator.pop(context, true);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.timerSnackSessionSaved(_formatElapsedTime())),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     }
   }
 
   Future<void> _handleBack() async {
     if (_timerState != TimerState.initial) {
       final l10n = context.l10n;
-      final confirm = await showDialog<bool>(
+      final confirm = await showAppConfirmDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text(l10n.timerDialogLeaveTitle),
-          content: Text(l10n.timerDialogLeaveBody),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.timerDialogLeaveCancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.timerDialogLeaveConfirm),
-            ),
-          ],
-        ),
+        title: l10n.timerDialogLeaveTitle,
+        message: l10n.timerDialogLeaveBody,
+        confirmLabel: l10n.timerDialogLeaveConfirm,
+        cancelLabel: l10n.timerDialogLeaveCancel,
+        icon: Icons.exit_to_app,
       );
 
-      if (confirm == true) {
+      if (confirm) {
         _timer?.cancel();
         if (_timerState == TimerState.completed) {
           final updatedSession = widget.session.copyWith(
             actualDuration: widget.session.duration,
-            elapsedSeconds: _targetSeconds,
+            elapsedSeconds: 0,
             isCompleted: true,
             completedAt: DateTime.now(),
           );
@@ -204,30 +184,24 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
 
   Future<void> _completeSession() async {
     final l10n = context.l10n;
-    final confirm = await showDialog<bool>(
+    final confirm = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.timerDialogMarkCompleteTitle),
-        content: Text(l10n.timerDialogMarkCompleteBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.timerDialogCompleteCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.timerDialogMarkCompleteConfirm),
-          ),
-        ],
-      ),
+      title: l10n.timerDialogMarkCompleteTitle,
+      message: l10n.timerDialogMarkCompleteBody,
+      confirmLabel: l10n.timerDialogMarkCompleteConfirm,
+      cancelLabel: l10n.timerDialogCompleteCancel,
+      icon: Icons.check_circle_outline,
     );
 
-    if (confirm == true) {
+    if (confirm) {
       _timer?.cancel();
 
       final updatedSession = widget.session.copyWith(
+        // The full session duration is logged via actualDuration; elapsed is
+        // reset so reopening the session starts a clean timer rather than one
+        // already sitting at 00:00.
         actualDuration: widget.session.duration,
-        elapsedSeconds: _targetSeconds,
+        elapsedSeconds: 0,
         isCompleted: true,
         completedAt: DateTime.now(),
       );
@@ -235,12 +209,6 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
       await _sessionRepo.updateSession(updatedSession);
       if (!mounted) return;
       Navigator.pop(context, true);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.timerSnackSessionCompleted),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     }
   }
 

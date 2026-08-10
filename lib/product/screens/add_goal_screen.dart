@@ -17,6 +17,7 @@ import '../../utils/l10n_extension.dart';
 import '../../widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import '../../widgets/add_goal/pickers/study_session_picker_modal.dart';
 import '../../widgets/add_goal/pickers/time_picker_modal.dart';
+import '../../widgets/common/app_dialog.dart';
 import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/add_goal_template.dart';
 
@@ -211,11 +212,12 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
     if (!mounted) return;
 
     if (generated.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.autoPlanErrorNoAvailableDays),
-          behavior: SnackBarBehavior.floating,
-        ),
+      // The wizard has already closed, so there is no inline slot left for
+      // this: a dialog is the only way the user learns nothing was planned.
+      await showAppMessageDialog(
+        context: context,
+        message: context.l10n.autoPlanErrorNoAvailableDays,
+        icon: Icons.event_busy_outlined,
       );
       return;
     }
@@ -225,13 +227,6 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       _plannedSessions.addAll(generated);
       _sortSessions();
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.autoPlanSuccessSnack(generated.length)),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   Future<void> _saveGoal() async {
@@ -284,13 +279,6 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       if (!mounted) return;
 
       Navigator.pop(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.addGoalSuccessSnack(_plannedSessions.length)),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     }
   }
 

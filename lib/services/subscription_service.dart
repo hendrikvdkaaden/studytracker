@@ -29,7 +29,10 @@ class SubscriptionService {
   Future<Offerings?> getOfferings() async {
     try {
       return await Purchases.getOfferings();
-    } catch (_) {
+    } catch (e) {
+      // Usually means the products are not (yet) fetchable from App Store
+      // Connect. The paywall falls back to its "no offerings" message.
+      debugPrint('Failed to load offerings: $e');
       return null;
     }
   }

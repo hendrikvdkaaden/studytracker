@@ -36,6 +36,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
   final FocusNode _notesFocusNode = FocusNode();
   final GlobalKey _notesKey = GlobalKey();
   String? _overlapError;
+  String? _durationError;
 
   @override
   void initState() {
@@ -127,14 +128,10 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
     final totalDuration = (durationHours * 60) + durationMinutes;
 
     if (totalDuration == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Duration must be greater than 0'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      setState(() => _durationError = context.l10n.sessionPickerDurationError);
       return;
     }
+    setState(() => _durationError = null);
 
     final newStart = DateTime(
       selectedDate.year,
@@ -159,22 +156,15 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       duration: totalDuration,
       isCompleted: isEditing ? widget.initialSession!.isCompleted : false,
       startTime: newStart,
-      notes: notesController.text.isEmpty ? null : notesController.text,
+      // Trimmed so a note of only whitespace is stored as no note at all.
+      notes: notesController.text.trim().isEmpty
+          ? null
+          : notesController.text.trim(),
     );
 
     widget.onSessionAdded(session);
     FocusManager.instance.primaryFocus?.unfocus();
-
-    final messenger = ScaffoldMessenger.of(context);
     Navigator.pop(context);
-
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(isEditing ? context.l10n.sessionPickerSaveEditButton : context.l10n.sessionPickerSaveButton),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 1),
-      ),
-    );
   }
 
   String _formatDate(DateTime d) => FormatHelpers.formatDate(d);
@@ -246,6 +236,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           // Scrollable content
           Expanded(
             child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(24, 24, 24, 16 + keyboardInset),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,15 +363,36 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                     hours: durationHours,
                     minutes: durationMinutes,
                     maxHours: 8,
+                    hasError: _durationError != null,
                     onHoursChanged: (v) => setState(() {
                       durationHours = v;
                       _overlapError = null;
+                      _durationError = null;
                     }),
                     onMinutesChanged: (v) => setState(() {
                       durationMinutes = v;
                       _overlapError = null;
+                      _durationError = null;
                     }),
                   ),
+                  if (_durationError != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 14, color: AppColors.overdue),
+                        const SizedBox(width: 4),
+                        Text(
+                          _durationError!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.overdue,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 32),
 
                   // Add button

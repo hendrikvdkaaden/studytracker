@@ -82,12 +82,16 @@ class OnboardingStepName extends StatelessWidget {
                     hint: l10n.onboardingNameHint,
                     hasError: nameError,
                     onChanged: onNameChanged,
+                    textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 12),
                   _buildTextField(
                     context: context,
                     controller: schoolController,
                     hint: l10n.onboardingSchoolHint,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                   ),
                 ],
               ),
@@ -113,12 +117,16 @@ Widget _buildTextField({
   required String hint,
   bool hasError = false,
   ValueChanged<String>? onChanged,
+  TextInputAction? textInputAction,
+  ValueChanged<String>? onSubmitted,
 }) {
   final isDark = context.colors.isDark;
   return TextField(
     controller: controller,
     style: TextStyle(color: context.colors.textPrimary),
     textCapitalization: TextCapitalization.words,
+    textInputAction: textInputAction,
+    onSubmitted: onSubmitted,
     onChanged: onChanged,
     decoration: InputDecoration(
       hintText: hint,

@@ -289,7 +289,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                           Icons.add,
                           size: 14,
                           color: context.colors.isDark
-                              ? AppColors.primary.withValues(alpha: 0.9)
+                              ? Colors.white
                               : AppColors.primary,
                         ),
                         const SizedBox(width: 4),
@@ -299,7 +299,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: context.colors.isDark
-                                ? AppColors.primary.withValues(alpha: 0.9)
+                                ? Colors.white
                                 : AppColors.primary,
                           ),
                         ),

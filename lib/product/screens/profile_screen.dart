@@ -8,6 +8,8 @@ import '../../services/subscription_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/legal_links.dart';
+import '../../widgets/common/app_dialog.dart';
 import '../../widgets/common/paywall_bottom_sheet.dart';
 import '../../widgets/profile/add_subject_modal.dart';
 import '../../widgets/profile/edit_name_dialog.dart';
@@ -29,7 +31,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _themeModeIndex = 0;
   List<SubjectData> _subjects = [];
   String _schoolName = '';
-  static const String _appVersion = 'v1.0.0';
 
   @override
   void initState() {
@@ -462,14 +463,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
     if (confirmed == true && mounted) {
       await ref.read(studySessionRepositoryProvider).clearAll();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.profileDeleteSessionsSnack),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
     }
   }
 
@@ -482,14 +475,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
     if (confirmed == true && mounted) {
       await HiveService.clearAllData();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.profileDeleteEverythingSnack),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
     }
   }
 
@@ -499,25 +484,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required String confirmLabel,
   }) {
     final cancelLabel = context.l10n.btnCancel;
-    return showDialog<bool>(
+    return showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(cancelLabel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.error,
-            ),
-            child: Text(confirmLabel),
-          ),
-        ],
-      ),
+      title: title,
+      message: body,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+      icon: Icons.warning_amber_rounded,
+      isDestructive: true,
     );
   }
 
@@ -525,12 +499,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
     if (!mounted) return;
     if (isPremium) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.profileManageSubscription),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      // Send subscribers straight to Apple's subscription settings instead of
+      // a toast telling them where to look.
+      await LegalLinks.open(LegalLinks.manageSubscriptions);
     } else {
       final purchased = await showPaywallBottomSheet(context);
       if (purchased && mounted) ref.invalidate(isPremiumProvider);
@@ -546,7 +517,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       sessionReminderMinutes: _sessionReminderMinutes,
       deadlineReminderDays: _deadlineReminderDays,
       themeModeIndex: _themeModeIndex,
-      appVersion: _appVersion,
       subjects: _subjects,
       schoolName: _schoolName,
       isPremium: isPremium,

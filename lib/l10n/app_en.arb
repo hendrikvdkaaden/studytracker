@@ -359,7 +359,7 @@
   "paywallNoOfferings": "No offerings available. Please check back later.",
   "paywallCtaButton": "UPGRADE TO PREMIUM",
   "paywallRestorePurchases": "Restore Purchases",
-  "paywallDisclaimerText": "Payment will be charged to your Apple ID account at confirmation of purchase. The subscription automatically renews unless it is cancelled at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period. You can manage and cancel your subscription in your Apple ID Account Settings.",
+  "paywallDisclaimerText": "Auto-renews until cancelled. Manage in your Apple ID settings.",
   "paywallTermsOfUse": "Terms of Use",
   "paywallPrivacyPolicy": "Privacy Policy",
   "paywallLegalSeparator": " · ",
@@ -367,6 +367,7 @@
   "paywallErrorNoPurchases": "No previous purchases found.",
   "paywallErrorRestoreFailed": "Restore failed. Please try again.",
 
+  "profilePremiumBadge": "Premium",
   "profilePremiumTitle": "Deadly Premium",
   "profileUpgradeTitle": "DEADLY PREMIUM",
   "profilePremiumSubtitle": "Manage your subscription",

@@ -14,6 +14,11 @@ Future<bool> showPaywallBottomSheet(BuildContext context) async {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    // Leave a strip of the screen visible so the sheet can still be swiped
+    // down or dismissed by tapping outside it.
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.of(context).size.height * 0.92,
+    ),
     builder: (_) => const _PaywallBottomSheet(),
   );
   return result ?? false;
@@ -112,32 +117,9 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               ),
             ),
           ),
-          // Close button
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4, 16, 0),
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(false),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: context.colors.overlay(darkAlpha: 0.06, lightAlpha: 0.06),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.close,
-                    size: 18,
-                    color: context.colors.isDark ? Colors.white70 : Colors.black54,
-                  ),
-                ),
-              ),
-            ),
-          ),
           Flexible(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               child: _isLoading
                   ? const Padding(
                       padding: EdgeInsets.symmetric(vertical: 60),

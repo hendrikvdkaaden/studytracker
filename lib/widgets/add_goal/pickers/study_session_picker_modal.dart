@@ -200,7 +200,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           ),
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
             child: Row(
               children: [
                 Expanded(
@@ -211,16 +211,6 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       fontWeight: FontWeight.bold,
                       color: textColor,
                     ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close, color: subtleText),
-                  onPressed: () => Navigator.pop(context),
-                  style: IconButton.styleFrom(
-                    backgroundColor: colors.isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.grey[100],
-                    shape: const CircleBorder(),
                   ),
                 ),
               ],

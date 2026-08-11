@@ -76,6 +76,11 @@ class AppColors {
   static const Color premiumText = Color(0xFF161C28);
   static const Color premiumCardBorder = Color(0xFFC3C5D8);
 
+  // Premium badge — gold pill with dark amber text for contrast
+  static const Color premiumGold = Color(0xFFF5C542);
+  static const Color premiumGoldLight = Color(0xFFFDE68A);
+  static const Color premiumGoldText = Color(0xFF78350F);
+
   // Divider colors
   static const Color dividerDark = Color(0xFF334155);
   static const Color dividerLight = Color(0xFFE2E8F0);

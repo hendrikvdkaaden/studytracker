@@ -75,8 +75,12 @@ class ProfileTemplate extends StatelessWidget {
       children: [
         _buildProfileHeader(context),
         const SizedBox(height: 24),
-        _buildPremiumCard(context),
-        const SizedBox(height: 24),
+        // The premium card renders nothing for subscribers, so its trailing
+        // spacer would otherwise leave a double gap.
+        if (!isPremium) ...[
+          _buildPremiumCard(context),
+          const SizedBox(height: 24),
+        ],
         _buildSectionLabel(context, l10n.profileSectionSubjects),
         const SizedBox(height: 8),
         SubjectsSection(
@@ -156,6 +160,53 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
+  /// Gold pill marking the user as a subscriber. Shown under the school name.
+  /// Tapping it opens Apple's subscription settings — with the upgrade card
+  /// hidden for subscribers, this is their route to manage the plan.
+  Widget _buildPremiumPill(BuildContext context) {
+    return GestureDetector(
+      onTap: onSubscriptionTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.premiumGold, AppColors.premiumGoldLight],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.premiumGold.withValues(alpha: 0.35),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.diamond,
+              size: 12,
+              color: AppColors.premiumGoldText,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              context.l10n.profilePremiumBadge.toUpperCase(),
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
+                color: AppColors.premiumGoldText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildProfileHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
@@ -211,6 +262,10 @@ class ProfileTemplate extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (isPremium) ...[
+                  const SizedBox(height: 8),
+                  _buildPremiumPill(context),
+                ],
               ],
             ),
           ),
@@ -326,60 +381,10 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
+  /// Upgrade card, only built for non-subscribers — subscribers see the
+  /// Premium pill in the header instead.
   Widget _buildPremiumCard(BuildContext context) {
     final isDark = context.colors.isDark;
-    if (isPremium) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.25),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(Icons.star_rounded, color: AppColors.primary, size: 22),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.profilePremiumTitle,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      context.l10n.profilePremiumSubtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
 
     // Non-premium: gradient card met Upgrade knop
     return Padding(

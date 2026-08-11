@@ -16,6 +16,11 @@ Future<bool> showPremiumGateSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    // Leave a strip of the screen visible so the sheet can still be swiped
+    // down or dismissed by tapping outside it.
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.of(context).size.height * 0.92,
+    ),
     builder: (_) => _PremiumGateSheet(title: title, message: message),
   );
 

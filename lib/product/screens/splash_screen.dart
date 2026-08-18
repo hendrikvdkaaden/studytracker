@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../main.dart';
+import '../../services/ad_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
@@ -63,6 +66,9 @@ class _SplashScreenState extends State<SplashScreen>
       await HiveService.init();
       await NotificationService.init();
       await SubscriptionService.init();
+      // Not awaited: ads are optional, so a slow or failing SDK must never
+      // hold up the splash screen.
+      unawaited(AdService.init());
       themeModeNotifier.value = SettingsService.themeMode;
     } catch (e) {
       debugPrint('Initialization error: $e');

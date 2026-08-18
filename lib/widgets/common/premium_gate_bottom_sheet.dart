@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
+import '../../services/ad_service.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'paywall_bottom_sheet.dart';
 import 'premium_icon.dart';
 
-/// Shows a "feature locked" bottom sheet. If the user taps "Upgrade",
-/// opens the paywall bottom sheet and returns true if they subscribed.
-Future<bool> showPremiumGateSheet(
+/// How the user left the premium gate.
+enum PremiumGateResult {
+  /// Closed without unlocking anything.
+  dismissed,
+
+  /// Subscribed through the paywall.
+  purchased,
+
+  /// Watched a rewarded ad to unlock the feature once.
+  adReward,
+}
+
+/// Shows a "feature locked" bottom sheet.
+///
+/// Tapping "Upgrade" opens the paywall. When [allowAdReward] is set and an ad
+/// is actually available, the sheet also offers a one-off unlock in exchange
+/// for watching a rewarded ad.
+Future<PremiumGateResult> showPremiumGateSheet(
   BuildContext context, {
   required String title,
   required String message,
+  bool allowAdReward = false,
 }) async {
-  final goToPaywall = await showModalBottomSheet<bool>(
+  final outcome = await showModalBottomSheet<PremiumGateResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
@@ -21,23 +39,82 @@ Future<bool> showPremiumGateSheet(
     constraints: BoxConstraints(
       maxHeight: MediaQuery.of(context).size.height * 0.92,
     ),
-    builder: (_) => _PremiumGateSheet(title: title, message: message),
+    builder: (_) => _PremiumGateSheet(
+      title: title,
+      message: message,
+      allowAdReward: allowAdReward,
+    ),
   );
 
-  if ((goToPaywall ?? false) && context.mounted) {
-    return showPaywallBottomSheet(context);
+  if (outcome == PremiumGateResult.purchased && context.mounted) {
+    final purchased = await showPaywallBottomSheet(context);
+    return purchased ? PremiumGateResult.purchased : PremiumGateResult.dismissed;
   }
-  return false;
+  return outcome ?? PremiumGateResult.dismissed;
 }
 
-class _PremiumGateSheet extends StatelessWidget {
-  const _PremiumGateSheet({required this.title, required this.message});
+class _PremiumGateSheet extends StatefulWidget {
+  const _PremiumGateSheet({
+    required this.title,
+    required this.message,
+    this.allowAdReward = false,
+  });
 
   final String title;
   final String message;
+  final bool allowAdReward;
+
+  @override
+  State<_PremiumGateSheet> createState() => _PremiumGateSheetState();
+}
+
+class _PremiumGateSheetState extends State<_PremiumGateSheet> {
+  /// Only true once an ad is loaded and ready — the button is never shown for
+  /// an ad that cannot play.
+  bool _adReady = false;
+  bool _watchingAd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _prepareAd();
+  }
+
+  @override
+  void dispose() {
+    AdService.disposeAd();
+    super.dispose();
+  }
+
+  Future<void> _prepareAd() async {
+    if (!widget.allowAdReward) return;
+    if (!SettingsService.canUseAdTrialToday) return;
+
+    final ready = await AdService.loadRewardedAd();
+    if (mounted && ready) setState(() => _adReady = true);
+  }
+
+  Future<void> _watchAd() async {
+    setState(() => _watchingAd = true);
+    final earned = await AdService.showRewardedAd();
+    if (!mounted) return;
+
+    if (earned) {
+      Navigator.of(context).pop(PremiumGateResult.adReward);
+    } else {
+      // Ad dismissed early or failed: leave the sheet open so the user can
+      // still upgrade, and drop the button since the ad is spent.
+      setState(() {
+        _watchingAd = false;
+        _adReady = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.title;
+    final message = widget.message;
     final sheetBg = context.colors.modalBackground;
 
     return Container(
@@ -108,11 +185,14 @@ class _PremiumGateSheet extends StatelessWidget {
               ],
             ),
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
+              onPressed: _watchingAd
+                  ? null
+                  : () => Navigator.of(context).pop(PremiumGateResult.purchased),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 shadowColor: Colors.transparent,
+                disabledBackgroundColor: Colors.transparent,
                 minimumSize: const Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
@@ -126,10 +206,41 @@ class _PremiumGateSheet extends StatelessWidget {
               ),
             ),
           ),
+          // Ad option — only rendered once an ad is loaded and ready.
+          if (_adReady) ...[
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _watchingAd ? null : _watchAd,
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 52),
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              icon: _watchingAd
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.play_circle_outline, size: 20),
+              label: Text(
+                context.l10n.premiumDialogWatchAd,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           // Not now button
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: _watchingAd
+                ? null
+                : () => Navigator.of(context).pop(PremiumGateResult.dismissed),
             style: TextButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

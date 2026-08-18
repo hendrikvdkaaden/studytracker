@@ -176,12 +176,20 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
     final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
     if (!mounted) return;
     if (!isPremium) {
-      final purchased = await showPremiumGateSheet(
+      final outcome = await showPremiumGateSheet(
         context,
         title: context.l10n.premiumAutoPlanTitle,
         message: context.l10n.premiumAutoPlanMessage,
+        allowAdReward: true,
       );
-      if (!purchased || !mounted) return;
+      if (outcome == PremiumGateResult.dismissed || !mounted) return;
+
+      if (outcome == PremiumGateResult.adReward) {
+        // Only spend the daily allowance once the reward was actually earned.
+        await SettingsService.setLastAdTrialDate(DateTime.now());
+      } else {
+        ref.invalidate(isPremiumProvider);
+      }
     }
 
     if (!mounted) return;
@@ -236,12 +244,13 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       if (!isPremium) {
         final goals = _goalRepo.getAllGoals();
         if (goals.length >= SubscriptionService.freeGoalLimit) {
-          final purchased = await showPremiumGateSheet(
+          final outcome = await showPremiumGateSheet(
             context,
             title: context.l10n.premiumGoalLimitTitle,
             message: context.l10n.premiumGoalLimitMessage,
           );
-          if (!purchased || !mounted) return;
+          if (outcome != PremiumGateResult.purchased || !mounted) return;
+          ref.invalidate(isPremiumProvider);
         }
       }
 

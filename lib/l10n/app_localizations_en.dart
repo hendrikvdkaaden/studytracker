@@ -488,6 +488,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSectionData => 'DATA';
 
   @override
+  String get profileSectionPrivacy => 'PRIVACY';
+
+  @override
+  String get profilePrivacyOptionsLabel => 'Ad privacy settings';
+
+  @override
   String get profileNamePlaceholder => 'Add your name';
 
   @override
@@ -970,4 +976,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumDialogNotNow => 'Not Now';
+
+  @override
+  String get premiumDialogWatchAd => 'Watch an ad to try once';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
+import '../../services/ad_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
@@ -31,6 +32,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _themeModeIndex = 0;
   List<SubjectData> _subjects = [];
   String _schoolName = '';
+  bool _showPrivacyOptions = false;
 
   @override
   void initState() {
@@ -41,6 +43,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _themeModeIndex = SettingsService.themeModeIndex;
     _subjects = SettingsService.subjectData;
     _schoolName = SettingsService.schoolName;
+    _loadPrivacyOptionsStatus();
+  }
+
+  /// Google decides per region whether a consent entry point must be offered,
+  /// so the row is only shown when it reports one is required.
+  Future<void> _loadPrivacyOptionsStatus() async {
+    final required = await AdService.isPrivacyOptionsRequired();
+    if (mounted) setState(() => _showPrivacyOptions = required);
   }
 
   Future<void> _editProfile() async {
@@ -520,6 +530,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       subjects: _subjects,
       schoolName: _schoolName,
       isPremium: isPremium,
+      showPrivacyOptions: _showPrivacyOptions,
+      onPrivacyOptions: AdService.showPrivacyOptionsForm,
       onSubscriptionTap: _onSubscriptionTap,
       onEditName: _editProfile,
       onSessionReminderTap: _pickSessionReminder,

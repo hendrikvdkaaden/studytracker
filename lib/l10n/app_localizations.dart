@@ -922,6 +922,18 @@ abstract class AppLocalizations {
   /// **'DATA'**
   String get profileSectionData;
 
+  /// No description provided for @profileSectionPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'PRIVACY'**
+  String get profileSectionPrivacy;
+
+  /// No description provided for @profilePrivacyOptionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy settings'**
+  String get profilePrivacyOptionsLabel;
+
   /// No description provided for @profileNamePlaceholder.
   ///
   /// In en, this message translates to:
@@ -1731,6 +1743,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not Now'**
   String get premiumDialogNotNow;
+
+  /// No description provided for @premiumDialogWatchAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad to try once'**
+  String get premiumDialogWatchAd;
 }
 
 class _AppLocalizationsDelegate

@@ -190,6 +190,8 @@
   "profileSectionNotifications": "NOTIFICATIONS",
   "profileSectionAppearance": "APPEARANCE",
   "profileSectionData": "DATA",
+  "profileSectionPrivacy": "PRIVACY",
+  "profilePrivacyOptionsLabel": "Ad privacy settings",
   "profileNamePlaceholder": "Add your name",
   "profileSchoolNamePlaceholder": "Tap to set school name",
   "profileSessionReminderLabel": "Session reminder",
@@ -395,5 +397,6 @@
   "premiumGoalLimitTitle": "Deadline Limit Reached",
   "premiumGoalLimitMessage": "You've reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.",
   "premiumDialogUpgradeButton": "Upgrade to Premium",
-  "premiumDialogNotNow": "Not Now"
+  "premiumDialogNotNow": "Not Now",
+  "premiumDialogWatchAd": "Watch an ad to try once"
 }

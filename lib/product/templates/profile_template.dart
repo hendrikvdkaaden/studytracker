@@ -14,7 +14,9 @@ class ProfileTemplate extends StatelessWidget {
   final List<SubjectData> subjects;
   final String schoolName;
   final bool isPremium;
+  final bool showPrivacyOptions;
   final VoidCallback onSubscriptionTap;
+  final VoidCallback onPrivacyOptions;
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
   final VoidCallback onDeadlineReminderTap;
@@ -33,6 +35,8 @@ class ProfileTemplate extends StatelessWidget {
     required this.subjects,
     required this.schoolName,
     required this.isPremium,
+    required this.showPrivacyOptions,
+    required this.onPrivacyOptions,
     required this.onSubscriptionTap,
     required this.onEditName,
     required this.onSessionReminderTap,
@@ -130,6 +134,25 @@ class ProfileTemplate extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
+        // Consent must stay withdrawable, so this row appears wherever Google
+        // reports a privacy options entry point is required (EEA and UK).
+        if (showPrivacyOptions) ...[
+          _buildSectionLabel(context, l10n.profileSectionPrivacy),
+          const SizedBox(height: 8),
+          _buildGroupCard(
+            context,
+            children: [
+              _buildSettingsRow(
+                context,
+                icon: Icons.privacy_tip_outlined,
+                iconColor: AppColors.iconPurple,
+                label: l10n.profilePrivacyOptionsLabel,
+                onTap: onPrivacyOptions,
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
         _buildSectionLabel(context, l10n.profileSectionData),
         const SizedBox(height: 8),
         _buildGroupCard(

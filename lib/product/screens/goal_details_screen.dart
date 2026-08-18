@@ -10,6 +10,7 @@ import '../../services/auto_planner_service.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/settings_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/goal_details_modern/actions/goal_details_app_bar.dart';
@@ -173,12 +174,20 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     final isPremium = await ref.read(subscriptionServiceProvider).isPremium();
     if (!mounted) return;
     if (!isPremium) {
-      final purchased = await showPremiumGateSheet(
+      final outcome = await showPremiumGateSheet(
         context,
         title: context.l10n.premiumAutoPlanTitle,
         message: context.l10n.premiumAutoPlanMessage,
+        allowAdReward: true,
       );
-      if (!purchased || !mounted) return;
+      if (outcome == PremiumGateResult.dismissed || !mounted) return;
+
+      if (outcome == PremiumGateResult.adReward) {
+        // Only spend the daily allowance once the reward was actually earned.
+        await SettingsService.setLastAdTrialDate(DateTime.now());
+      } else {
+        ref.invalidate(isPremiumProvider);
+      }
     }
 
     if (!mounted) return;

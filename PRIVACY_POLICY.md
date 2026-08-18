@@ -1,17 +1,17 @@
 # Privacy Policy for Deadly
 
-**Last updated: 31 July 2026**
+**Last updated: 12 August 2026**
 
 This Privacy Policy explains how the Deadly mobile application ("Deadly", "the app", "we", "us") handles your information. Deadly is a study planning app that helps you track deadlines, plan study sessions and monitor your progress.
 
-We have designed Deadly to be an offline-first app. The overwhelming majority of your data never leaves your device.
+Deadly is built to be offline-first. Your study data never leaves your device. The only information that is transmitted is what is needed to process a subscription purchase and, if you choose to watch one, to show an advertisement.
 
 ## Summary
 
 - Your study data stays on your device. We cannot see it.
-- We do not run analytics, advertising or tracking of any kind.
 - We do not have a user account system, so we never ask for your email or password.
-- The only data that leaves your device is the information required to process and validate a subscription purchase.
+- We do not track you across other apps or websites, and we do not ask for permission to do so.
+- Advertisements are optional. They only appear if you choose to watch one, and they are never personalised.
 
 ## Data stored on your device
 
@@ -24,6 +24,22 @@ The following information is created by you and stored locally on your device us
 - App preferences such as theme choice and reminder timing
 
 This data is removed when you delete the app from your device. Because it is stored only on your device, we are unable to recover it for you if it is lost.
+
+## Advertising
+
+Deadly includes optional rewarded advertisements provided by **Google AdMob** (Google Ireland Limited). These are shown only when you actively choose to watch one — for example, to unlock automatic session planning once without subscribing. Deadly does not display banner ads, pop-up ads, or any advertising you did not ask for.
+
+**Advertisements in Deadly are not personalised.** The app requests non-personalised advertising only, which means the ads you see are not based on your interests or your behaviour in other apps. Deadly does not request permission to track you, and does not use Apple's advertising identifier for tracking purposes.
+
+To serve and measure an advertisement, Google receives:
+
+- Technical information about your device (such as device type, operating system version and general region)
+- A device identifier used to limit how often an ad is repeated and to detect invalid activity
+- The fact that an ad was shown and completed
+
+Google does not receive any of your study data. Google's use of this information is governed by Google's own privacy policy, available at https://policies.google.com/privacy and https://policies.google.com/technologies/partner-sites
+
+If you subscribe to Deadly Premium, no advertisements are shown.
 
 ## Subscription data
 
@@ -49,17 +65,16 @@ If you allow notifications, Deadly schedules reminders for your study sessions a
 
 Deadly does not collect, use or share:
 
-- Analytics or usage statistics
-- Advertising identifiers
+- Analytics or usage statistics about how you use the app
 - Location data
 - Contacts, photos, calendar or health data
 - Your name, email address or any other contact information
 
-Deadly does not track you across apps or websites owned by other companies.
+Deadly does not track you across apps or websites owned by other companies, and does not build an advertising profile about you.
 
 ## Children's privacy
 
-Deadly is intended for general audiences and is suitable for students. We do not knowingly collect personal information from children. Because study data never leaves the device and no account is required, the app does not gather personal information from any user, regardless of age.
+Deadly is intended for general audiences and is suitable for students. We do not knowingly collect personal information from children. Study data never leaves the device and no account is required, so the app itself does not gather personal information from any user, regardless of age. Advertising content is restricted to the most family-friendly rating available, and advertisements are non-personalised.
 
 ## Your rights and choices
 
@@ -67,6 +82,7 @@ Because your study data is stored only on your device, you are in full control o
 
 - **Access and correction:** all your data is directly viewable and editable within the app.
 - **Deletion:** deleting an item in the app removes it. Deleting the app removes all local data.
+- **Advertising:** watching an advertisement is always your choice. You can avoid ads entirely by not using the reward option, or by subscribing to Deadly Premium.
 - **Subscription:** you can view, manage and cancel your subscription at any time in your Apple ID Account Settings.
 
 If you would like your subscription-related records removed from RevenueCat, contact us at the address below and we will arrange it.

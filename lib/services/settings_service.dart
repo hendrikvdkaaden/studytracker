@@ -163,4 +163,29 @@ class SettingsService {
   static Future<void> setOnboardingCompleted(bool value) async {
     await _box.put(_keyOnboardingCompleted, value);
   }
+
+  // Rewarded-ad trial for auto planning
+  static const String _keyLastAdTrialDate = 'lastAdTrialDate';
+
+  /// The day the user last unlocked auto planning by watching an ad, or null.
+  static DateTime? get lastAdTrialDate {
+    final raw = _box.get(_keyLastAdTrialDate);
+    if (raw is! String) return null;
+    return DateTime.tryParse(raw);
+  }
+
+  static Future<void> setLastAdTrialDate(DateTime value) async {
+    await _box.put(_keyLastAdTrialDate, value.toIso8601String());
+  }
+
+  /// True when the free ad-backed try has not been used today. The allowance
+  /// resets at midnight rather than 24 hours after the last use.
+  static bool get canUseAdTrialToday {
+    final last = lastAdTrialDate;
+    if (last == null) return true;
+    final now = DateTime.now();
+    return !(last.year == now.year &&
+        last.month == now.month &&
+        last.day == now.day);
+  }
 }

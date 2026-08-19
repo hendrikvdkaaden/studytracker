@@ -24,6 +24,7 @@ class AdService {
   static const bool useTestAds = false;
 
   static bool _initialised = false;
+  static bool _consentGathered = false;
   static RewardedAd? _rewardedAd;
 
   static String get _rewardedUnitId {
@@ -34,14 +35,11 @@ class AdService {
     return Platform.isIOS ? _liveRewardedIos : _testRewardedAndroid;
   }
 
-  /// Runs Google's consent flow (UMP) and then initialises the SDK.
-  ///
-  /// Consent is required in the EEA and UK even though this app only serves
-  /// non-personalised ads, because the SDK still stores data on the device.
-  /// Outside those regions the form is simply never shown.
+  /// Initialises the SDK. Consent is gathered separately, on the first ad
+  /// load, because the consent form is a dialog and needs a stable screen to
+  /// appear on.
   static Future<void> init() async {
     if (_initialised) return;
-    await _gatherConsent();
     try {
       await MobileAds.instance.initialize();
       // The app does not ask for tracking permission, so every request is
@@ -57,6 +55,18 @@ class AdService {
     } catch (e) {
       debugPrint('AdMob init failed: $e');
     }
+  }
+
+  /// Runs the consent flow once per app session.
+  ///
+  /// Call this before opening UI that offers an ad, so the consent dialog does
+  /// not appear stacked on top of a sheet. Gathering consent on demand rather
+  /// than at startup also means users who never touch the ad option are never
+  /// asked.
+  static Future<void> ensureConsent() async {
+    if (_consentGathered) return;
+    _consentGathered = true;
+    await _gatherConsent();
   }
 
   /// Asks the User Messaging Platform for the user's consent choice, showing
@@ -141,6 +151,9 @@ class AdService {
   static Future<bool> loadRewardedAd() async {
     if (!_initialised) await init();
     if (!_initialised) return false;
+
+    await ensureConsent();
+
     // Respect the user's consent choice: without it, no ad may be requested.
     if (!await _canRequestAds()) return false;
     if (_rewardedAd != null) return true;

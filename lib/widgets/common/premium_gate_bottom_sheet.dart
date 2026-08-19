@@ -30,6 +30,13 @@ Future<PremiumGateResult> showPremiumGateSheet(
   required String message,
   bool allowAdReward = false,
 }) async {
+  if (allowAdReward) {
+    // Settle consent before the sheet opens, so the form is never stacked on
+    // top of it.
+    await AdService.ensureConsent();
+    if (!context.mounted) return PremiumGateResult.dismissed;
+  }
+
   final outcome = await showModalBottomSheet<PremiumGateResult>(
     context: context,
     isScrollControlled: true,

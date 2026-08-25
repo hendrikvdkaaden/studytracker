@@ -28,6 +28,11 @@ class Goal extends HiveObject {
   @HiveField(7)
   int studyTime; // in minutes
 
+  /// Identifier of the matching event in the user's calendar, when calendar
+  /// sync is on. Null when the goal was never synced.
+  @HiveField(8)
+  String? calendarEventId;
+
   Goal({
     required this.id,
     required this.title,
@@ -37,6 +42,7 @@ class Goal extends HiveObject {
     required this.difficulty,
     this.isCompleted = false,
     this.studyTime = 0,
+    this.calendarEventId,
   });
 
   // Helper methods
@@ -74,6 +80,7 @@ class Goal extends HiveObject {
     Difficulty? difficulty,
     bool? isCompleted,
     int? studyTime,
+    String? calendarEventId,
   }) {
     return Goal(
       id: id ?? this.id,
@@ -84,6 +91,7 @@ class Goal extends HiveObject {
       difficulty: difficulty ?? this.difficulty,
       isCompleted: isCompleted ?? this.isCompleted,
       studyTime: studyTime ?? this.studyTime,
+      calendarEventId: calendarEventId ?? this.calendarEventId,
     );
   }
 }

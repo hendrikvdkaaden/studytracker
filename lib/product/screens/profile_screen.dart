@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../services/ad_service.dart';
+import '../../services/calendar_event_mapper.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
@@ -33,6 +35,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   List<SubjectData> _subjects = [];
   String _schoolName = '';
   bool _showPrivacyOptions = false;
+  bool _calendarSyncEnabled = false;
+  bool _calendarBusy = false;
 
   @override
   void initState() {
@@ -44,6 +48,135 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _subjects = SettingsService.subjectData;
     _schoolName = SettingsService.schoolName;
     _loadPrivacyOptionsStatus();
+    _loadCalendarSyncStatus();
+  }
+
+  /// Reconciles the stored preference with reality: the user may have revoked
+  /// calendar access in system settings since they turned sync on.
+  Future<void> _loadCalendarSyncStatus() async {
+    var enabled = SettingsService.calendarSyncEnabled;
+    if (enabled && !await CalendarSyncService.hasPermission()) {
+      await SettingsService.setCalendarSyncEnabled(false);
+      enabled = false;
+    }
+    if (mounted) setState(() => _calendarSyncEnabled = enabled);
+  }
+
+  Future<void> _onCalendarSyncTap() async {
+    if (_calendarBusy) return;
+    if (_calendarSyncEnabled) {
+      await _disableCalendarSync();
+    } else {
+      await _enableCalendarSync();
+    }
+  }
+
+  Future<void> _enableCalendarSync() async {
+    final l10n = context.l10n;
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: l10n.calendarSyncEnableTitle,
+      message: l10n.calendarSyncEnableMessage,
+      confirmLabel: l10n.calendarSyncEnableConfirm,
+      icon: Icons.calendar_month_outlined,
+    );
+    if (!confirmed || !mounted) return;
+
+    final granted = await CalendarSyncService.requestPermission();
+    if (!mounted) return;
+
+    if (!granted) {
+      final openSettings = await showAppConfirmDialog(
+        context: context,
+        title: l10n.calendarSyncDeniedTitle,
+        message: l10n.calendarSyncDeniedMessage,
+        confirmLabel: l10n.calendarSyncDeniedConfirm,
+        icon: Icons.lock_outline,
+      );
+      if (openSettings) await CalendarSyncService.openSettings();
+      return;
+    }
+
+    setState(() => _calendarBusy = true);
+    await SettingsService.setCalendarSyncEnabled(true);
+    final ready = await CalendarSyncService.prepareCalendar();
+    if (ready) {
+      await _backfillCalendar();
+    } else {
+      await SettingsService.setCalendarSyncEnabled(false);
+    }
+    if (!mounted) return;
+    setState(() {
+      _calendarBusy = false;
+      _calendarSyncEnabled = SettingsService.calendarSyncEnabled;
+    });
+  }
+
+  /// Adds everything still ahead. Past and finished items are left out, so
+  /// switching sync on does not flood the calendar with history.
+  Future<void> _backfillCalendar() async {
+    final now = DateTime.now();
+    final goalRepo = ref.read(goalRepositoryProvider);
+    final sessionRepo = ref.read(studySessionRepositoryProvider);
+
+    for (final goal in goalRepo.getAllGoals()) {
+      if (!CalendarEventMapper.shouldSyncGoal(goal, now)) continue;
+      final eventId = await CalendarSyncService.syncDeadline(goal);
+      if (eventId == null) continue;
+      await goalRepo.updateGoal(goal.copyWith(calendarEventId: eventId));
+
+      final sessions = sessionRepo
+          .getPlannedSessionsByGoalId(goal.id)
+          .where((s) => CalendarEventMapper.shouldSyncSession(s, now))
+          .toList();
+      if (sessions.isEmpty) continue;
+
+      final ids = await CalendarSyncService.syncSessions(sessions, goal.title);
+      for (final session in sessions) {
+        final id = ids[session.id];
+        if (id == null) continue;
+        await sessionRepo
+            .updateSession(session.copyWith(calendarEventId: id));
+      }
+    }
+  }
+
+  Future<void> _disableCalendarSync() async {
+    final l10n = context.l10n;
+    final confirmed = await _showDestructiveConfirmation(
+      title: l10n.calendarSyncDisableTitle,
+      body: l10n.calendarSyncDisableMessage,
+      confirmLabel: l10n.calendarSyncDisableConfirm,
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _calendarBusy = true);
+    await CalendarSyncService.purgeAll();
+    await SettingsService.setCalendarSyncEnabled(false);
+    await _clearStoredEventIds();
+    if (!mounted) return;
+    setState(() {
+      _calendarBusy = false;
+      _calendarSyncEnabled = false;
+    });
+  }
+
+  /// Drops every stored event id. Without this, re-enabling sync would try to
+  /// update events in a calendar that no longer exists.
+  Future<void> _clearStoredEventIds() async {
+    final goalRepo = ref.read(goalRepositoryProvider);
+    final sessionRepo = ref.read(studySessionRepositoryProvider);
+
+    for (final goal in goalRepo.getAllGoals()) {
+      if (goal.calendarEventId == null) continue;
+      goal.calendarEventId = null;
+      await goalRepo.updateGoal(goal);
+    }
+    for (final session in sessionRepo.getAllSessions()) {
+      if (session.calendarEventId == null) continue;
+      session.calendarEventId = null;
+      await sessionRepo.updateSession(session);
+    }
   }
 
   /// Google decides per region whether a consent entry point must be offered,
@@ -472,6 +605,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       confirmLabel: l10n.profileDeleteSessionsConfirm,
     );
     if (confirmed == true && mounted) {
+      // Remove the calendar entries before the records holding their ids go.
+      await CalendarSyncService.purgeAll();
       await ref.read(studySessionRepositoryProvider).clearAll();
     }
   }
@@ -484,6 +619,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       confirmLabel: l10n.profileDeleteEverythingConfirm,
     );
     if (confirmed == true && mounted) {
+      await CalendarSyncService.purgeAll();
       await HiveService.clearAllData();
     }
   }
@@ -531,6 +667,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       schoolName: _schoolName,
       isPremium: isPremium,
       showPrivacyOptions: _showPrivacyOptions,
+      calendarSyncEnabled: _calendarSyncEnabled,
+      onCalendarSyncTap: _onCalendarSyncTap,
       onPrivacyOptions: AdService.showPrivacyOptionsForm,
       onSubscriptionTap: _onSubscriptionTap,
       onEditName: _editProfile,

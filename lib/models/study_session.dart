@@ -27,6 +27,11 @@ class StudySession extends HiveObject {
   @HiveField(9)
   DateTime? completedAt;
 
+  /// Identifier of the matching event in the user's calendar, when calendar
+  /// sync is on. Null when the session was never synced.
+  @HiveField(10)
+  String? calendarEventId;
+
   StudySession({
     required this.id,
     required this.goalId,
@@ -38,6 +43,7 @@ class StudySession extends HiveObject {
     this.actualDuration,
     this.elapsedSeconds,
     this.completedAt,
+    this.calendarEventId,
   });
 
   /// Returns the duration as a formatted string (e.g., "1h 30m")
@@ -65,6 +71,7 @@ class StudySession extends HiveObject {
     int? actualDuration,
     int? elapsedSeconds,
     DateTime? completedAt,
+    String? calendarEventId,
   }) {
     return StudySession(
       id: id ?? this.id,
@@ -77,6 +84,7 @@ class StudySession extends HiveObject {
       actualDuration: actualDuration ?? this.actualDuration,
       elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
       completedAt: completedAt ?? this.completedAt,
+      calendarEventId: calendarEventId ?? this.calendarEventId,
     );
   }
 }

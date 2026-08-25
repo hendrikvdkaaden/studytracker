@@ -922,6 +922,84 @@ abstract class AppLocalizations {
   /// **'DATA'**
   String get profileSectionData;
 
+  /// No description provided for @profileSectionCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'CALENDAR'**
+  String get profileSectionCalendar;
+
+  /// No description provided for @profileCalendarSyncLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync to calendar'**
+  String get profileCalendarSyncLabel;
+
+  /// No description provided for @profileCalendarSyncOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get profileCalendarSyncOn;
+
+  /// No description provided for @profileCalendarSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get profileCalendarSyncOff;
+
+  /// No description provided for @calendarSyncEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync to your calendar'**
+  String get calendarSyncEnableTitle;
+
+  /// No description provided for @calendarSyncEnableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly adds your deadlines and study sessions to a calendar named Deadly, so they show up next to your other plans. You can hide or remove it at any time.'**
+  String get calendarSyncEnableMessage;
+
+  /// No description provided for @calendarSyncEnableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get calendarSyncEnableConfirm;
+
+  /// No description provided for @calendarSyncDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop syncing?'**
+  String get calendarSyncDisableTitle;
+
+  /// No description provided for @calendarSyncDisableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the Deadly calendar and everything in it from your device. Your deadlines and sessions stay in the app.'**
+  String get calendarSyncDisableMessage;
+
+  /// No description provided for @calendarSyncDisableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get calendarSyncDisableConfirm;
+
+  /// No description provided for @calendarSyncDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar access needed'**
+  String get calendarSyncDeniedTitle;
+
+  /// No description provided for @calendarSyncDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly needs permission to add events to your calendar. You can grant it in your device settings.'**
+  String get calendarSyncDeniedMessage;
+
+  /// No description provided for @calendarSyncDeniedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get calendarSyncDeniedConfirm;
+
   /// No description provided for @profileSectionPrivacy.
   ///
   /// In en, this message translates to:

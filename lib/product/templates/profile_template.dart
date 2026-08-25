@@ -15,8 +15,10 @@ class ProfileTemplate extends StatelessWidget {
   final String schoolName;
   final bool isPremium;
   final bool showPrivacyOptions;
+  final bool calendarSyncEnabled;
   final VoidCallback onSubscriptionTap;
   final VoidCallback onPrivacyOptions;
+  final VoidCallback onCalendarSyncTap;
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
   final VoidCallback onDeadlineReminderTap;
@@ -36,6 +38,8 @@ class ProfileTemplate extends StatelessWidget {
     required this.schoolName,
     required this.isPremium,
     required this.showPrivacyOptions,
+    required this.calendarSyncEnabled,
+    required this.onCalendarSyncTap,
     required this.onPrivacyOptions,
     required this.onSubscriptionTap,
     required this.onEditName,
@@ -153,6 +157,24 @@ class ProfileTemplate extends StatelessWidget {
           ),
           const SizedBox(height: 24),
         ],
+        _buildSectionLabel(context, l10n.profileSectionCalendar),
+        const SizedBox(height: 8),
+        _buildGroupCard(
+          context,
+          children: [
+            _buildSettingsRow(
+              context,
+              icon: Icons.calendar_month_outlined,
+              iconColor: AppColors.iconOrange,
+              label: l10n.profileCalendarSyncLabel,
+              value: calendarSyncEnabled
+                  ? l10n.profileCalendarSyncOn
+                  : l10n.profileCalendarSyncOff,
+              onTap: onCalendarSyncTap,
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
         _buildSectionLabel(context, l10n.profileSectionData),
         const SizedBox(height: 8),
         _buildGroupCard(

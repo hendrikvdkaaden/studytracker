@@ -7,6 +7,7 @@ import '../../theme/app_theme_extension.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/auto_planner_service.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/goal_dialog_service.dart';
 import '../../services/goal_operations_service.dart';
 import '../../services/notification_service.dart';
@@ -138,6 +139,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
           NotificationService.cancelSessionNotification(updated.id),
           NotificationService.scheduleSessionReminder(updated, _goal.title),
         ]);
+        await _resyncSession(updated, session.calendarEventId);
         if (!mounted) return;
         setState(() => _refreshData());
       },
@@ -146,6 +148,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
 
   Future<void> _deleteSession(StudySession session) async {
     await NotificationService.cancelSessionNotification(session.id);
+    await CalendarSyncService.deleteEvent(session.calendarEventId);
     await _sessionRepo.deleteSession(session.id);
     if (!mounted) return;
     setState(() => _refreshData());
@@ -163,6 +166,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
           sessionWithGoalId,
           _goal.title,
         );
+        await _resyncSession(sessionWithGoalId, null);
 
         if (!mounted) return;
         setState(() => _refreshData());
@@ -227,6 +231,35 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
 
     if (!mounted) return;
     setState(() => _refreshData());
+
+    // Calendar writes go in one batch afterwards, so the user sees their plan
+    // without waiting on the calendar.
+    final eventIds =
+        await CalendarSyncService.syncSessions(generated, _goal.title);
+    for (final session in generated) {
+      final eventId = eventIds[session.id];
+      if (eventId == null) continue;
+      await _sessionRepo
+          .updateSession(session.copyWith(calendarEventId: eventId));
+    }
+    if (!mounted) return;
+    setState(() => _refreshData());
+  }
+
+  /// Replaces a session's calendar entry and stores the new event id.
+  ///
+  /// [previousEventId] is the entry to remove, if the session already had one.
+  Future<void> _resyncSession(
+    StudySession session,
+    String? previousEventId,
+  ) async {
+    if (!CalendarSyncService.isEnabled) return;
+    await CalendarSyncService.deleteEvent(previousEventId);
+    final eventId = await CalendarSyncService.syncSession(session, _goal.title);
+    if (eventId == null) return;
+    await _sessionRepo.updateSession(
+      session.copyWith(calendarEventId: eventId),
+    );
   }
 
   @override

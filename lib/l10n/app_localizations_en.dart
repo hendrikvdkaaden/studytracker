@@ -488,6 +488,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSectionData => 'DATA';
 
   @override
+  String get profileSectionCalendar => 'CALENDAR';
+
+  @override
+  String get profileCalendarSyncLabel => 'Sync to calendar';
+
+  @override
+  String get profileCalendarSyncOn => 'On';
+
+  @override
+  String get profileCalendarSyncOff => 'Off';
+
+  @override
+  String get calendarSyncEnableTitle => 'Sync to your calendar';
+
+  @override
+  String get calendarSyncEnableMessage =>
+      'Deadly adds your deadlines and study sessions to a calendar named Deadly, so they show up next to your other plans. You can hide or remove it at any time.';
+
+  @override
+  String get calendarSyncEnableConfirm => 'Turn on';
+
+  @override
+  String get calendarSyncDisableTitle => 'Stop syncing?';
+
+  @override
+  String get calendarSyncDisableMessage =>
+      'This removes the Deadly calendar and everything in it from your device. Your deadlines and sessions stay in the app.';
+
+  @override
+  String get calendarSyncDisableConfirm => 'Turn off';
+
+  @override
+  String get calendarSyncDeniedTitle => 'Calendar access needed';
+
+  @override
+  String get calendarSyncDeniedMessage =>
+      'Deadly needs permission to add events to your calendar. You can grant it in your device settings.';
+
+  @override
+  String get calendarSyncDeniedConfirm => 'Open settings';
+
+  @override
   String get profileSectionPrivacy => 'PRIVACY';
 
   @override

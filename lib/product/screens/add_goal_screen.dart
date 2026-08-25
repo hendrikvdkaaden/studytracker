@@ -266,7 +266,6 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         subject: subjectValue,
         date: _selectedDate,
         type: _selectedType,
-        difficulty: Difficulty.medium,
         studyTime: totalMinutes,
       );
 

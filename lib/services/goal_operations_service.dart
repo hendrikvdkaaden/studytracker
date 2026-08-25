@@ -63,7 +63,7 @@ class GoalOperationsService {
     await _goalRepo.deleteGoal(goalId);
   }
 
-  /// Updates a goal's basic data (title, subject, type, difficulty, date, etc.)
+  /// Updates a goal's basic data (title, subject, type, date, etc.)
   /// Also reschedules the deadline reminder notification if the goal is not completed.
   Future<void> updateGoalData(Goal goal) async {
     await _goalRepo.updateGoal(goal);

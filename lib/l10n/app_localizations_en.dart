@@ -81,9 +81,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGoalTypeLabel => 'Deadline Type';
 
   @override
-  String get addGoalDifficultyLabel => 'Difficulty';
-
-  @override
   String get addGoalStudyTimeLabel => 'Target Study Time';
 
   @override
@@ -106,9 +103,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addGoalValidateType => 'Please select a deadline type';
-
-  @override
-  String get addGoalValidateDifficulty => 'Please select a difficulty';
 
   @override
   String get addGoalValidateStudyTime => 'Please set a target study time';
@@ -370,9 +364,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalInfoEditTypeLabel => 'Deadline Type';
-
-  @override
-  String get goalInfoEditDifficultyLabel => 'Difficulty';
 
   @override
   String get goalInfoEditSaveButton => 'Save Changes';
@@ -768,18 +759,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalTypeOther => 'Other';
-
-  @override
-  String get difficultyEasy => 'Easy';
-
-  @override
-  String get difficultyMedium => 'Medium';
-
-  @override
-  String get difficultyHard => 'Hard';
-
-  @override
-  String get difficultyVeryHard => 'Very Hard';
 
   @override
   String plannedSessionDuration(int duration) {

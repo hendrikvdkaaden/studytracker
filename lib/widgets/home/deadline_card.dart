@@ -22,17 +22,7 @@ class HomeDeadlineCard extends StatelessWidget {
   }
 
   String _getPriorityLabel() {
-    if (goal.isOverdue()) {
-      return 'Urgent Priority';
-    }
-    switch (goal.difficulty) {
-      case Difficulty.veryHard:
-        return 'High Priority';
-      case Difficulty.hard:
-        return 'Important';
-      default:
-        return 'Scheduled';
-    }
+    return goal.isOverdue() ? 'Urgent Priority' : 'Scheduled';
   }
 
   String _getTimeInfo() {

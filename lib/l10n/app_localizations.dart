@@ -238,12 +238,6 @@ abstract class AppLocalizations {
   /// **'Deadline Type'**
   String get addGoalTypeLabel;
 
-  /// No description provided for @addGoalDifficultyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Difficulty'**
-  String get addGoalDifficultyLabel;
-
   /// No description provided for @addGoalStudyTimeLabel.
   ///
   /// In en, this message translates to:
@@ -291,12 +285,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a deadline type'**
   String get addGoalValidateType;
-
-  /// No description provided for @addGoalValidateDifficulty.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a difficulty'**
-  String get addGoalValidateDifficulty;
 
   /// No description provided for @addGoalValidateStudyTime.
   ///
@@ -759,12 +747,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deadline Type'**
   String get goalInfoEditTypeLabel;
-
-  /// No description provided for @goalInfoEditDifficultyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Difficulty'**
-  String get goalInfoEditDifficultyLabel;
 
   /// No description provided for @goalInfoEditSaveButton.
   ///
@@ -1395,30 +1377,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get goalTypeOther;
-
-  /// No description provided for @difficultyEasy.
-  ///
-  /// In en, this message translates to:
-  /// **'Easy'**
-  String get difficultyEasy;
-
-  /// No description provided for @difficultyMedium.
-  ///
-  /// In en, this message translates to:
-  /// **'Medium'**
-  String get difficultyMedium;
-
-  /// No description provided for @difficultyHard.
-  ///
-  /// In en, this message translates to:
-  /// **'Hard'**
-  String get difficultyHard;
-
-  /// No description provided for @difficultyVeryHard.
-  ///
-  /// In en, this message translates to:
-  /// **'Very Hard'**
-  String get difficultyVeryHard;
 
   /// No description provided for @plannedSessionDuration.
   ///

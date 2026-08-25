@@ -15,7 +15,6 @@ Goal _goal({
     subject: 'Math',
     date: date,
     type: GoalType.exam,
-    difficulty: Difficulty.medium,
     isCompleted: isCompleted,
     studyTime: 120,
   );

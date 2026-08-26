@@ -257,14 +257,23 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       if (!mounted) return;
       if (!isPremium) {
         final goals = _goalRepo.getAllGoals();
-        if (goals.length >= SubscriptionService.freeGoalLimit) {
+        if (goals.length >= SubscriptionService.goalLimitWithEarned) {
           final outcome = await showPremiumGateSheet(
             context,
             title: context.l10n.premiumGoalLimitTitle,
             message: context.l10n.premiumGoalLimitMessage,
+            allowAdReward: true,
+            adRewardLabel: context.l10n.premiumDialogWatchAdForDeadline,
           );
-          if (outcome != PremiumGateResult.purchased || !mounted) return;
-          ref.invalidate(isPremiumProvider);
+          if (outcome == PremiumGateResult.dismissed || !mounted) return;
+
+          if (outcome == PremiumGateResult.adReward) {
+            // One ad buys one deadline. Unlike the auto-plan trial this is a
+            // count, not a daily allowance: the deadline it unlocks stays.
+            await SettingsService.addEarnedGoalSlot();
+          } else {
+            ref.invalidate(isPremiumProvider);
+          }
         }
       }
 

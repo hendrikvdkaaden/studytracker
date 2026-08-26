@@ -242,6 +242,21 @@ class SettingsService {
     await _box.put(_keyLastAdTrialDate, value.toIso8601String());
   }
 
+  // Rewarded-ad slots for extra deadlines
+  static const String _keyEarnedGoalSlots = 'earnedGoalSlots';
+
+  /// Extra deadlines unlocked by watching ads, on top of the free limit.
+  ///
+  /// A count rather than a daily allowance like [lastAdTrialDate]: a deadline
+  /// sticks around, so an ad has to buy one slot permanently instead of
+  /// re-unlocking the same one every day.
+  static int get earnedGoalSlots =>
+      _box.get(_keyEarnedGoalSlots, defaultValue: 0) as int;
+
+  static Future<void> addEarnedGoalSlot() async {
+    await _box.put(_keyEarnedGoalSlots, earnedGoalSlots + 1);
+  }
+
   // Calendar sync
   static const String _keyCalendarSyncEnabled = 'calendarSyncEnabled';
   static const String _keyCalendarId = 'calendarId';

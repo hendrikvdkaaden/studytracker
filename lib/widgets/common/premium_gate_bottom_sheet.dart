@@ -29,6 +29,7 @@ Future<PremiumGateResult> showPremiumGateSheet(
   required String title,
   required String message,
   bool allowAdReward = false,
+  String? adRewardLabel,
 }) async {
   if (allowAdReward) {
     // Settle consent before the sheet opens, so the form is never stacked on
@@ -50,6 +51,7 @@ Future<PremiumGateResult> showPremiumGateSheet(
       title: title,
       message: message,
       allowAdReward: allowAdReward,
+      adRewardLabel: adRewardLabel,
     ),
   );
 
@@ -62,6 +64,7 @@ Future<PremiumGateResult> showPremiumGateSheet(
 
 class _PremiumGateSheet extends StatefulWidget {
   const _PremiumGateSheet({
+    required this.adRewardLabel,
     required this.title,
     required this.message,
     this.allowAdReward = false,
@@ -70,6 +73,10 @@ class _PremiumGateSheet extends StatefulWidget {
   final String title;
   final String message;
   final bool allowAdReward;
+
+  /// Label for the ad button, when what the ad buys needs saying differently.
+  /// Falls back to the generic "try once" wording.
+  final String? adRewardLabel;
 
   @override
   State<_PremiumGateSheet> createState() => _PremiumGateSheetState();
@@ -234,7 +241,7 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
                     )
                   : const Icon(Icons.play_circle_outline, size: 20),
               label: Text(
-                context.l10n.premiumDialogWatchAd,
+                widget.adRewardLabel ?? context.l10n.premiumDialogWatchAd,
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

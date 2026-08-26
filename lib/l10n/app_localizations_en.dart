@@ -1053,7 +1053,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumGoalLimitMessage =>
-      'You\'ve reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.';
+      'You\'ve reached your deadline limit. Upgrade to Deadly Premium for unlimited deadlines.';
 
   @override
   String get premiumDialogUpgradeButton => 'Upgrade to Premium';
@@ -1063,4 +1063,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumDialogWatchAd => 'Watch an ad to try once';
+
+  @override
+  String get premiumDialogWatchAdForDeadline => 'Watch an ad for one more';
 }

@@ -1879,7 +1879,7 @@ abstract class AppLocalizations {
   /// No description provided for @premiumGoalLimitMessage.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.'**
+  /// **'You\'ve reached your deadline limit. Upgrade to Deadly Premium for unlimited deadlines.'**
   String get premiumGoalLimitMessage;
 
   /// No description provided for @premiumDialogUpgradeButton.
@@ -1899,6 +1899,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Watch an ad to try once'**
   String get premiumDialogWatchAd;
+
+  /// No description provided for @premiumDialogWatchAdForDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad for one more'**
+  String get premiumDialogWatchAdForDeadline;
 }
 
 class _AppLocalizationsDelegate

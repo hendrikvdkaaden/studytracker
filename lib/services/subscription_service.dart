@@ -2,12 +2,19 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import 'settings_service.dart';
+
 class SubscriptionService {
   static const _iosApiKey = 'appl_PDczFarlErpoWohPpKQUVFjTVBm';
   static const _androidApiKey = '';
   static const _entitlementId = 'premium';
   static const int freeGoalLimit = 3;
   static const int freeSubjectLimit = 3;
+
+  /// How many deadlines a free user may keep: the free limit plus whatever
+  /// they have unlocked by watching ads.
+  static int get goalLimitWithEarned =>
+      freeGoalLimit + SettingsService.earnedGoalSlots;
 
   static Future<void> init() async {
     if (kDebugMode) await Purchases.setLogLevel(LogLevel.debug);

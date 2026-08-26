@@ -447,8 +447,9 @@
   "premiumAutoPlanTitle": "Premium Feature",
   "premiumAutoPlanMessage": "Auto-planning is a Deadly Premium feature. Upgrade to automatically schedule your study sessions.",
   "premiumGoalLimitTitle": "Deadline Limit Reached",
-  "premiumGoalLimitMessage": "You've reached the free limit of 3 deadlines. Upgrade to Deadly Premium to create unlimited deadlines.",
+  "premiumGoalLimitMessage": "You've reached your deadline limit. Upgrade to Deadly Premium for unlimited deadlines.",
   "premiumDialogUpgradeButton": "Upgrade to Premium",
   "premiumDialogNotNow": "Not Now",
-  "premiumDialogWatchAd": "Watch an ad to try once"
+  "premiumDialogWatchAd": "Watch an ad to try once",
+  "premiumDialogWatchAdForDeadline": "Watch an ad for one more"
 }

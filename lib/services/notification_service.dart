@@ -12,6 +12,23 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
+  /// Prefix marking a payload as pointing at a study session.
+  static const String _sessionPrefix = 'session:';
+
+  /// Payload that sends a tap to the timer for [sessionId].
+  static String sessionPayload(String sessionId) =>
+      '$_sessionPrefix$sessionId';
+
+  /// The session id in [payload], or null when it points at something else.
+  static String? sessionIdFromPayload(String? payload) {
+    if (payload == null || !payload.startsWith(_sessionPrefix)) return null;
+    final id = payload.substring(_sessionPrefix.length);
+    return id.isEmpty ? null : id;
+  }
+
+  /// Called with the session id when a reminder is tapped.
+  static void Function(String sessionId)? onSessionTapped;
+
   static Future<void> init() async {
     try {
       tz.initializeTimeZones();
@@ -24,9 +41,33 @@ class NotificationService {
       const settings =
           InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-      await _plugin.initialize(settings: settings);
+      await _plugin.initialize(
+        settings: settings,
+        onDidReceiveNotificationResponse: _handleResponse,
+      );
     } catch (e) {
       debugPrint('Failed to initialize notifications: $e');
+    }
+  }
+
+  static void _handleResponse(NotificationResponse response) {
+    final sessionId = sessionIdFromPayload(response.payload);
+    if (sessionId == null) return;
+    onSessionTapped?.call(sessionId);
+  }
+
+  /// The session whose reminder launched the app from a cold start, if any.
+  ///
+  /// A tap on a notification while the app is not running arrives before
+  /// there is anything to navigate with, so it has to be asked for instead.
+  static Future<String?> sessionIdFromLaunch() async {
+    try {
+      final details = await _plugin.getNotificationAppLaunchDetails();
+      if (details == null || !details.didNotificationLaunchApp) return null;
+      return sessionIdFromPayload(details.notificationResponse?.payload);
+    } catch (e) {
+      debugPrint('Failed to read notification launch details: $e');
+      return null;
     }
   }
 
@@ -77,6 +118,7 @@ class NotificationService {
         title: 'Study session coming up',
         body: 'Time to study "$goalTitle" - ${session.formattedDuration}',
         scheduledDate: scheduledDate,
+        payload: sessionPayload(session.id),
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'study_sessions',
@@ -158,12 +200,16 @@ class NotificationService {
   }
 
   /// Show an immediate notification to remind the user to finish their active session
-  static Future<void> showResumeSessionNotification(String goalTitle) async {
+  static Future<void> showResumeSessionNotification(
+    String goalTitle,
+    String sessionId,
+  ) async {
     try {
       await _plugin.show(
         id: 'resume_session'.hashCode,
         title: 'Don\'t forget your study session! 📚',
         body: 'You\'re still studying "$goalTitle". Tap to continue.',
+        payload: sessionPayload(sessionId),
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'study_timer',

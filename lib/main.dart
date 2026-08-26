@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'product/screens/splash_screen.dart';
+import 'services/session_navigator.dart';
 import 'theme/app_colors.dart';
 import 'theme/app_theme_extension.dart';
 
@@ -22,6 +23,8 @@ class MyApp extends StatelessWidget {
       builder: (context, themeMode, _) {
         return MaterialApp(
           title: 'Deadly',
+          // Lets a notification tap navigate without a BuildContext.
+          navigatorKey: SessionNavigator.navigatorKey,
           // Release builds never show this banner anyway; disabling it keeps
           // debug builds usable for App Store screenshots.
           debugShowCheckedModeBanner: false,

@@ -63,7 +63,10 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused &&
         _timerState == TimerState.running) {
-      NotificationService.showResumeSessionNotification(widget.goal.title);
+      NotificationService.showResumeSessionNotification(
+        widget.goal.title,
+        widget.session.id,
+      );
     } else if (state == AppLifecycleState.resumed) {
       NotificationService.cancelResumeSessionNotification();
     }

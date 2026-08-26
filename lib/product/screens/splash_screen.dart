@@ -5,6 +5,7 @@ import '../../main.dart';
 import '../../services/ad_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/session_navigator.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/app_theme_extension.dart';
@@ -65,6 +66,13 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       await HiveService.init();
       await NotificationService.init();
+      NotificationService.onSessionTapped = SessionNavigator.openSession;
+      // A tap that launched the app arrives before any of this ran, so ask
+      // for it rather than waiting for a callback that already fired.
+      final launchSessionId = await NotificationService.sessionIdFromLaunch();
+      if (launchSessionId != null) {
+        SessionNavigator.setPending(launchSessionId);
+      }
       await SubscriptionService.init();
       // Not awaited: ads are optional, so a slow or failing SDK must never
       // hold up the splash screen.
@@ -97,6 +105,12 @@ class _SplashScreenState extends State<SplashScreen>
         },
       ),
     );
+
+    // Opened after the frame so the timer lands on top of the home screen,
+    // leaving a back button that goes somewhere sensible.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SessionNavigator.openPending();
+    });
   }
 
   @override

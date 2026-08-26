@@ -23,7 +23,12 @@ import '../../widgets/common/premium_gate_bottom_sheet.dart';
 import '../templates/add_goal_template.dart';
 
 class AddGoalScreen extends ConsumerStatefulWidget {
-  const AddGoalScreen({super.key});
+  /// Day to start the deadline on. Used when adding from a screen that is
+  /// already showing a particular day, so the form opens on that day instead
+  /// of the default a week out.
+  final DateTime? initialDate;
+
+  const AddGoalScreen({super.key, this.initialDate});
 
   @override
   ConsumerState<AddGoalScreen> createState() => _AddGoalScreenState();
@@ -37,7 +42,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   StudySessionRepository get _sessionRepo => ref.read(studySessionRepositoryProvider);
 
   // New deadlines default to midday; the user can change the time explicitly.
-  DateTime _selectedDate = _atNoon(DateTime.now().add(const Duration(days: 7)));
+  late DateTime _selectedDate;
 
   static DateTime _atNoon(DateTime d) => DateTime(d.year, d.month, d.day, 12, 0);
   GoalType _selectedType = GoalType.exam;
@@ -48,6 +53,9 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   @override
   void initState() {
     super.initState();
+    _selectedDate = _atNoon(
+      widget.initialDate ?? DateTime.now().add(const Duration(days: 7)),
+    );
     _subjects = SettingsService.subjectData;
   }
 
@@ -59,11 +67,16 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    // Adding from a past day on the home screen puts the deadline before
+    // today; showDatePicker asserts when its initial date falls outside the
+    // range, so the bounds have to stretch around it.
+    final first = _selectedDate.isBefore(now) ? _selectedDate : now;
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      firstDate: first,
+      lastDate: now.add(const Duration(days: 365)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(

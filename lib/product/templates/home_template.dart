@@ -96,7 +96,9 @@ class HomeTemplate extends StatelessWidget {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            // Extra room at the bottom when nothing follows, so the add
+            // button does not sit on top of the last card.
+            padding: EdgeInsets.fromLTRB(16, 16, 16, sessions.isEmpty ? 96 : 16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 return Padding(

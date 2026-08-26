@@ -28,24 +28,26 @@ class CalendarEventMapper {
   static DateTime sessionEnd(StudySession session) =>
       sessionStart(session).add(Duration(minutes: session.duration));
 
-  /// Title shown in the calendar, e.g. "Study: Chapter 5 Exam".
-  static String sessionTitle(String goalTitle) => 'Study: $goalTitle';
+  /// Title shown in the calendar, e.g. "Study Math: Chapter 5 Exam".
+  ///
+  /// Named the same way as a deadline, so the subject survives the truncation
+  /// a calendar applies in week view. Falls back to a plain "Study: ..." when
+  /// the goal has no subject.
+  static String sessionTitle(String goalTitle, String subject) {
+    final trimmed = subject.trim();
+    if (trimmed.isEmpty) return 'Study: $goalTitle';
+    return 'Study $trimmed: $goalTitle';
+  }
 
-  /// Body of a session entry: the subject, plus the user's own note when they
-  /// wrote one. Returns null when there is nothing worth showing, so the
-  /// calendar does not render an empty notes field.
-  static String? sessionDescription(String subject, String? notes) {
-    final parts = <String>[];
-    final trimmedSubject = subject.trim();
-    if (trimmedSubject.isNotEmpty) parts.add(trimmedSubject);
-
-    final trimmedNotes = notes?.trim();
-    if (trimmedNotes != null && trimmedNotes.isNotEmpty) {
-      parts.add(trimmedNotes);
-    }
-
-    if (parts.isEmpty) return null;
-    return parts.join('\n\n');
+  /// Body of a session entry: the user's own note, when they wrote one.
+  ///
+  /// The subject lives in the title, so repeating it here would only be
+  /// noise. Returns null when there is no note, so the calendar does not
+  /// render an empty notes field.
+  static String? sessionDescription(String? notes) {
+    final trimmed = notes?.trim();
+    if (trimmed == null || trimmed.isEmpty) return null;
+    return trimmed;
   }
 
   /// Title for a deadline, e.g. "Deadline Math: Chapter 5 Exam".

@@ -133,47 +133,48 @@ void main() {
   });
 
   group('session description', () {
-    test('shows the subject on its own when there is no note', () {
+    test('carries the note the user wrote', () {
       expect(
-        CalendarEventMapper.sessionDescription('Math', null),
-        'Math',
-      );
-    });
-
-    test('shows subject and note together', () {
-      expect(
-        CalendarEventMapper.sessionDescription('Math', 'Revise chapter 5'),
-        'Math\n\nRevise chapter 5',
-      );
-    });
-
-    test('ignores a note that is only whitespace', () {
-      expect(
-        CalendarEventMapper.sessionDescription('Math', '   '),
-        'Math',
-        reason: 'a blank note should not add an empty line',
-      );
-    });
-
-    test('returns null when there is nothing to show', () {
-      expect(CalendarEventMapper.sessionDescription('', null), isNull);
-      expect(CalendarEventMapper.sessionDescription('  ', '  '), isNull);
-    });
-
-    test('falls back to the note when the subject is empty', () {
-      expect(
-        CalendarEventMapper.sessionDescription('', 'Revise chapter 5'),
+        CalendarEventMapper.sessionDescription('Revise chapter 5'),
         'Revise chapter 5',
+      );
+    });
+
+    test('trims surrounding whitespace', () {
+      expect(
+        CalendarEventMapper.sessionDescription('  Revise chapter 5  '),
+        'Revise chapter 5',
+      );
+    });
+
+    test('returns null when there is no note', () {
+      expect(CalendarEventMapper.sessionDescription(null), isNull);
+      expect(
+        CalendarEventMapper.sessionDescription('   '),
+        isNull,
+        reason: 'a blank note must not leave an empty notes field behind',
       );
     });
   });
 
   group('titles', () {
     test('marks sessions and deadlines distinctly', () {
-      expect(CalendarEventMapper.sessionTitle('Chapter 5 Exam'),
-          'Study: Chapter 5 Exam');
+      expect(CalendarEventMapper.sessionTitle('Chapter 5 Exam', 'Math'),
+          'Study Math: Chapter 5 Exam');
       expect(CalendarEventMapper.deadlineTitle(_goal(date: _now)),
           'Deadline Math: Chapter 5 Exam');
+    });
+
+    test('a session without a subject keeps a plain title', () {
+      expect(
+        CalendarEventMapper.sessionTitle('Chapter 5 Exam', ''),
+        'Study: Chapter 5 Exam',
+        reason: 'an empty subject must not leave a dangling separator',
+      );
+      expect(
+        CalendarEventMapper.sessionTitle('Chapter 5 Exam', '   '),
+        'Study: Chapter 5 Exam',
+      );
     });
 
     test('a deadline without a subject keeps a plain title', () {

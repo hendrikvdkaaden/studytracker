@@ -141,13 +141,10 @@ class CalendarSyncService {
     try {
       return await _plugin.createEvent(
         calendarId: calendarId,
-        title: CalendarEventMapper.sessionTitle(goalTitle),
+        title: CalendarEventMapper.sessionTitle(goalTitle, subject),
         startDate: CalendarEventMapper.sessionStart(session),
         endDate: CalendarEventMapper.sessionEnd(session),
-        description: CalendarEventMapper.sessionDescription(
-          subject,
-          session.notes,
-        ),
+        description: CalendarEventMapper.sessionDescription(session.notes),
       );
     } catch (e) {
       debugPrint('Creating session event failed: $e');

@@ -7,9 +7,19 @@ import 'package:flutter_test/flutter_test.dart';
 /// push the sections below it off the screen. What matters is that the row
 /// scrolls rather than overflowing, and that cards keep a fixed width.
 void main() {
+  /// Mirrors the dashboard: the carousel sits inside a vertical list, where
+  /// its height is unbounded. A Scaffold alone gives it a bounded height and
+  /// hides the collapse this guards against.
   Widget host(List<Widget> cards) => MaterialApp(
         theme: ThemeData(extensions: const [AppTheme.light]),
-        home: Scaffold(body: GoalCarousel(cards: cards)),
+        home: Scaffold(
+          body: ListView(
+            children: [
+              const Text('heading'),
+              GoalCarousel(cards: cards),
+            ],
+          ),
+        ),
       );
 
   Widget stubCard(String label) => Container(
@@ -47,6 +57,20 @@ void main() {
       lessThan(before),
       reason: 'dragging sideways moves the row',
     );
+  });
+
+  testWidgets('keeps its height inside a vertical list', (tester) async {
+    // Regression: stretching inside an unbounded height collapsed the row to
+    // nothing and the dashboard rendered empty.
+    await tester.pumpWidget(host([stubCard('A'), stubCard('B')]));
+
+    expect(tester.takeException(), isNull);
+    expect(
+      tester.getSize(find.byType(GoalCarousel)).height,
+      greaterThan(0),
+      reason: 'a zero-height row is an invisible dashboard',
+    );
+    expect(find.text('A'), findsOneWidget);
   });
 
   testWidgets('a single card still renders', (tester) async {

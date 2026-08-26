@@ -28,14 +28,20 @@ class GoalCarousel extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < cards.length; i++) ...[
-            if (i > 0) const SizedBox(width: 12),
-            SizedBox(width: cardWidth, child: cards[i]),
+      // IntrinsicHeight rather than CrossAxisAlignment.stretch: inside a
+      // vertical list the row has unbounded height, so stretching collapses
+      // it to nothing. This measures the tallest card and matches the rest
+      // to it.
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < cards.length; i++) ...[
+              if (i > 0) const SizedBox(width: 12),
+              SizedBox(width: cardWidth, child: cards[i]),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

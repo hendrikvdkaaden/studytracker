@@ -73,6 +73,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await SettingsService.setSessionReminderMinutes(_sessionReminderMinutes);
     await SettingsService.setDeadlineReminderDays(_deadlineReminderDays);
     await SettingsService.setOnboardingCompleted(true);
+    // The calendar step above already made the offer, so the one-off prompt
+    // on the home screen — which exists for users who upgraded past it —
+    // must not fire for this user.
+    await SettingsService.setCalendarPromptShown(true);
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomePage()),

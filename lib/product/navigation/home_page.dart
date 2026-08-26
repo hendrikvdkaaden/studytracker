@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../main.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
@@ -9,6 +10,7 @@ import '../screens/home_screen.dart';
 import '../screens/plan_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
+import '../../widgets/common/app_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,13 +29,60 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    NotificationService.requestPermission();
+    // The calendar offer waits for the notification prompt to finish, so
+    // Android never stacks two permission dialogs on first launch.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await NotificationService.requestPermission();
+      if (!mounted) return;
+      await _maybeOfferCalendarSync();
+      if (!mounted) return;
+    });
     _screens = [
       HomeScreen(key: _homeScreenKey),
       PlanScreen(key: _planScreenKey),
       DashboardScreen(key: _dashboardScreenKey),
       ProfileScreen(onThemeChanged: _onThemeChanged),
     ];
+  }
+
+  /// Offers calendar sync once to users who onboarded before the feature
+  /// existed — they never saw the onboarding step that asks.
+  ///
+  /// The flag is stored as soon as the dialog is shown, not when it is
+  /// accepted, so declining it does not bring it back every launch.
+  Future<void> _maybeOfferCalendarSync() async {
+    if (!SettingsService.shouldOfferCalendarSync) {
+      // Nothing owed. Record it so the check settles for good.
+      if (!SettingsService.calendarPromptShown) {
+        await SettingsService.setCalendarPromptShown(true);
+      }
+      return;
+    }
+    if (!mounted) return;
+
+    // Read the strings before the await, so the context is not used across
+    // an async gap.
+    final l10n = context.l10n;
+    await SettingsService.setCalendarPromptShown(true);
+    if (!mounted) return;
+
+    final accepted = await showAppConfirmDialog(
+      context: context,
+      title: l10n.calendarPromptTitle,
+      message: l10n.calendarPromptMessage,
+      confirmLabel: l10n.calendarPromptConfirm,
+      cancelLabel: l10n.calendarPromptDismiss,
+      icon: Icons.calendar_month_outlined,
+    );
+    if (!accepted) return;
+
+    final granted = await CalendarSyncService.requestPermission();
+    if (!granted) return;
+
+    // Backfilled, not just enabled: this prompt is aimed at people who
+    // upgraded past onboarding, so they already have deadlines that would
+    // otherwise never reach the calendar they just connected.
+    await CalendarSyncService.enableAndBackfill();
   }
 
   void _onThemeChanged() {

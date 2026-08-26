@@ -164,6 +164,27 @@ class SettingsService {
     await _box.put(_keyOnboardingCompleted, value);
   }
 
+  /// Whether the one-off calendar-sync offer has been shown.
+  ///
+  /// Users who onboarded before calendar sync existed never saw the step that
+  /// offers it, so they get asked once on launch instead.
+  static const String _keyCalendarPromptShown = 'calendarPromptShown';
+
+  static bool get calendarPromptShown =>
+      _box.get(_keyCalendarPromptShown, defaultValue: false) as bool;
+
+  static Future<void> setCalendarPromptShown(bool value) async {
+    await _box.put(_keyCalendarPromptShown, value);
+  }
+
+  /// Whether the one-off calendar offer is still owed to this user.
+  ///
+  /// False once it has been shown, and false when sync is already on — there
+  /// is nothing left to offer. New users are excluded because onboarding
+  /// marks the prompt as shown when it finishes.
+  static bool get shouldOfferCalendarSync =>
+      !calendarPromptShown && !calendarSyncEnabled;
+
   // Rewarded-ad trial for auto planning
   static const String _keyLastAdTrialDate = 'lastAdTrialDate';
 

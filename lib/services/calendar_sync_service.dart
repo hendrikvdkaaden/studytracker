@@ -112,7 +112,6 @@ class CalendarSyncService {
         startDate: CalendarEventMapper.deadlineStart(goal),
         endDate: CalendarEventMapper.deadlineEnd(goal),
         isAllDay: true,
-        description: goal.subject,
       );
     } catch (e) {
       debugPrint('Creating deadline event failed: $e');

@@ -8,11 +8,12 @@ final _now = DateTime(2026, 8, 20, 14, 30);
 Goal _goal({
   required DateTime date,
   bool isCompleted = false,
+  String subject = 'Math',
 }) {
   return Goal(
     id: 'goal-1',
     title: 'Chapter 5 Exam',
-    subject: 'Math',
+    subject: subject,
     date: date,
     type: GoalType.exam,
     isCompleted: isCompleted,
@@ -172,7 +173,19 @@ void main() {
       expect(CalendarEventMapper.sessionTitle('Chapter 5 Exam'),
           'Study: Chapter 5 Exam');
       expect(CalendarEventMapper.deadlineTitle(_goal(date: _now)),
-          'Deadline: Chapter 5 Exam');
+          'Deadline (Math): Chapter 5 Exam');
+    });
+
+    test('a deadline without a subject keeps a plain title', () {
+      expect(
+        CalendarEventMapper.deadlineTitle(_goal(date: _now, subject: '')),
+        'Deadline: Chapter 5 Exam',
+        reason: 'an empty subject must not leave empty brackets behind',
+      );
+      expect(
+        CalendarEventMapper.deadlineTitle(_goal(date: _now, subject: '   ')),
+        'Deadline: Chapter 5 Exam',
+      );
     });
   });
 }

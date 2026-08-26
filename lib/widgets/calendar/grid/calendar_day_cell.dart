@@ -54,18 +54,16 @@ class CalendarDayCell extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Today is marked with a text underline rather than a filled circle
-            // so it stays distinguishable from the selected day. Using
-            // TextDecoration keeps the line tight against the digit.
+            // Today is marked by weight alone, which keeps it distinct from
+            // the selected day without adding a second kind of mark to a cell
+            // that may already carry status dots.
             Text(
               day.toString(),
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.w500,
+                fontWeight:
+                    isSelected || isToday ? FontWeight.bold : FontWeight.w500,
                 color: textColor,
-                decoration: isToday ? TextDecoration.underline : null,
-                decorationColor: textColor,
-                decorationThickness: 1.5,
               ),
             ),
             if (statuses.isNotEmpty) ...[

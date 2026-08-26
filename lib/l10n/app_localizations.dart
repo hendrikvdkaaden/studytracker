@@ -1522,6 +1522,108 @@ abstract class AppLocalizations {
   /// **'You can change this later in your Profile.'**
   String get onboardingStep3Note;
 
+  /// No description provided for @onboardingStep4TitleLine1.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to your'**
+  String get onboardingStep4TitleLine1;
+
+  /// No description provided for @onboardingStep4TitleLine2.
+  ///
+  /// In en, this message translates to:
+  /// **'calendar'**
+  String get onboardingStep4TitleLine2;
+
+  /// No description provided for @onboardingStep4Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See your deadlines and study sessions next to everything else you have planned'**
+  String get onboardingStep4Subtitle;
+
+  /// No description provided for @onboardingCalendarConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect calendar'**
+  String get onboardingCalendarConnectButton;
+
+  /// No description provided for @onboardingCalendarSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get onboardingCalendarSkip;
+
+  /// No description provided for @onboardingCalendarConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get onboardingCalendarConnecting;
+
+  /// No description provided for @onboardingCalendarDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar access. You can turn this on in your Profile later.'**
+  String get onboardingCalendarDenied;
+
+  /// No description provided for @onboardingCalendarConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get onboardingCalendarConnected;
+
+  /// No description provided for @onboardingStep4Note.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly writes to its own calendar and never reads yours. You can change this later in your Profile.'**
+  String get onboardingStep4Note;
+
+  /// No description provided for @calendarPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Deadly to your calendar'**
+  String get calendarPromptTitle;
+
+  /// No description provided for @calendarPromptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.'**
+  String get calendarPromptMessage;
+
+  /// No description provided for @calendarPromptConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect calendar'**
+  String get calendarPromptConfirm;
+
+  /// No description provided for @calendarPromptDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get calendarPromptDismiss;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is ready in the App Store.'**
+  String updateAvailableMessage(String version);
+
+  /// No description provided for @updateAvailableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get updateAvailableConfirm;
+
+  /// No description provided for @updateAvailableDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateAvailableDismiss;
+
   /// No description provided for @onboardingSessionReminder.
   ///
   /// In en, this message translates to:

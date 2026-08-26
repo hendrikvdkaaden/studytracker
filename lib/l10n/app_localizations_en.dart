@@ -842,6 +842,63 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can change this later in your Profile.';
 
   @override
+  String get onboardingStep4TitleLine1 => 'Add to your';
+
+  @override
+  String get onboardingStep4TitleLine2 => 'calendar';
+
+  @override
+  String get onboardingStep4Subtitle =>
+      'See your deadlines and study sessions next to everything else you have planned';
+
+  @override
+  String get onboardingCalendarConnectButton => 'Connect calendar';
+
+  @override
+  String get onboardingCalendarSkip => 'Maybe later';
+
+  @override
+  String get onboardingCalendarConnecting => 'Connecting...';
+
+  @override
+  String get onboardingCalendarDenied =>
+      'No calendar access. You can turn this on in your Profile later.';
+
+  @override
+  String get onboardingCalendarConnected => 'Connected';
+
+  @override
+  String get onboardingStep4Note =>
+      'Deadly writes to its own calendar and never reads yours. You can change this later in your Profile.';
+
+  @override
+  String get calendarPromptTitle => 'Add Deadly to your calendar';
+
+  @override
+  String get calendarPromptMessage =>
+      'See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.';
+
+  @override
+  String get calendarPromptConfirm => 'Connect calendar';
+
+  @override
+  String get calendarPromptDismiss => 'Not now';
+
+  @override
+  String get updateAvailableTitle => 'Update available';
+
+  @override
+  String updateAvailableMessage(String version) {
+    return 'Version $version is ready in the App Store.';
+  }
+
+  @override
+  String get updateAvailableConfirm => 'Update now';
+
+  @override
+  String get updateAvailableDismiss => 'Later';
+
+  @override
   String get onboardingSessionReminder => 'Session reminder';
 
   @override

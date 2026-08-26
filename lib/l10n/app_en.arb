@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
-
   "navHome": "Home",
   "navCalendar": "Calendar",
   "navDeadlines": "Deadlines",
   "navProfile": "Profile",
-
   "btnSave": "Save",
   "btnCancel": "Cancel",
   "btnDelete": "Delete",
@@ -17,7 +15,6 @@
   "commonLoading": "Loading...",
   "commonError": "Something went wrong",
   "commonNoData": "No data available",
-
   "addGoalTitle": "Add Deadline",
   "editGoalTitle": "Edit Deadline",
   "addGoalSubjectLabel": "Subject",
@@ -39,14 +36,15 @@
   "addGoalSessionCount": "{count, plural, =0{No sessions} =1{1 session} other{{count} sessions}}",
   "@addGoalSessionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addGoalAutoPlanButton": "Plan for me",
   "addGoalAddSessionButton": "Add study session",
   "addGoalAddSessionShort": "Add session",
   "addGoalSaveButtonLabel": "Add Deadline",
-
   "sessionPickerTitleAdd": "Plan Study Session",
   "sessionPickerTitleEdit": "Edit Session",
   "sessionPickerDateLabel": "Date",
@@ -60,7 +58,6 @@
   "sessionPickerDurationError": "Set a duration longer than 0 minutes.",
   "sessionPickerHours": "Hours",
   "sessionPickerMinutes": "Minutes",
-
   "autoPlanTitle": "Session Planner",
   "autoPlanTotalStudyTimeLabel": "Total Study Time",
   "autoPlanStudyDaysLabel": "Study Days",
@@ -78,7 +75,6 @@
   "autoPlanErrorNoSessionDuration": "Set a session duration.",
   "autoPlanErrorWindowNegative": "End time must be after start time.",
   "autoPlanErrorSessionTooLong": "Session duration does not fit within the study window.",
-
   "timerDialogLeaveTitle": "Exit Timer?",
   "timerDialogLeaveBody": "Your progress will be saved. You can continue later.",
   "timerDialogLeaveConfirm": "Exit",
@@ -87,7 +83,9 @@
   "timerDialogCompleteBody": "You studied for {time}. Save this session?",
   "@timerDialogCompleteBody": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "timerDialogCompleteConfirm": "Save",
@@ -98,11 +96,12 @@
   "timerSnackSessionSaved": "Session saved! {time} logged.",
   "@timerSnackSessionSaved": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "timerSnackSessionCompleted": "Session completed!",
-
   "goalDetailsSectionInfo": "Deadline Info",
   "goalDetailsSectionStudySessions": "Study Sessions",
   "goalDetailsSectionProgress": "Progress",
@@ -125,10 +124,11 @@
   "goalDetailsSessionCount": "{count, plural, =0{No sessions} =1{1 session} other{{count} sessions}}",
   "@goalDetailsSessionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "goalInfoCardLabel": "DEADLINE INFO",
   "goalInfoDeadlineLabel": "DEADLINE",
   "goalInfoProgressLabel": "PROGRESS",
@@ -140,23 +140,25 @@
   "goalInfoEditSaveButton": "Save Changes",
   "goalInfoEditValidateTitle": "Please enter a title",
   "goalInfoEditValidateSubject": "Please select a subject",
-
   "deadlineStatusDaysLeft": "{days, plural, =1{1 day left} other{{days} days left}}",
   "@deadlineStatusDaysLeft": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "deadlineStatusDaysOverdue": "{days, plural, =1{1 day overdue} other{{days} days overdue}}",
   "@deadlineStatusDaysOverdue": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "deadlineStatusToday": "Today",
   "deadlineStatusTomorrow": "Tomorrow",
   "deadlineStatusCompleted": "Completed",
-
   "dashboardTitle": "Deadlines",
   "dashboardSectionOverdue": "Overdue",
   "dashboardSectionUpcoming": "Upcoming",
@@ -164,25 +166,27 @@
   "dashboardEmptyTitle": "No deadlines yet",
   "dashboardEmptySubtitle": "Tap + to create your first deadline",
   "dashboardSeeAll": "SEE ALL",
-
   "consistencyTitle": "STUDY CONSISTENCY",
   "consistencyNoSessionsTitle": "Start Your Week Strong",
   "consistencyNoSessionsSubtitle": "Plan some study sessions to track your week.",
   "consistencyMissedTitle": "{count, plural, =1{1 Session Missed} other{{count} Sessions Missed}}",
   "@consistencyMissedTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "consistencyMissedSubtitle": "Don't give up! You can still crush this week.",
   "consistencyDaysNoMissed": "{days, plural, =1{Completed all Sessions Today} other{Completed all Sessions for {days} Days}}",
   "@consistencyDaysNoMissed": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "consistencyDaysNoMissedSubtitle": "Great job! Keep up the consistency.",
-
   "profileSectionSubjects": "SUBJECTS",
   "profileSectionNotifications": "NOTIFICATIONS",
   "profileSectionAppearance": "APPEARANCE",
@@ -215,19 +219,25 @@
   "profileVersionLabel": "Deadly {version}",
   "@profileVersionLabel": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "profileSessionReminderFormat": "{minutes, plural, =0{Disabled} =1{1 minute before} other{{minutes} minutes before}}",
   "@profileSessionReminderFormat": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "profileDeadlineReminderFormat": "{days, plural, =1{1 day} other{{days} days}}",
   "@profileDeadlineReminderFormat": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "profilePickerSessionTitle": "Session reminder",
@@ -238,13 +248,17 @@
   "profilePickerSessionOptionFormat": "{minutes, plural, other{{minutes} minutes}}",
   "@profilePickerSessionOptionFormat": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "profilePickerDeadlineOptionFormat": "{days, plural, =1{1 day} other{{days} days}}",
   "@profilePickerDeadlineOptionFormat": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "profileDeleteSessionsTitle": "Delete all study sessions?",
@@ -259,11 +273,12 @@
   "profileRemoveSubjectBody": "\"{name}\" will be removed from your subjects list. Deadlines using this subject are not affected.",
   "@profileRemoveSubjectBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "profileRemoveSubjectConfirm": "Remove",
-
   "addSubjectTitle": "Add Subject",
   "addSubjectSubtitle": "Choose a name and color",
   "addSubjectNameLabel": "SUBJECT NAME",
@@ -271,7 +286,6 @@
   "addSubjectHint": "e.g. Physics",
   "addSubjectSaveButton": "Create",
   "addSubjectErrorEmpty": "Please enter a subject name",
-
   "editNameTitle": "Edit Name",
   "editNameSubtitle": "This is how you'll appear to your study group.",
   "editNameDisplayLabel": "DISPLAY NAME",
@@ -279,21 +293,17 @@
   "editNameDisplayHint": "Enter your name",
   "editNameSchoolHint": "Enter school name",
   "editNameSaveButton": "Update",
-
   "goalDialogDeleteTitle": "Delete Deadline",
   "goalDialogDeleteBody": "Are you sure you want to delete this deadline?",
-
   "homeNoTasksTitle": "No tasks for this day",
   "homeNoTasksSubtitle": "Select another day or add a new deadline",
   "homeDeadlinesToday": "Deadlines Today",
   "homeStudySessions": "Study Sessions",
-
   "calendarSectionGoals": "Deadlines",
   "calendarSectionSessions": "Sessions",
   "calendarNoGoals": "No deadlines on this day",
   "calendarNoSessions": "No sessions on this day",
   "calendarTodayButton": "Today",
-
   "goalTypeExam": "Exam",
   "goalTypeTest": "Test",
   "goalTypeAssignment": "Assignment",
@@ -302,21 +312,19 @@
   "goalTypePaper": "Paper",
   "goalTypeQuiz": "Quiz",
   "goalTypeOther": "Other",
-
-
   "plannedSessionDuration": "{duration} min",
   "@plannedSessionDuration": {
     "placeholders": {
-      "duration": { "type": "int" }
+      "duration": {
+        "type": "int"
+      }
     }
   },
   "plannedSessionNoTime": "No time set",
-
   "progressEditTargetTime": "Target Time",
   "progressEditTimeSpent": "Time Spent",
   "progressEditHours": "HOURS",
   "progressEditMinutes": "MINUTES",
-
   "onboardingSkip": "Skip",
   "onboardingGetStarted": "Get Started",
   "onboardingContinue": "Continue",
@@ -325,8 +333,12 @@
   "onboardingStepOf": "Step {step} of {total}",
   "@onboardingStepOf": {
     "placeholders": {
-      "step": { "type": "int" },
-      "total": { "type": "int" }
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingStep1Title": "What's your name?",
@@ -341,9 +353,32 @@
   "onboardingStep3Title": "Set up reminders",
   "onboardingStep3Subtitle": "Get notified before your study sessions and deadlines",
   "onboardingStep3Note": "You can change this later in your Profile.",
+  "onboardingStep4TitleLine1": "Add to your",
+  "onboardingStep4TitleLine2": "calendar",
+  "onboardingStep4Subtitle": "See your deadlines and study sessions next to everything else you have planned",
+  "onboardingCalendarConnectButton": "Connect calendar",
+  "onboardingCalendarSkip": "Maybe later",
+  "onboardingCalendarConnecting": "Connecting...",
+  "onboardingCalendarDenied": "No calendar access. You can turn this on in your Profile later.",
+  "onboardingCalendarConnected": "Connected",
+  "onboardingStep4Note": "Deadly writes to its own calendar and never reads yours. You can change this later in your Profile.",
+  "calendarPromptTitle": "Add Deadly to your calendar",
+  "calendarPromptMessage": "See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.",
+  "calendarPromptConfirm": "Connect calendar",
+  "calendarPromptDismiss": "Not now",
+  "updateAvailableTitle": "Update available",
+  "updateAvailableMessage": "Version {version} is ready in the App Store.",
+  "@updateAvailableMessage": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateAvailableConfirm": "Update now",
+  "updateAvailableDismiss": "Later",
   "onboardingSessionReminder": "Session reminder",
   "onboardingDeadlineReminder": "Deadline reminder",
-
   "paywallTitle": "Unlock Deadly Premium",
   "paywallSubtitle": "Accelerate your learning with smart planning",
   "paywallFeature1": "Unlimited deadlines & subjects",
@@ -352,12 +387,20 @@
   "paywallYearlyLabel": "Yearly",
   "paywallYearlySubtitle": "{pricePerMonth} / month, billed annually",
   "@paywallYearlySubtitle": {
-    "placeholders": { "pricePerMonth": { "type": "String" } }
+    "placeholders": {
+      "pricePerMonth": {
+        "type": "String"
+      }
+    }
   },
   "paywallYearlySubtitleFallback": "Billed annually",
   "paywallYearlySaveBadge": "SAVE {percent}%",
   "@paywallYearlySaveBadge": {
-    "placeholders": { "percent": { "type": "int" } }
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   },
   "paywallYearlyValueBadge": "BEST VALUE",
   "paywallMonthlyLabel": "Monthly",
@@ -374,7 +417,6 @@
   "paywallErrorGeneric": "Something went wrong. Please try again.",
   "paywallErrorNoPurchases": "No previous purchases found.",
   "paywallErrorRestoreFailed": "Restore failed. Please try again.",
-
   "profilePremiumBadge": "Premium",
   "profilePremiumTitle": "Deadly Premium",
   "profileUpgradeTitle": "DEADLY PREMIUM",
@@ -382,22 +424,24 @@
   "profileUpgradeSubtitle": "Unlock all features",
   "profileUpgradeButton": "Upgrade",
   "profileManageSubscription": "Manage your subscription via the App Store settings.",
-
   "autoPlanErrorNoAvailableDays": "No available days found before the deadline.",
   "autoPlanSuccessSnack": "{count, plural, =1{1 session planned!} other{{count} sessions planned!}}",
   "@autoPlanSuccessSnack": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addGoalSuccessSnack": "{count, plural, =0{Deadline added successfully!} =1{Deadline and 1 session added!} other{Deadline and {count} sessions added!}}",
   "@addGoalSuccessSnack": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addGoalScreenTitle": "Create Deadline",
-
   "premiumAutoPlanTitle": "Premium Feature",
   "premiumAutoPlanMessage": "Auto-planning is a Deadly Premium feature. Upgrade to automatically schedule your study sessions.",
   "premiumGoalLimitTitle": "Deadline Limit Reached",

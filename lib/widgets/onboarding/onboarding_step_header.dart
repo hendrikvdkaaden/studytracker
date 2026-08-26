@@ -5,11 +5,13 @@ import 'onboarding_progress_indicator.dart';
 class OnboardingStepHeader extends StatelessWidget {
   final IconData icon;
   final int step;
+  final int totalSteps;
 
   const OnboardingStepHeader({
     super.key,
     required this.icon,
     required this.step,
+    this.totalSteps = 4,
   });
 
   @override
@@ -26,7 +28,7 @@ class OnboardingStepHeader extends StatelessWidget {
           child: Icon(icon, color: AppColors.primaryLight, size: 24),
         ),
         const SizedBox(width: 12),
-        OnboardingProgressIndicator(step: step),
+        OnboardingProgressIndicator(step: step, totalSteps: totalSteps),
       ],
     );
   }

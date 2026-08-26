@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/onboarding/onboarding_landing_button.dart';
 import '../../widgets/onboarding/onboarding_landing_page.dart';
+import '../../widgets/onboarding/onboarding_step_calendar.dart';
 import '../../widgets/onboarding/onboarding_step_name.dart';
 import '../../widgets/onboarding/onboarding_step_notifications.dart';
 import '../../widgets/onboarding/onboarding_step_subjects.dart';
@@ -29,6 +31,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   List<SubjectData> _subjects = [];
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
+  bool _calendarConnected = false;
+  bool _calendarBusy = false;
+  bool _calendarDenied = false;
 
   @override
   void dispose() {
@@ -48,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Advancing swaps pages without disposing the fields, so focus has to be
     // cleared explicitly or the keyboard stays up over the next step.
     FocusManager.instance.primaryFocus?.unfocus();
-    if (_currentPage < 3) {
+    if (_currentPage < 4) {
       setState(() {
         _nameError = false;
         _currentPage++;
@@ -73,6 +78,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         MaterialPageRoute(builder: (_) => const HomePage()),
       );
     }
+  }
+
+  /// Asks for calendar access and creates the app's own calendar.
+  ///
+  /// Nothing is written yet: a new user has no deadlines to mirror. The first
+  /// deadline they save syncs itself, because the setting is on by then.
+  Future<void> _connectCalendar() async {
+    if (_calendarBusy || _calendarConnected) return;
+    setState(() => _calendarBusy = true);
+
+    final granted = await CalendarSyncService.requestPermission();
+    var connected = false;
+    if (granted) {
+      // The backfill finds nothing for a new user, but going through the same
+      // path as everywhere else keeps this to one way of switching sync on.
+      connected = await CalendarSyncService.enableAndBackfill();
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _calendarBusy = false;
+      _calendarConnected = connected;
+      // Only a refused permission is a dead end: iOS shows its prompt once,
+      // so offering the button again would go nowhere. A permission that was
+      // granted but whose calendar could not be created is worth retrying,
+      // so the button stays.
+      _calendarDenied = !granted;
+    });
   }
 
   void _addSubject(SubjectData subject) {
@@ -286,9 +319,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           OnboardingStepNotifications(
             sessionReminderMinutes: _sessionReminderMinutes,
             deadlineReminderDays: _deadlineReminderDays,
-            onComplete: _completeOnboarding,
+            onNext: _nextPage,
             onSessionReminderTap: _pickSessionReminder,
             onDeadlineReminderTap: _pickDeadlineReminder,
+          ),
+          OnboardingStepCalendar(
+            isConnected: _calendarConnected,
+            isBusy: _calendarBusy,
+            isDenied: _calendarDenied,
+            onConnectTap: _connectCalendar,
+            onComplete: _completeOnboarding,
           ),
         ],
       ),

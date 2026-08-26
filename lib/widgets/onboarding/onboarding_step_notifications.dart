@@ -10,7 +10,7 @@ import 'onboarding_top_nav.dart';
 class OnboardingStepNotifications extends StatelessWidget {
   final int sessionReminderMinutes;
   final int deadlineReminderDays;
-  final Future<void> Function() onComplete;
+  final VoidCallback onNext;
   final Future<void> Function() onSessionReminderTap;
   final Future<void> Function() onDeadlineReminderTap;
 
@@ -18,7 +18,7 @@ class OnboardingStepNotifications extends StatelessWidget {
     super.key,
     required this.sessionReminderMinutes,
     required this.deadlineReminderDays,
-    required this.onComplete,
+    required this.onNext,
     required this.onSessionReminderTap,
     required this.onDeadlineReminderTap,
   });
@@ -126,8 +126,8 @@ class OnboardingStepNotifications extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             OnboardingLandingButton(
-              label: l10n.onboardingLetsGo,
-              onTap: onComplete,
+              label: l10n.onboardingContinue,
+              onTap: onNext,
               width: double.infinity,
             ),
             const SizedBox(height: 32),

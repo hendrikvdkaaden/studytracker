@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
+import '../../../utils/format_helpers.dart';
 import '../../../utils/goal_type_helper.dart';
 
 class OverdueGoalCard extends StatelessWidget {
@@ -78,6 +79,14 @@ class OverdueGoalCard extends StatelessWidget {
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    FormatHelpers.formatDate(goal.date),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: context.colors.textTertiary,
+                    ),
                   ),
                 ],
               ),

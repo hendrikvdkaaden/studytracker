@@ -8,6 +8,7 @@ import '../../widgets/deadlines/cards/upcoming_goal_card.dart';
 import '../../widgets/deadlines/cards/completed_goal_card.dart';
 import '../../models/day_status.dart';
 import '../../widgets/deadlines/cards/study_consistency_card.dart';
+import '../../widgets/deadlines/goal_carousel.dart';
 
 class DashboardTemplate extends StatelessWidget {
   final Map<int, DayStatus> weeklyConsistency;
@@ -30,6 +31,15 @@ class DashboardTemplate extends StatelessWidget {
     required this.goalsTimeSpent,
     required this.onGoalTap,
   });
+
+  /// Inset applied per item rather than to the list, so a carousel can scroll
+  /// its cards all the way to the screen edge.
+  static const double _sidePadding = 24;
+
+  Widget _inset(Widget child) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _sidePadding),
+        child: child,
+      );
 
   Widget _sectionLabel({
     required BuildContext context,
@@ -68,76 +78,96 @@ class DashboardTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 100),
       children: [
         // Study Consistency
-        StudyConsistencyCard(
-          weeklyConsistency: weeklyConsistency,
-          missedSessionsCount: missedSessionsCount,
-          studyStreak: studyStreak,
+        _inset(
+          StudyConsistencyCard(
+            weeklyConsistency: weeklyConsistency,
+            missedSessionsCount: missedSessionsCount,
+            studyStreak: studyStreak,
+          ),
         ),
 
         // Overdue section
         if (overdueGoals.isNotEmpty) ...[
           const SizedBox(height: 24),
-          _sectionLabel(
-            context: context,
-            icon: Icons.error_outline,
-            iconColor: AppColors.overdue,
-            iconBg: context.colors.isDark
-                ? AppColors.overdue.withValues(alpha: 0.1)
-                : const Color(0xFFFFEDED),
-            label: context.l10n.dashboardSectionOverdue,
+          _inset(
+            _sectionLabel(
+              context: context,
+              icon: Icons.error_outline,
+              iconColor: AppColors.overdue,
+              iconBg: context.colors.isDark
+                  ? AppColors.overdue.withValues(alpha: 0.1)
+                  : const Color(0xFFFFEDED),
+              label: context.l10n.dashboardSectionOverdue,
+            ),
           ),
           const SizedBox(height: 12),
-          ...overdueGoals.map(
-            (goal) => OverdueGoalCard(
-              goal: goal,
-              onTap: () => onGoalTap(goal),
-            ),
+          GoalCarousel(
+            horizontalPadding: _sidePadding,
+            cards: [
+              for (final goal in overdueGoals)
+                OverdueGoalCard(
+                  goal: goal,
+                  onTap: () => onGoalTap(goal),
+                ),
+            ],
           ),
         ],
 
         // Upcoming section
         if (upcomingGoals.isNotEmpty) ...[
           const SizedBox(height: 24),
-          _sectionLabel(
-            context: context,
-            icon: Icons.calendar_month,
-            iconColor: AppColors.iconPurple,
-            iconBg: context.colors.isDark
-                ? AppColors.iconBgPurple.withValues(alpha: 0.1)
-                : const Color(0xFFFFEDED),
-            label: context.l10n.dashboardSectionUpcoming,
+          _inset(
+            _sectionLabel(
+              context: context,
+              icon: Icons.calendar_month,
+              iconColor: AppColors.iconPurple,
+              iconBg: context.colors.isDark
+                  ? AppColors.iconBgPurple.withValues(alpha: 0.1)
+                  : const Color(0xFFFFEDED),
+              label: context.l10n.dashboardSectionUpcoming,
+            ),
           ),
           const SizedBox(height: 12),
-          ...upcomingGoals.map(
-            (goal) => UpcomingGoalCard(
-              goal: goal,
-              timeSpent: goalsTimeSpent[goal.id] ?? 0,
-              onTap: () => onGoalTap(goal),
-            ),
+          GoalCarousel(
+            horizontalPadding: _sidePadding,
+            cards: [
+              for (final goal in upcomingGoals)
+                UpcomingGoalCard(
+                  goal: goal,
+                  timeSpent: goalsTimeSpent[goal.id] ?? 0,
+                  onTap: () => onGoalTap(goal),
+                ),
+            ],
           ),
         ],
 
         // Completed section
         if (completedGoals.isNotEmpty) ...[
           const SizedBox(height: 24),
-          _sectionLabel(
-            context: context,
-            icon: Icons.check_circle_outline,
-            iconColor: AppColors.completed,
-            iconBg: context.colors.isDark
-                ? AppColors.completed.withValues(alpha: 0.1)
-                : const Color(0xFFECFDF5),
-            label: context.l10n.dashboardSectionCompleted,
+          _inset(
+            _sectionLabel(
+              context: context,
+              icon: Icons.check_circle_outline,
+              iconColor: AppColors.completed,
+              iconBg: context.colors.isDark
+                  ? AppColors.completed.withValues(alpha: 0.1)
+                  : const Color(0xFFECFDF5),
+              label: context.l10n.dashboardSectionCompleted,
+            ),
           ),
           const SizedBox(height: 12),
-          ...completedGoals.map(
-            (goal) => CompletedGoalCard(
-              goal: goal,
-              onTap: () => onGoalTap(goal),
-            ),
+          GoalCarousel(
+            horizontalPadding: _sidePadding,
+            cards: [
+              for (final goal in completedGoals)
+                CompletedGoalCard(
+                  goal: goal,
+                  onTap: () => onGoalTap(goal),
+                ),
+            ],
           ),
         ],
 
@@ -146,7 +176,8 @@ class DashboardTemplate extends StatelessWidget {
             upcomingGoals.isEmpty &&
             completedGoals.isEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 48),
+            padding: const EdgeInsets.fromLTRB(
+                _sidePadding, 48, _sidePadding, 0),
             child: Column(
               children: [
                 Icon(

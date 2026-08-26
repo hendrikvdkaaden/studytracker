@@ -185,6 +185,36 @@ class SettingsService {
   static bool get shouldOfferCalendarSync =>
       !calendarPromptShown && !calendarSyncEnabled;
 
+  // Update check
+  static const String _keyLastUpdateCheck = 'lastUpdateCheck';
+  static const String _keyUpdateSnoozedVersion = 'updateSnoozedVersion';
+
+  /// When the store was last asked about a newer release.
+  static DateTime? get lastUpdateCheck {
+    final raw = _box.get(_keyLastUpdateCheck);
+    if (raw is! String) return null;
+    return DateTime.tryParse(raw);
+  }
+
+  static Future<void> setLastUpdateCheck(DateTime value) async {
+    await _box.put(_keyLastUpdateCheck, value.toIso8601String());
+  }
+
+  /// The store version the user last dismissed with "Later".
+  ///
+  /// Stored per version, so dismissing 1.2.0 stays dismissed but 1.3.0 asks
+  /// again — the prompt is a reminder, not a nag.
+  static String? get updateSnoozedVersion =>
+      _box.get(_keyUpdateSnoozedVersion) as String?;
+
+  static Future<void> setUpdateSnoozedVersion(String version) async {
+    await _box.put(_keyUpdateSnoozedVersion, version);
+  }
+
+  /// Whether the user should be told about [version].
+  static bool shouldPromptForUpdate(String version) =>
+      updateSnoozedVersion != version;
+
   // Rewarded-ad trial for auto planning
   static const String _keyLastAdTrialDate = 'lastAdTrialDate';
 

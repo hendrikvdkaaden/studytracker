@@ -3,6 +3,9 @@ import '../../main.dart';
 import '../../services/calendar_sync_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
+import '../../services/update_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
@@ -36,6 +39,7 @@ class _HomePageState extends State<HomePage> {
       if (!mounted) return;
       await _maybeOfferCalendarSync();
       if (!mounted) return;
+      await _maybeOfferUpdate();
     });
     _screens = [
       HomeScreen(key: _homeScreenKey),
@@ -83,6 +87,40 @@ class _HomePageState extends State<HomePage> {
     // upgraded past onboarding, so they already have deadlines that would
     // otherwise never reach the calendar they just connected.
     await CalendarSyncService.enableAndBackfill();
+  }
+
+  /// Tells the user when a newer build is on the App Store.
+  ///
+  /// Dismissing is remembered per version, so "Later" holds until the next
+  /// release rather than reappearing every launch. Nothing is blocked: a
+  /// failed check, an offline device or a declined prompt all just carry on.
+  Future<void> _maybeOfferUpdate() async {
+    final update = await UpdateService.checkForUpdate();
+    if (update == null || !mounted) return;
+    if (!SettingsService.shouldPromptForUpdate(update.version)) return;
+
+    final l10n = context.l10n;
+    final accepted = await showAppConfirmDialog(
+      context: context,
+      title: l10n.updateAvailableTitle,
+      message: l10n.updateAvailableMessage(update.version),
+      confirmLabel: l10n.updateAvailableConfirm,
+      cancelLabel: l10n.updateAvailableDismiss,
+      icon: Icons.system_update_alt,
+    );
+
+    if (!accepted) {
+      await SettingsService.setUpdateSnoozedVersion(update.version);
+      return;
+    }
+
+    // Failing softly: the prompt is a convenience, and throwing here would
+    // escape the post-frame callback with nothing to catch it.
+    try {
+      await launchUrl(update.storeUrl, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint('Opening the store page failed: $e');
+    }
   }
 
   void _onThemeChanged() {

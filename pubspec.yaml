@@ -26,6 +26,8 @@ dependencies:
   url_launcher: ^6.3.2
   google_mobile_ads: 9.0.0
   device_calendar_plus: ^0.8.0
+  http: ^1.6.0
+  package_info_plus: ^10.2.1
 
 dev_dependencies:
   flutter_test:

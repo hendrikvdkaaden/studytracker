@@ -85,33 +85,40 @@ class OnboardingStepSubjects extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                   ],
-                  GestureDetector(
-                    onTap: onAddSubject,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.add,
-                            color: AppColors.primaryLight,
-                            size: 20,
-                          ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onAddSubject,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                color: AppColors.primaryLight,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              l10n.onboardingAddSubject,
+                              style: const TextStyle(
+                                color: AppColors.primaryLight,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          l10n.onboardingAddSubject,
-                          style: const TextStyle(
-                            color: AppColors.primaryLight,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
@@ -143,51 +150,57 @@ class OnboardingStepSubjects extends StatelessWidget {
 
   Widget _buildSubjectChip(BuildContext context, SubjectData subject) {
     final isDark = context.colors.isDark;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D3449) : AppColors.lightChipBg,
+    // The whole pill removes the subject, not just the small cross: the icon
+    // alone was a tap target barely wider than a fingertip.
+    return Material(
+      color: isDark ? const Color(0xFF2D3449) : AppColors.lightChipBg,
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        onTap: () => onRemoveSubject(subject),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightChipBorder,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              color: subject.color,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: subject.color.withValues(alpha: 0.5),
-                  blurRadius: 6,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : AppColors.lightChipBorder,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: subject.color,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: subject.color.withValues(alpha: 0.5),
+                      blurRadius: 6,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                subject.name,
+                style: TextStyle(
+                  color: context.colors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.close,
+                size: 16,
+                color: AppColors.textTertiary,
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          Text(
-            subject.name,
-            style: TextStyle(
-              color: context.colors.textPrimary,
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () => onRemoveSubject(subject),
-            child: const Icon(
-              Icons.close,
-              size: 16,
-              color: AppColors.textTertiary,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

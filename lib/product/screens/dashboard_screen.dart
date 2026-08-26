@@ -7,6 +7,7 @@ import '../../models/day_status.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
+import '../../services/settings_service.dart';
 import '../../services/streak_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/calendar_helpers.dart';
@@ -26,6 +27,14 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   /// screen alive in an IndexedStack, so returning to the tab does not rebuild.
   void refresh() {
     if (mounted) setState(() {});
+  }
+
+  late bool _completedCollapsed = SettingsService.completedCollapsed;
+
+  Future<void> _toggleCompleted() async {
+    final collapsed = !_completedCollapsed;
+    setState(() => _completedCollapsed = collapsed);
+    await SettingsService.setCompletedCollapsed(collapsed);
   }
 
   GoalRepository get _goalRepo => ref.read(goalRepositoryProvider);
@@ -132,6 +141,8 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
         completedGoals: _goalRepo.getCompletedGoals(),
         goalsTimeSpent: _getGoalsTimeSpent(),
         onGoalTap: _navigateToDetails,
+        completedCollapsed: _completedCollapsed,
+        onToggleCompleted: _toggleCompleted,
       ),
     );
   }

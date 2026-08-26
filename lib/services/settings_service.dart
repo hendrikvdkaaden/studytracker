@@ -185,6 +185,19 @@ class SettingsService {
   static bool get shouldOfferCalendarSync =>
       !calendarPromptShown && !calendarSyncEnabled;
 
+  /// Whether the completed section on the dashboard is collapsed.
+  ///
+  /// Kept across launches: someone who hides their finished deadlines does
+  /// not want them back on the next start.
+  static const String _keyCompletedCollapsed = 'completedCollapsed';
+
+  static bool get completedCollapsed =>
+      _box.get(_keyCompletedCollapsed, defaultValue: false) as bool;
+
+  static Future<void> setCompletedCollapsed(bool value) async {
+    await _box.put(_keyCompletedCollapsed, value);
+  }
+
   // Update check
   static const String _keyLastUpdateCheck = 'lastUpdateCheck';
   static const String _keyUpdateSnoozedVersion = 'updateSnoozedVersion';

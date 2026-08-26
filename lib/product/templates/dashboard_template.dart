@@ -19,6 +19,8 @@ class DashboardTemplate extends StatelessWidget {
   final List<Goal> completedGoals;
   final Map<String, int> goalsTimeSpent;
   final Function(Goal) onGoalTap;
+  final bool completedCollapsed;
+  final VoidCallback onToggleCompleted;
 
   const DashboardTemplate({
     super.key,
@@ -30,6 +32,8 @@ class DashboardTemplate extends StatelessWidget {
     required this.completedGoals,
     required this.goalsTimeSpent,
     required this.onGoalTap,
+    required this.completedCollapsed,
+    required this.onToggleCompleted,
   });
 
   /// Inset applied per item rather than to the list, so a carousel can scroll
@@ -47,6 +51,7 @@ class DashboardTemplate extends StatelessWidget {
     required Color iconColor,
     required Color iconBg,
     required String label,
+    Widget? trailing,
   }) {
     final subtleText = context.colors.textSecondary;
 
@@ -62,16 +67,52 @@ class DashboardTemplate extends StatelessWidget {
           child: Icon(icon, color: iconColor, size: 16),
         ),
         const SizedBox(width: 10),
-        Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.1,
-            color: subtleText,
+        Expanded(
+          child: Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              color: subtleText,
+            ),
           ),
         ),
+        ?trailing,
       ],
+    );
+  }
+
+  /// Text button that folds the completed section away and back.
+  Widget _toggleButton(BuildContext context) {
+    return TextButton(
+      onPressed: onToggleCompleted,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        foregroundColor: context.colors.textSecondary,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            completedCollapsed
+                ? context.l10n.dashboardShowCompleted
+                : context.l10n.dashboardHideCompleted,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.6,
+            ),
+          ),
+          const SizedBox(width: 2),
+          Icon(
+            completedCollapsed ? Icons.expand_more : Icons.expand_less,
+            size: 16,
+          ),
+        ],
+      ),
     );
   }
 
@@ -156,19 +197,37 @@ class DashboardTemplate extends StatelessWidget {
                   ? AppColors.completed.withValues(alpha: 0.1)
                   : const Color(0xFFECFDF5),
               label: context.l10n.dashboardSectionCompleted,
+              trailing: _toggleButton(context),
             ),
           ),
-          const SizedBox(height: 12),
-          GoalCarousel(
-            horizontalPadding: _sidePadding,
-            cards: [
-              for (final goal in completedGoals)
-                CompletedGoalCard(
-                  goal: goal,
-                  onTap: () => onGoalTap(goal),
+          if (completedCollapsed)
+            // Naming the count keeps the section from reading as empty when
+            // it is only folded away.
+            _inset(
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  context.l10n.dashboardCompletedCount(completedGoals.length),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.colors.textTertiary,
+                  ),
                 ),
-            ],
-          ),
+              ),
+            )
+          else ...[
+            const SizedBox(height: 12),
+            GoalCarousel(
+              horizontalPadding: _sidePadding,
+              cards: [
+                for (final goal in completedGoals)
+                  CompletedGoalCard(
+                    goal: goal,
+                    onTap: () => onGoalTap(goal),
+                  ),
+              ],
+            ),
+          ],
         ],
 
         // Empty state

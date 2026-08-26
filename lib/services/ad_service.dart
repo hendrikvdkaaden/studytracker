@@ -21,7 +21,7 @@ class AdService {
   /// Flip to true to force test ads while developing. Clicking a live ad
   /// yourself is the quickest way to get an AdMob account suspended, so switch
   /// this on before testing the paywall by hand.
-  static const bool useTestAds = true;
+  static const bool useTestAds = false;
 
   static bool _initialised = false;
   static bool _consentGathered = false;

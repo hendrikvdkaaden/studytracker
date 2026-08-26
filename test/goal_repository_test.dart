@@ -14,7 +14,6 @@ Goal _goalDueAt(DateTime day, {int hour = 12, bool isCompleted = false}) {
     subject: 'Math',
     date: DateTime(day.year, day.month, day.day, hour),
     type: GoalType.exam,
-    difficulty: Difficulty.medium,
     isCompleted: isCompleted,
     studyTime: 60,
   );
@@ -27,7 +26,6 @@ void main() {
   setUpAll(() {
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(GoalAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(GoalTypeAdapter());
-    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(DifficultyAdapter());
   });
 
   setUp(() async {

@@ -19,8 +19,10 @@ class Goal extends HiveObject {
   @HiveField(4)
   GoalType type;
 
-  @HiveField(5)
-  Difficulty difficulty;
+  // Field 5 held a Difficulty. The feature is gone, but the enum below and
+  // its adapter must stay registered: Hive throws when it decodes a value
+  // whose typeId is unknown, and existing records still carry one there.
+  // Field 5 must never be reused.
 
   @HiveField(6)
   bool isCompleted;
@@ -28,15 +30,20 @@ class Goal extends HiveObject {
   @HiveField(7)
   int studyTime; // in minutes
 
+  /// Identifier of the matching event in the user's calendar, when calendar
+  /// sync is on. Null when the goal was never synced.
+  @HiveField(8)
+  String? calendarEventId;
+
   Goal({
     required this.id,
     required this.title,
     required this.subject,
     required this.date,
     required this.type,
-    required this.difficulty,
     this.isCompleted = false,
     this.studyTime = 0,
+    this.calendarEventId,
   });
 
   // Helper methods
@@ -71,9 +78,9 @@ class Goal extends HiveObject {
     String? subject,
     DateTime? date,
     GoalType? type,
-    Difficulty? difficulty,
     bool? isCompleted,
     int? studyTime,
+    String? calendarEventId,
   }) {
     return Goal(
       id: id ?? this.id,
@@ -81,9 +88,9 @@ class Goal extends HiveObject {
       subject: subject ?? this.subject,
       date: date ?? this.date,
       type: type ?? this.type,
-      difficulty: difficulty ?? this.difficulty,
       isCompleted: isCompleted ?? this.isCompleted,
       studyTime: studyTime ?? this.studyTime,
+      calendarEventId: calendarEventId ?? this.calendarEventId,
     );
   }
 }
@@ -115,6 +122,8 @@ enum GoalType {
   other,
 }
 
+/// Retained only so Hive can decode field 5 of goals written before the
+/// difficulty feature was removed. Not used anywhere in the app.
 @HiveType(typeId: 2)
 enum Difficulty {
   @HiveField(0)

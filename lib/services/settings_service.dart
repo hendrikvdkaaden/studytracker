@@ -178,6 +178,28 @@ class SettingsService {
     await _box.put(_keyLastAdTrialDate, value.toIso8601String());
   }
 
+  // Calendar sync
+  static const String _keyCalendarSyncEnabled = 'calendarSyncEnabled';
+  static const String _keyCalendarId = 'calendarId';
+
+  static bool get calendarSyncEnabled =>
+      _box.get(_keyCalendarSyncEnabled, defaultValue: false) as bool;
+
+  static Future<void> setCalendarSyncEnabled(bool value) async {
+    await _box.put(_keyCalendarSyncEnabled, value);
+  }
+
+  /// Identifier of the app's own calendar on the device, once created.
+  static String? get calendarId => _box.get(_keyCalendarId) as String?;
+
+  static Future<void> setCalendarId(String? value) async {
+    if (value == null) {
+      await _box.delete(_keyCalendarId);
+    } else {
+      await _box.put(_keyCalendarId, value);
+    }
+  }
+
   /// True when the free ad-backed try has not been used today. The allowance
   /// resets at midnight rather than 24 hours after the last use.
   static bool get canUseAdTrialToday {

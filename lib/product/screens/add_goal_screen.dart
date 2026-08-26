@@ -5,6 +5,7 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/auto_planner_service.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/goal_repository.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
@@ -265,7 +266,6 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         subject: subjectValue,
         date: _selectedDate,
         type: _selectedType,
-        difficulty: Difficulty.medium,
         studyTime: totalMinutes,
       );
 
@@ -273,9 +273,11 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       await _goalRepo.addGoal(goal);
 
       // Save planned sessions with the goal ID
+      final savedSessions = <StudySession>[];
       for (var session in _plannedSessions) {
         final sessionWithGoalId = session.copyWith(goalId: goal.id);
         await _sessionRepo.addSession(sessionWithGoalId);
+        savedSessions.add(sessionWithGoalId);
         await NotificationService.scheduleSessionReminder(
           sessionWithGoalId,
           goal.title,
@@ -285,12 +287,39 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       // Schedule deadline reminder
       await NotificationService.scheduleDeadlineReminder(goal);
 
+      // Mirror to the device calendar. No-ops when the user has sync off.
+      await _syncToCalendar(goal, savedSessions);
+
       if (!mounted) return;
 
       Navigator.pop(context);
     }
   }
 
+
+  /// Writes the new deadline and its sessions to the device calendar, storing
+  /// the returned event ids so they can be updated or removed later.
+  Future<void> _syncToCalendar(Goal goal, List<StudySession> sessions) async {
+    if (!CalendarSyncService.isEnabled) return;
+
+    final deadlineEventId = await CalendarSyncService.syncDeadline(goal);
+    if (deadlineEventId != null) {
+      await _goalRepo.updateGoal(goal.copyWith(calendarEventId: deadlineEventId));
+    }
+
+    final eventIds = await CalendarSyncService.syncSessions(
+      sessions,
+      goal.title,
+      goal.subject,
+    );
+    for (final session in sessions) {
+      final eventId = eventIds[session.id];
+      if (eventId == null) continue;
+      await _sessionRepo.updateSession(
+        session.copyWith(calendarEventId: eventId),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

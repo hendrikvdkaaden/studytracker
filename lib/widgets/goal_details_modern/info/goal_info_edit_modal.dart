@@ -3,7 +3,6 @@ import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
-import '../../../utils/difficulty_helper.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../common/subject_selector_field.dart';
@@ -38,7 +37,6 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
   late TextEditingController _titleController;
   late TextEditingController _subjectController;
   late GoalType _selectedType;
-  late Difficulty _selectedDifficulty;
   late List<SubjectData> _subjects;
   String? _selectedSubject;
   String? _errorMessage;
@@ -49,7 +47,6 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
     _titleController = TextEditingController(text: widget.goal.title);
     _subjectController = TextEditingController(text: widget.goal.subject);
     _selectedType = widget.goal.type;
-    _selectedDifficulty = widget.goal.difficulty;
     _subjects = SettingsService.subjectData;
     // Only pre-select if the goal's subject still exists in the list
     final subjectExists = _subjects.any((s) => s.name == widget.goal.subject);
@@ -84,7 +81,6 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
       title: title,
       subject: subject,
       type: _selectedType,
-      difficulty: _selectedDifficulty,
     );
     Navigator.pop(context, updated);
   }
@@ -260,60 +256,6 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Difficulty
-                  Text(
-                    context.l10n.goalInfoEditDifficultyLabel,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: subTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: Difficulty.values.map((diff) {
-                      final isSelected = _selectedDifficulty == diff;
-                      final color = DifficultyHelper.getAccentColor(diff);
-                      final isLast = diff == Difficulty.values.last;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: isLast ? 0 : 8),
-                          child: InkWell(
-                            onTap: () =>
-                                setState(() => _selectedDifficulty = diff),
-                            borderRadius: BorderRadius.circular(10),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? color.withValues(alpha: 0.2)
-                                    : fieldFill,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: isSelected ? color : borderColor,
-                                ),
-                              ),
-                              child: SizedBox(
-                                height: 40,
-                                child: Center(
-                                  child: Text(
-                                    DifficultyHelper.getLocalizedLabel(context, diff),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color:
-                                          isSelected ? color : subTextColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ),
                           ),
                         ),

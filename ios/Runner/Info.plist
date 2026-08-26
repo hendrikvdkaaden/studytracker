@@ -59,6 +59,10 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Deadly adds your deadlines and study sessions to your calendar, so they show up alongside your other plans.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Deadly adds your deadlines and study sessions to your calendar, so they show up alongside your other plans.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3670812631941435~8233153701</string>
 </dict>

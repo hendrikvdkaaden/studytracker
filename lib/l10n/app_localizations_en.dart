@@ -81,9 +81,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGoalTypeLabel => 'Deadline Type';
 
   @override
-  String get addGoalDifficultyLabel => 'Difficulty';
-
-  @override
   String get addGoalStudyTimeLabel => 'Target Study Time';
 
   @override
@@ -106,9 +103,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addGoalValidateType => 'Please select a deadline type';
-
-  @override
-  String get addGoalValidateDifficulty => 'Please select a difficulty';
 
   @override
   String get addGoalValidateStudyTime => 'Please set a target study time';
@@ -372,9 +366,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goalInfoEditTypeLabel => 'Deadline Type';
 
   @override
-  String get goalInfoEditDifficultyLabel => 'Difficulty';
-
-  @override
   String get goalInfoEditSaveButton => 'Save Changes';
 
   @override
@@ -486,6 +477,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSectionData => 'DATA';
+
+  @override
+  String get profileSectionCalendar => 'CALENDAR';
+
+  @override
+  String get profileCalendarSyncLabel => 'Sync to calendar';
+
+  @override
+  String get profileCalendarSyncOn => 'On';
+
+  @override
+  String get profileCalendarSyncOff => 'Off';
+
+  @override
+  String get calendarSyncEnableTitle => 'Sync to your calendar';
+
+  @override
+  String get calendarSyncEnableMessage =>
+      'Deadly adds your deadlines and study sessions to a calendar named Deadly, so they show up next to your other plans. You can hide or remove it at any time.';
+
+  @override
+  String get calendarSyncEnableConfirm => 'Turn on';
+
+  @override
+  String get calendarSyncDisableTitle => 'Stop syncing?';
+
+  @override
+  String get calendarSyncDisableMessage =>
+      'This removes the Deadly calendar and everything in it from your device. Your deadlines and sessions stay in the app.';
+
+  @override
+  String get calendarSyncDisableConfirm => 'Turn off';
+
+  @override
+  String get calendarSyncDeniedTitle => 'Calendar access needed';
+
+  @override
+  String get calendarSyncDeniedMessage =>
+      'Deadly needs permission to add events to your calendar. You can grant it in your device settings.';
+
+  @override
+  String get calendarSyncDeniedConfirm => 'Open settings';
 
   @override
   String get profileSectionPrivacy => 'PRIVACY';
@@ -726,18 +759,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalTypeOther => 'Other';
-
-  @override
-  String get difficultyEasy => 'Easy';
-
-  @override
-  String get difficultyMedium => 'Medium';
-
-  @override
-  String get difficultyHard => 'Hard';
-
-  @override
-  String get difficultyVeryHard => 'Very Hard';
 
   @override
   String plannedSessionDuration(int duration) {

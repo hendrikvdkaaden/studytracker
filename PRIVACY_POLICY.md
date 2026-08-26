@@ -1,6 +1,6 @@
 # Privacy Policy for Deadly
 
-**Last updated: 12 August 2026**
+**Last updated: 25 August 2026**
 
 This Privacy Policy explains how the Deadly mobile application ("Deadly", "the app", "we", "us") handles your information. Deadly is a study planning app that helps you track deadlines, plan study sessions and monitor your progress.
 
@@ -12,6 +12,7 @@ Deadly is built to be offline-first. Your study data never leaves your device. T
 - We do not have a user account system, so we never ask for your email or password.
 - We do not track you across other apps or websites, and we do not ask for permission to do so.
 - Advertisements are optional. They only appear if you choose to watch one, and they are never personalised.
+- Calendar sync is optional and one-way: Deadly can add your plans to your calendar, but never reads what is already in it.
 
 ## Data stored on your device
 
@@ -57,6 +58,25 @@ Apple processes the payment itself. We never receive or have access to your paym
 
 RevenueCat's privacy policy is available at https://www.revenuecat.com/privacy/
 
+## Calendar
+
+If you switch on calendar sync in the app's settings, Deadly writes your deadlines and study sessions to a calendar on your device named "Deadly". This is off by default, and Deadly only asks for calendar access at the moment you switch it on.
+
+**The information stays on your device.** Calendar entries are created through your device's own calendar system. Nothing about your deadlines, sessions or calendar is sent to us or to any third party.
+
+What Deadly writes:
+
+- Deadlines, as all-day entries with the title and subject you entered
+- Study sessions, as time blocks with the title, duration and any note you added
+
+**Deadly does not read your calendar.** It cannot see your existing appointments or events. It looks up the list of calendars on your device only to find or create its own "Deadly" calendar, and it only ever writes to that one — never to your personal calendars.
+
+You stay in control:
+
+- Switching sync off deletes the "Deadly" calendar and everything in it from your device
+- You can hide, recolour or delete the calendar yourself in your device's calendar app
+- You can withdraw calendar access at any time in your device settings, which stops any further writing
+
 ## Notifications
 
 If you allow notifications, Deadly schedules reminders for your study sessions and deadlines. These notifications are generated and scheduled entirely on your device. No notification content is sent to us or through any external server. You can turn notifications off at any time in your device settings.
@@ -67,7 +87,8 @@ Deadly does not collect, use or share:
 
 - Analytics or usage statistics about how you use the app
 - Location data
-- Contacts, photos, calendar or health data
+- Contacts, photos or health data
+- The contents of your calendar — Deadly writes to its own calendar but never reads yours
 - Your name, email address or any other contact information
 
 Deadly does not track you across apps or websites owned by other companies, and does not build an advertising profile about you.
@@ -82,6 +103,7 @@ Because your study data is stored only on your device, you are in full control o
 
 - **Access and correction:** all your data is directly viewable and editable within the app.
 - **Deletion:** deleting an item in the app removes it. Deleting the app removes all local data.
+- **Calendar:** sync is off until you turn it on, and switching it off removes the calendar Deadly created.
 - **Advertising:** watching an advertisement is always your choice. You can avoid ads entirely by not using the reward option, or by subscribing to Deadly Premium.
 - **Subscription:** you can view, manage and cancel your subscription at any time in your Apple ID Account Settings.
 

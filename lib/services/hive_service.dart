@@ -17,6 +17,8 @@ class HiveService {
     // Register all type adapters (guard against duplicate registration on hot restart)
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(GoalAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(GoalTypeAdapter());
+    // Difficulty is no longer a feature, but its adapter must stay registered
+    // so Hive can decode field 5 of goals saved by earlier versions.
     if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(DifficultyAdapter());
     if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(StudySessionAdapter());
 

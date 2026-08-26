@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../services/ad_service.dart';
+import '../../services/calendar_event_mapper.dart';
+import '../../services/calendar_sync_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
@@ -33,6 +35,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   List<SubjectData> _subjects = [];
   String _schoolName = '';
   bool _showPrivacyOptions = false;
+  bool _calendarSyncEnabled = false;
+  bool _calendarBusy = false;
 
   @override
   void initState() {
@@ -44,6 +48,152 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _subjects = SettingsService.subjectData;
     _schoolName = SettingsService.schoolName;
     _loadPrivacyOptionsStatus();
+    _loadCalendarSyncStatus();
+  }
+
+  /// Reconciles the stored preference with reality: the user may have revoked
+  /// calendar access in system settings since they turned sync on.
+  ///
+  /// Switching sync off here has to clear the stored event ids as well.
+  /// Without that, re-enabling would write a second entry for every goal and
+  /// session that still carried an id from before.
+  Future<void> _loadCalendarSyncStatus() async {
+    var enabled = SettingsService.calendarSyncEnabled;
+    if (enabled && !await CalendarSyncService.hasPermission()) {
+      await SettingsService.setCalendarSyncEnabled(false);
+      await SettingsService.setCalendarId(null);
+      await _clearStoredEventIds();
+      enabled = false;
+    }
+    if (mounted) setState(() => _calendarSyncEnabled = enabled);
+  }
+
+  Future<void> _onCalendarSyncTap() async {
+    if (_calendarBusy) return;
+    // Held across the confirmation dialog as well, so a second tap while the
+    // dialog is open cannot start a parallel sync.
+    setState(() => _calendarBusy = true);
+    try {
+      if (_calendarSyncEnabled) {
+        await _disableCalendarSync();
+      } else {
+        await _enableCalendarSync();
+      }
+    } finally {
+      if (mounted) setState(() => _calendarBusy = false);
+    }
+  }
+
+  Future<void> _enableCalendarSync() async {
+    final l10n = context.l10n;
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: l10n.calendarSyncEnableTitle,
+      message: l10n.calendarSyncEnableMessage,
+      confirmLabel: l10n.calendarSyncEnableConfirm,
+      icon: Icons.calendar_month_outlined,
+    );
+    if (!confirmed || !mounted) return;
+
+    final granted = await CalendarSyncService.requestPermission();
+    if (!mounted) return;
+
+    if (!granted) {
+      final openSettings = await showAppConfirmDialog(
+        context: context,
+        title: l10n.calendarSyncDeniedTitle,
+        message: l10n.calendarSyncDeniedMessage,
+        confirmLabel: l10n.calendarSyncDeniedConfirm,
+        icon: Icons.lock_outline,
+      );
+      if (openSettings) await CalendarSyncService.openSettings();
+      return;
+    }
+
+    await SettingsService.setCalendarSyncEnabled(true);
+    final ready = await CalendarSyncService.prepareCalendar();
+    if (ready) {
+      await _backfillCalendar();
+    } else {
+      await SettingsService.setCalendarSyncEnabled(false);
+    }
+    if (!mounted) return;
+    setState(() {
+      _calendarSyncEnabled = SettingsService.calendarSyncEnabled;
+    });
+  }
+
+  /// Adds everything still ahead. Past and finished items are left out, so
+  /// switching sync on does not flood the calendar with history.
+  Future<void> _backfillCalendar() async {
+    final now = DateTime.now();
+    final goalRepo = ref.read(goalRepositoryProvider);
+    final sessionRepo = ref.read(studySessionRepositoryProvider);
+
+    for (final goal in goalRepo.getAllGoals()) {
+      if (!CalendarEventMapper.shouldSyncGoal(goal, now)) continue;
+      // Drop any entry left over from an earlier sync before writing a fresh
+      // one, so switching sync off and on again cannot duplicate a deadline.
+      await CalendarSyncService.deleteEvent(goal.calendarEventId);
+      final eventId = await CalendarSyncService.syncDeadline(goal);
+      if (eventId == null) continue;
+      await goalRepo.updateGoal(goal.copyWith(calendarEventId: eventId));
+
+      final sessions = sessionRepo
+          .getPlannedSessionsByGoalId(goal.id)
+          .where((s) => CalendarEventMapper.shouldSyncSession(s, now))
+          .toList();
+      if (sessions.isEmpty) continue;
+
+      await CalendarSyncService.deleteEvents(
+        sessions.map((s) => s.calendarEventId),
+      );
+      final ids = await CalendarSyncService.syncSessions(
+        sessions,
+        goal.title,
+        goal.subject,
+      );
+      for (final session in sessions) {
+        final id = ids[session.id];
+        if (id == null) continue;
+        await sessionRepo
+            .updateSession(session.copyWith(calendarEventId: id));
+      }
+    }
+  }
+
+  Future<void> _disableCalendarSync() async {
+    final l10n = context.l10n;
+    final confirmed = await _showDestructiveConfirmation(
+      title: l10n.calendarSyncDisableTitle,
+      body: l10n.calendarSyncDisableMessage,
+      confirmLabel: l10n.calendarSyncDisableConfirm,
+    );
+    if (confirmed != true || !mounted) return;
+
+    await CalendarSyncService.purgeAll();
+    await SettingsService.setCalendarSyncEnabled(false);
+    await _clearStoredEventIds();
+    if (!mounted) return;
+    setState(() => _calendarSyncEnabled = false);
+  }
+
+  /// Drops every stored event id. Without this, re-enabling sync would try to
+  /// update events in a calendar that no longer exists.
+  Future<void> _clearStoredEventIds() async {
+    final goalRepo = ref.read(goalRepositoryProvider);
+    final sessionRepo = ref.read(studySessionRepositoryProvider);
+
+    for (final goal in goalRepo.getAllGoals()) {
+      if (goal.calendarEventId == null) continue;
+      goal.calendarEventId = null;
+      await goalRepo.updateGoal(goal);
+    }
+    for (final session in sessionRepo.getAllSessions()) {
+      if (session.calendarEventId == null) continue;
+      session.calendarEventId = null;
+      await sessionRepo.updateSession(session);
+    }
   }
 
   /// Google decides per region whether a consent entry point must be offered,
@@ -472,7 +622,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       confirmLabel: l10n.profileDeleteSessionsConfirm,
     );
     if (confirmed == true && mounted) {
-      await ref.read(studySessionRepositoryProvider).clearAll();
+      // Remove only the study blocks. purgeAll would delete the whole
+      // calendar, taking every deadline the user did not ask to remove with
+      // it and stranding the event ids the goals still hold.
+      final sessionRepo = ref.read(studySessionRepositoryProvider);
+      await CalendarSyncService.deleteEvents(
+        sessionRepo.getAllSessions().map((s) => s.calendarEventId),
+      );
+      await sessionRepo.clearAll();
     }
   }
 
@@ -484,7 +641,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       confirmLabel: l10n.profileDeleteEverythingConfirm,
     );
     if (confirmed == true && mounted) {
+      await CalendarSyncService.purgeAll();
       await HiveService.clearAllData();
+      // clearAllData drops the settings box, so the stored ids go with it --
+      // but sync would otherwise keep running against a calendar that is now
+      // gone. Turning it off leaves the user a working toggle.
+      await SettingsService.setCalendarSyncEnabled(false);
+      if (mounted) setState(() => _calendarSyncEnabled = false);
     }
   }
 
@@ -531,6 +694,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       schoolName: _schoolName,
       isPremium: isPremium,
       showPrivacyOptions: _showPrivacyOptions,
+      calendarSyncEnabled: _calendarSyncEnabled,
+      calendarSyncBusy: _calendarBusy,
+      onCalendarSyncTap: _onCalendarSyncTap,
       onPrivacyOptions: AdService.showPrivacyOptionsForm,
       onSubscriptionTap: _onSubscriptionTap,
       onEditName: _editProfile,

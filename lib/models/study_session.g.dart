@@ -27,13 +27,14 @@ class StudySessionAdapter extends TypeAdapter<StudySession> {
       actualDuration: fields[7] as int?,
       elapsedSeconds: fields[8] as int?,
       completedAt: fields[9] as DateTime?,
+      calendarEventId: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudySession obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class StudySessionAdapter extends TypeAdapter<StudySession> {
       ..writeByte(8)
       ..write(obj.elapsedSeconds)
       ..writeByte(9)
-      ..write(obj.completedAt);
+      ..write(obj.completedAt)
+      ..writeByte(10)
+      ..write(obj.calendarEventId);
   }
 
   @override

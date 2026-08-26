@@ -15,8 +15,11 @@ class ProfileTemplate extends StatelessWidget {
   final String schoolName;
   final bool isPremium;
   final bool showPrivacyOptions;
+  final bool calendarSyncEnabled;
+  final bool calendarSyncBusy;
   final VoidCallback onSubscriptionTap;
   final VoidCallback onPrivacyOptions;
+  final VoidCallback onCalendarSyncTap;
   final VoidCallback onEditName;
   final VoidCallback onSessionReminderTap;
   final VoidCallback onDeadlineReminderTap;
@@ -36,6 +39,9 @@ class ProfileTemplate extends StatelessWidget {
     required this.schoolName,
     required this.isPremium,
     required this.showPrivacyOptions,
+    required this.calendarSyncEnabled,
+    required this.calendarSyncBusy,
+    required this.onCalendarSyncTap,
     required this.onPrivacyOptions,
     required this.onSubscriptionTap,
     required this.onEditName,
@@ -153,6 +159,25 @@ class ProfileTemplate extends StatelessWidget {
           ),
           const SizedBox(height: 24),
         ],
+        _buildSectionLabel(context, l10n.profileSectionCalendar),
+        const SizedBox(height: 8),
+        _buildGroupCard(
+          context,
+          children: [
+            _buildSettingsRow(
+              context,
+              icon: Icons.calendar_month_outlined,
+              iconColor: AppColors.iconOrange,
+              label: l10n.profileCalendarSyncLabel,
+              value: calendarSyncEnabled
+                  ? l10n.profileCalendarSyncOn
+                  : l10n.profileCalendarSyncOff,
+              onTap: onCalendarSyncTap,
+              busy: calendarSyncBusy,
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
         _buildSectionLabel(context, l10n.profileSectionData),
         const SizedBox(height: 8),
         _buildGroupCard(
@@ -351,9 +376,11 @@ class ProfileTemplate extends StatelessWidget {
     Color? labelColor,
     required VoidCallback onTap,
     bool showChevron = true,
+    bool busy = false,
   }) {
     return InkWell(
-      onTap: onTap,
+      // Ignored while busy so the row cannot be re-entered mid-operation.
+      onTap: busy ? null : onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -381,23 +408,34 @@ class ProfileTemplate extends StatelessWidget {
                 ),
               ),
             ),
-            // Value + chevron
-            if (value != null) ...[
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: context.colors.textSecondary,
+            // Value + chevron, or a spinner while the row is working
+            if (busy)
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: context.colors.textTertiary,
                 ),
-              ),
-              const SizedBox(width: 4),
+              )
+            else ...[
+              if (value != null) ...[
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.colors.textSecondary,
+                  ),
+                ),
+                const SizedBox(width: 4),
+              ],
+              if (showChevron)
+                Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: context.colors.textTertiary,
+                ),
             ],
-            if (showChevron)
-              Icon(
-                Icons.chevron_right,
-                size: 20,
-                color: context.colors.textTertiary,
-              ),
           ],
         ),
       ),

@@ -238,12 +238,6 @@ abstract class AppLocalizations {
   /// **'Deadline Type'**
   String get addGoalTypeLabel;
 
-  /// No description provided for @addGoalDifficultyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Difficulty'**
-  String get addGoalDifficultyLabel;
-
   /// No description provided for @addGoalStudyTimeLabel.
   ///
   /// In en, this message translates to:
@@ -291,12 +285,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a deadline type'**
   String get addGoalValidateType;
-
-  /// No description provided for @addGoalValidateDifficulty.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a difficulty'**
-  String get addGoalValidateDifficulty;
 
   /// No description provided for @addGoalValidateStudyTime.
   ///
@@ -760,12 +748,6 @@ abstract class AppLocalizations {
   /// **'Deadline Type'**
   String get goalInfoEditTypeLabel;
 
-  /// No description provided for @goalInfoEditDifficultyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Difficulty'**
-  String get goalInfoEditDifficultyLabel;
-
   /// No description provided for @goalInfoEditSaveButton.
   ///
   /// In en, this message translates to:
@@ -921,6 +903,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DATA'**
   String get profileSectionData;
+
+  /// No description provided for @profileSectionCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'CALENDAR'**
+  String get profileSectionCalendar;
+
+  /// No description provided for @profileCalendarSyncLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync to calendar'**
+  String get profileCalendarSyncLabel;
+
+  /// No description provided for @profileCalendarSyncOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get profileCalendarSyncOn;
+
+  /// No description provided for @profileCalendarSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get profileCalendarSyncOff;
+
+  /// No description provided for @calendarSyncEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync to your calendar'**
+  String get calendarSyncEnableTitle;
+
+  /// No description provided for @calendarSyncEnableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly adds your deadlines and study sessions to a calendar named Deadly, so they show up next to your other plans. You can hide or remove it at any time.'**
+  String get calendarSyncEnableMessage;
+
+  /// No description provided for @calendarSyncEnableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get calendarSyncEnableConfirm;
+
+  /// No description provided for @calendarSyncDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop syncing?'**
+  String get calendarSyncDisableTitle;
+
+  /// No description provided for @calendarSyncDisableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the Deadly calendar and everything in it from your device. Your deadlines and sessions stay in the app.'**
+  String get calendarSyncDisableMessage;
+
+  /// No description provided for @calendarSyncDisableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get calendarSyncDisableConfirm;
+
+  /// No description provided for @calendarSyncDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar access needed'**
+  String get calendarSyncDeniedTitle;
+
+  /// No description provided for @calendarSyncDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly needs permission to add events to your calendar. You can grant it in your device settings.'**
+  String get calendarSyncDeniedMessage;
+
+  /// No description provided for @calendarSyncDeniedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get calendarSyncDeniedConfirm;
 
   /// No description provided for @profileSectionPrivacy.
   ///
@@ -1317,30 +1377,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get goalTypeOther;
-
-  /// No description provided for @difficultyEasy.
-  ///
-  /// In en, this message translates to:
-  /// **'Easy'**
-  String get difficultyEasy;
-
-  /// No description provided for @difficultyMedium.
-  ///
-  /// In en, this message translates to:
-  /// **'Medium'**
-  String get difficultyMedium;
-
-  /// No description provided for @difficultyHard.
-  ///
-  /// In en, this message translates to:
-  /// **'Hard'**
-  String get difficultyHard;
-
-  /// No description provided for @difficultyVeryHard.
-  ///
-  /// In en, this message translates to:
-  /// **'Very Hard'**
-  String get difficultyVeryHard;
 
   /// No description provided for @plannedSessionDuration.
   ///

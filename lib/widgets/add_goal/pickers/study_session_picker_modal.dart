@@ -148,19 +148,33 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       return;
     }
 
-    final isEditing = widget.initialSession != null;
-    final session = StudySession(
-      id: isEditing ? widget.initialSession!.id : const Uuid().v4(),
-      goalId: isEditing ? widget.initialSession!.goalId : '',
-      date: selectedDate,
-      duration: totalDuration,
-      isCompleted: isEditing ? widget.initialSession!.isCompleted : false,
-      startTime: newStart,
-      // Trimmed so a note of only whitespace is stored as no note at all.
-      notes: notesController.text.trim().isEmpty
-          ? null
-          : notesController.text.trim(),
-    );
+    // Trimmed so a note of only whitespace is stored as no note at all.
+    final trimmedNotes = notesController.text.trim();
+    final notes = trimmedNotes.isEmpty ? null : trimmedNotes;
+
+    // When editing, copyWith carries the fields this form does not touch --
+    // the calendar event id, and the timer's run state. Rebuilding the
+    // session from scratch would silently reset them, orphaning the entry
+    // already in the user's calendar.
+    final existing = widget.initialSession;
+    final session = existing != null
+        ? existing.copyWith(
+            date: selectedDate,
+            duration: totalDuration,
+            startTime: newStart,
+          )
+        : StudySession(
+            id: const Uuid().v4(),
+            goalId: '',
+            date: selectedDate,
+            duration: totalDuration,
+            isCompleted: false,
+            startTime: newStart,
+            notes: notes,
+          );
+    // Assigned directly because copyWith cannot clear a field: it falls back
+    // to the current value on null, so a cleared note would survive.
+    session.notes = notes;
 
     widget.onSessionAdded(session);
     FocusManager.instance.primaryFocus?.unfocus();

@@ -73,11 +73,22 @@ void main() {
     expect(find.text('A'), findsOneWidget);
   });
 
-  testWidgets('a single card still renders', (tester) async {
+  testWidgets('a lone card takes the full width', (tester) async {
+    // Nothing to scroll to, so a fixed width would only leave dead space.
     await tester.pumpWidget(host([stubCard('only')]));
 
-    expect(find.text('only'), findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    final screen = tester.getSize(find.byType(Scaffold)).width;
+    // The stub's own Container is the card; a Text inside would size to its
+    // letters rather than to the space the card was given.
+    final card = tester.getSize(find.byType(Container).first).width;
+
+    expect(
+      card,
+      screen - 48,
+      reason: 'fills the width the padding leaves, rather than a fixed 310',
+    );
   });
 
   testWidgets('stretches cards to a shared height', (tester) async {

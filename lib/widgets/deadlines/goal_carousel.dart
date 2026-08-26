@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 /// the screen and the sections below fell off the bottom. Laying each section
 /// out sideways keeps all three reachable no matter how many goals there are.
 class GoalCarousel extends StatelessWidget {
-  /// Width of a single card. Wide enough for a title and its subject, narrow
-  /// enough that the next card peeks in and shows the row scrolls.
-  static const double cardWidth = 280;
+  /// Width of a single card.
+  ///
+  /// Capped so the next card still shows on the narrowest iPhone: at 310 an
+  /// SE leaves 29pt of it visible, which reads as another card. Much past
+  /// this and that sliver starts to look like a cut-off edge instead.
+  static const double cardWidth = 310;
 
   final List<Widget> cards;
 
@@ -25,6 +28,16 @@ class GoalCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A lone card has nothing to scroll to, so a fixed width would just leave
+    // dead space beside it. It takes the full width instead, the way the
+    // section looked before these rows existed.
+    if (cards.length == 1) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: cards.first,
+      );
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),

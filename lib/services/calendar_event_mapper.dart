@@ -31,6 +31,23 @@ class CalendarEventMapper {
   /// Title shown in the calendar, e.g. "Study: Chapter 5 Exam".
   static String sessionTitle(String goalTitle) => 'Study: $goalTitle';
 
+  /// Body of a session entry: the subject, plus the user's own note when they
+  /// wrote one. Returns null when there is nothing worth showing, so the
+  /// calendar does not render an empty notes field.
+  static String? sessionDescription(String subject, String? notes) {
+    final parts = <String>[];
+    final trimmedSubject = subject.trim();
+    if (trimmedSubject.isNotEmpty) parts.add(trimmedSubject);
+
+    final trimmedNotes = notes?.trim();
+    if (trimmedNotes != null && trimmedNotes.isNotEmpty) {
+      parts.add(trimmedNotes);
+    }
+
+    if (parts.isEmpty) return null;
+    return parts.join('\n\n');
+  }
+
   /// Title for a deadline, e.g. "Deadline: Chapter 5 Exam".
   static String deadlineTitle(Goal goal) => 'Deadline: ${goal.title}';
 

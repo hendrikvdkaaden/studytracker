@@ -124,6 +124,7 @@ class CalendarSyncService {
   static Future<String?> syncSession(
     StudySession session,
     String goalTitle,
+    String subject,
   ) async {
     if (!isEnabled) return null;
     final calendarId = await _ensureCalendar();
@@ -135,7 +136,10 @@ class CalendarSyncService {
         title: CalendarEventMapper.sessionTitle(goalTitle),
         startDate: CalendarEventMapper.sessionStart(session),
         endDate: CalendarEventMapper.sessionEnd(session),
-        description: session.notes,
+        description: CalendarEventMapper.sessionDescription(
+          subject,
+          session.notes,
+        ),
       );
     } catch (e) {
       debugPrint('Creating session event failed: $e');
@@ -150,6 +154,7 @@ class CalendarSyncService {
   static Future<Map<String, String>> syncSessions(
     List<StudySession> sessions,
     String goalTitle,
+    String subject,
   ) async {
     final result = <String, String>{};
     if (!isEnabled || sessions.isEmpty) return result;
@@ -158,7 +163,7 @@ class CalendarSyncService {
     for (var i = 0; i < sessions.length; i += _batchSize) {
       final batch = sessions.skip(i).take(_batchSize).toList();
       final ids = await Future.wait(
-        batch.map((s) => syncSession(s, goalTitle)),
+        batch.map((s) => syncSession(s, goalTitle, subject)),
       );
       for (var j = 0; j < batch.length; j++) {
         final id = ids[j];

@@ -131,6 +131,42 @@ void main() {
     });
   });
 
+  group('session description', () {
+    test('shows the subject on its own when there is no note', () {
+      expect(
+        CalendarEventMapper.sessionDescription('Math', null),
+        'Math',
+      );
+    });
+
+    test('shows subject and note together', () {
+      expect(
+        CalendarEventMapper.sessionDescription('Math', 'Revise chapter 5'),
+        'Math\n\nRevise chapter 5',
+      );
+    });
+
+    test('ignores a note that is only whitespace', () {
+      expect(
+        CalendarEventMapper.sessionDescription('Math', '   '),
+        'Math',
+        reason: 'a blank note should not add an empty line',
+      );
+    });
+
+    test('returns null when there is nothing to show', () {
+      expect(CalendarEventMapper.sessionDescription('', null), isNull);
+      expect(CalendarEventMapper.sessionDescription('  ', '  '), isNull);
+    });
+
+    test('falls back to the note when the subject is empty', () {
+      expect(
+        CalendarEventMapper.sessionDescription('', 'Revise chapter 5'),
+        'Revise chapter 5',
+      );
+    });
+  });
+
   group('titles', () {
     test('marks sessions and deadlines distinctly', () {
       expect(CalendarEventMapper.sessionTitle('Chapter 5 Exam'),

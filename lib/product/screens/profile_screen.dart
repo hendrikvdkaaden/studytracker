@@ -131,7 +131,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           .toList();
       if (sessions.isEmpty) continue;
 
-      final ids = await CalendarSyncService.syncSessions(sessions, goal.title);
+      final ids = await CalendarSyncService.syncSessions(
+        sessions,
+        goal.title,
+        goal.subject,
+      );
       for (final session in sessions) {
         final id = ids[session.id];
         if (id == null) continue;

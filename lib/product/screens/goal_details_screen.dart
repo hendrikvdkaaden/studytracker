@@ -235,7 +235,11 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     // Calendar writes go in one batch afterwards, so the user sees their plan
     // without waiting on the calendar.
     final eventIds =
-        await CalendarSyncService.syncSessions(generated, _goal.title);
+        await CalendarSyncService.syncSessions(
+      generated,
+      _goal.title,
+      _goal.subject,
+    );
     for (final session in generated) {
       final eventId = eventIds[session.id];
       if (eventId == null) continue;
@@ -255,7 +259,11 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
   ) async {
     if (!CalendarSyncService.isEnabled) return;
     await CalendarSyncService.deleteEvent(previousEventId);
-    final eventId = await CalendarSyncService.syncSession(session, _goal.title);
+    final eventId = await CalendarSyncService.syncSession(
+      session,
+      _goal.title,
+      _goal.subject,
+    );
     if (eventId == null) return;
     await _sessionRepo.updateSession(
       session.copyWith(calendarEventId: eventId),

@@ -307,7 +307,11 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
       await _goalRepo.updateGoal(goal.copyWith(calendarEventId: deadlineEventId));
     }
 
-    final eventIds = await CalendarSyncService.syncSessions(sessions, goal.title);
+    final eventIds = await CalendarSyncService.syncSessions(
+      sessions,
+      goal.title,
+      goal.subject,
+    );
     for (final session in sessions) {
       final eventId = eventIds[session.id];
       if (eventId == null) continue;

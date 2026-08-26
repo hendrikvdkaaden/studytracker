@@ -32,6 +32,7 @@ class TimerControls extends StatelessWidget {
             child: OutlinedButton(
               onPressed: state == TimerState.initial ? null : onStop,
               style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 backgroundColor: context.colors.card,
                 side: BorderSide(
                   color: context.colors.border,
@@ -42,19 +43,25 @@ class TimerControls extends StatelessWidget {
                 ),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.stop_circle_outlined,
+                    size: 20,
                     color: context.colors.textSecondary,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Stop',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: context.colors.textSecondary,
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      'Stop',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: context.colors.textSecondary,
+                      ),
                     ),
                   ),
                 ],
@@ -71,6 +78,7 @@ class TimerControls extends StatelessWidget {
             child: ElevatedButton(
               onPressed: _getPrimaryAction(),
               style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 backgroundColor: AppColors.calendarAccent,
                 foregroundColor: Colors.white,
                 elevation: 8,
@@ -80,18 +88,24 @@ class TimerControls extends StatelessWidget {
                 ),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     _getPrimaryIcon(),
+                    size: 20,
                     color: Colors.white,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _getPrimaryLabel(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      _getPrimaryLabel(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

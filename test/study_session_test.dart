@@ -52,4 +52,41 @@ void main() {
       expect(inProgress.elapsedSeconds, 600);
     });
   });
+
+  group('editing a session', () {
+    // The session editor used to rebuild StudySession from scratch, which
+    // silently dropped every field the form does not show -- including the
+    // calendar event id, orphaning the entry already in the user's calendar.
+    test('carries the calendar event id through an edit', () {
+      final session = _planned().copyWith(calendarEventId: 'event-1');
+
+      final edited = session.copyWith(
+        date: DateTime(2026, 8, 11),
+        duration: 60,
+        startTime: DateTime(2026, 8, 11, 14, 0),
+      );
+
+      expect(edited.calendarEventId, 'event-1');
+      expect(edited.duration, 60);
+      expect(edited.date, DateTime(2026, 8, 11));
+    });
+
+    test('carries the timer run state through an edit', () {
+      final session = _planned().copyWith(elapsedSeconds: 300);
+
+      final edited = session.copyWith(duration: 60);
+
+      expect(edited.elapsedSeconds, 300);
+    });
+
+    // Documents why the editor assigns notes directly instead of through
+    // copyWith: a cleared note would otherwise survive the edit.
+    test('copyWith cannot clear a field', () {
+      final session = _planned().copyWith(notes: 'chapter 4');
+
+      final cleared = session.copyWith(notes: null);
+
+      expect(cleared.notes, 'chapter 4');
+    });
+  });
 }

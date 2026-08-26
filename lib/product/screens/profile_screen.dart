@@ -53,10 +53,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   /// Reconciles the stored preference with reality: the user may have revoked
   /// calendar access in system settings since they turned sync on.
+  ///
+  /// Switching sync off here has to clear the stored event ids as well.
+  /// Without that, re-enabling would write a second entry for every goal and
+  /// session that still carried an id from before.
   Future<void> _loadCalendarSyncStatus() async {
     var enabled = SettingsService.calendarSyncEnabled;
     if (enabled && !await CalendarSyncService.hasPermission()) {
       await SettingsService.setCalendarSyncEnabled(false);
+      await SettingsService.setCalendarId(null);
+      await _clearStoredEventIds();
       enabled = false;
     }
     if (mounted) setState(() => _calendarSyncEnabled = enabled);
@@ -64,10 +70,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _onCalendarSyncTap() async {
     if (_calendarBusy) return;
-    if (_calendarSyncEnabled) {
-      await _disableCalendarSync();
-    } else {
-      await _enableCalendarSync();
+    // Held across the confirmation dialog as well, so a second tap while the
+    // dialog is open cannot start a parallel sync.
+    setState(() => _calendarBusy = true);
+    try {
+      if (_calendarSyncEnabled) {
+        await _disableCalendarSync();
+      } else {
+        await _enableCalendarSync();
+      }
+    } finally {
+      if (mounted) setState(() => _calendarBusy = false);
     }
   }
 
@@ -97,7 +110,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       return;
     }
 
-    setState(() => _calendarBusy = true);
     await SettingsService.setCalendarSyncEnabled(true);
     final ready = await CalendarSyncService.prepareCalendar();
     if (ready) {
@@ -107,7 +119,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
     if (!mounted) return;
     setState(() {
-      _calendarBusy = false;
       _calendarSyncEnabled = SettingsService.calendarSyncEnabled;
     });
   }
@@ -121,6 +132,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     for (final goal in goalRepo.getAllGoals()) {
       if (!CalendarEventMapper.shouldSyncGoal(goal, now)) continue;
+      // Drop any entry left over from an earlier sync before writing a fresh
+      // one, so switching sync off and on again cannot duplicate a deadline.
+      await CalendarSyncService.deleteEvent(goal.calendarEventId);
       final eventId = await CalendarSyncService.syncDeadline(goal);
       if (eventId == null) continue;
       await goalRepo.updateGoal(goal.copyWith(calendarEventId: eventId));
@@ -131,6 +145,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           .toList();
       if (sessions.isEmpty) continue;
 
+      await CalendarSyncService.deleteEvents(
+        sessions.map((s) => s.calendarEventId),
+      );
       final ids = await CalendarSyncService.syncSessions(
         sessions,
         goal.title,
@@ -154,15 +171,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
     if (confirmed != true || !mounted) return;
 
-    setState(() => _calendarBusy = true);
     await CalendarSyncService.purgeAll();
     await SettingsService.setCalendarSyncEnabled(false);
     await _clearStoredEventIds();
     if (!mounted) return;
-    setState(() {
-      _calendarBusy = false;
-      _calendarSyncEnabled = false;
-    });
+    setState(() => _calendarSyncEnabled = false);
   }
 
   /// Drops every stored event id. Without this, re-enabling sync would try to
@@ -609,9 +622,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       confirmLabel: l10n.profileDeleteSessionsConfirm,
     );
     if (confirmed == true && mounted) {
-      // Remove the calendar entries before the records holding their ids go.
-      await CalendarSyncService.purgeAll();
-      await ref.read(studySessionRepositoryProvider).clearAll();
+      // Remove only the study blocks. purgeAll would delete the whole
+      // calendar, taking every deadline the user did not ask to remove with
+      // it and stranding the event ids the goals still hold.
+      final sessionRepo = ref.read(studySessionRepositoryProvider);
+      await CalendarSyncService.deleteEvents(
+        sessionRepo.getAllSessions().map((s) => s.calendarEventId),
+      );
+      await sessionRepo.clearAll();
     }
   }
 
@@ -625,6 +643,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (confirmed == true && mounted) {
       await CalendarSyncService.purgeAll();
       await HiveService.clearAllData();
+      // clearAllData drops the settings box, so the stored ids go with it --
+      // but sync would otherwise keep running against a calendar that is now
+      // gone. Turning it off leaves the user a working toggle.
+      await SettingsService.setCalendarSyncEnabled(false);
+      if (mounted) setState(() => _calendarSyncEnabled = false);
     }
   }
 
@@ -672,6 +695,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       isPremium: isPremium,
       showPrivacyOptions: _showPrivacyOptions,
       calendarSyncEnabled: _calendarSyncEnabled,
+      calendarSyncBusy: _calendarBusy,
       onCalendarSyncTap: _onCalendarSyncTap,
       onPrivacyOptions: AdService.showPrivacyOptionsForm,
       onSubscriptionTap: _onSubscriptionTap,

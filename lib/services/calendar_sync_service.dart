@@ -99,6 +99,14 @@ class CalendarSyncService {
   /// events exist.
   static Future<bool> prepareCalendar() async => await _ensureCalendar() != null;
 
+  /// Forgets the resolved calendar id after a write failed.
+  ///
+  /// The most likely cause is that the user deleted the calendar in their
+  /// calendar app; without this the cached id would keep every later write
+  /// failing for the rest of the process. Dropping it makes the next call
+  /// re-resolve, recreating the calendar if it really is gone.
+  static void _invalidateCalendarCache() => _cachedCalendarId = null;
+
   /// Writes a deadline as an all-day entry. Returns its event id, or null.
   static Future<String?> syncDeadline(Goal goal) async {
     if (!isEnabled) return null;
@@ -115,6 +123,7 @@ class CalendarSyncService {
       );
     } catch (e) {
       debugPrint('Creating deadline event failed: $e');
+      _invalidateCalendarCache();
       return null;
     }
   }
@@ -142,6 +151,7 @@ class CalendarSyncService {
       );
     } catch (e) {
       debugPrint('Creating session event failed: $e');
+      _invalidateCalendarCache();
       return null;
     }
   }

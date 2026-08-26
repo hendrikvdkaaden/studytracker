@@ -253,12 +253,13 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
   /// Replaces a session's calendar entry and stores the new event id.
   ///
   /// [previousEventId] is the entry to remove, if the session already had one.
+  /// The replacement is written first, so a failed write leaves the previous
+  /// entry in the calendar rather than dropping the session from it.
   Future<void> _resyncSession(
     StudySession session,
     String? previousEventId,
   ) async {
     if (!CalendarSyncService.isEnabled) return;
-    await CalendarSyncService.deleteEvent(previousEventId);
     final eventId = await CalendarSyncService.syncSession(
       session,
       _goal.title,
@@ -268,6 +269,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     await _sessionRepo.updateSession(
       session.copyWith(calendarEventId: eventId),
     );
+    await CalendarSyncService.deleteEvent(previousEventId);
   }
 
   @override

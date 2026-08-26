@@ -16,6 +16,7 @@ class ProfileTemplate extends StatelessWidget {
   final bool isPremium;
   final bool showPrivacyOptions;
   final bool calendarSyncEnabled;
+  final bool calendarSyncBusy;
   final VoidCallback onSubscriptionTap;
   final VoidCallback onPrivacyOptions;
   final VoidCallback onCalendarSyncTap;
@@ -39,6 +40,7 @@ class ProfileTemplate extends StatelessWidget {
     required this.isPremium,
     required this.showPrivacyOptions,
     required this.calendarSyncEnabled,
+    required this.calendarSyncBusy,
     required this.onCalendarSyncTap,
     required this.onPrivacyOptions,
     required this.onSubscriptionTap,
@@ -171,6 +173,7 @@ class ProfileTemplate extends StatelessWidget {
                   ? l10n.profileCalendarSyncOn
                   : l10n.profileCalendarSyncOff,
               onTap: onCalendarSyncTap,
+              busy: calendarSyncBusy,
             ),
           ],
         ),
@@ -373,9 +376,11 @@ class ProfileTemplate extends StatelessWidget {
     Color? labelColor,
     required VoidCallback onTap,
     bool showChevron = true,
+    bool busy = false,
   }) {
     return InkWell(
-      onTap: onTap,
+      // Ignored while busy so the row cannot be re-entered mid-operation.
+      onTap: busy ? null : onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -403,23 +408,34 @@ class ProfileTemplate extends StatelessWidget {
                 ),
               ),
             ),
-            // Value + chevron
-            if (value != null) ...[
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: context.colors.textSecondary,
+            // Value + chevron, or a spinner while the row is working
+            if (busy)
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: context.colors.textTertiary,
                 ),
-              ),
-              const SizedBox(width: 4),
+              )
+            else ...[
+              if (value != null) ...[
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.colors.textSecondary,
+                  ),
+                ),
+                const SizedBox(width: 4),
+              ],
+              if (showChevron)
+                Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: context.colors.textTertiary,
+                ),
             ],
-            if (showChevron)
-              Icon(
-                Icons.chevron_right,
-                size: 20,
-                color: context.colors.textTertiary,
-              ),
           ],
         ),
       ),

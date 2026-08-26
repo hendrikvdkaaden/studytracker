@@ -1066,4 +1066,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumDialogWatchAdForDeadline => 'Watch an ad for one more';
+
+  @override
+  String get premiumDialogAdLoading => 'Loading ad...';
 }

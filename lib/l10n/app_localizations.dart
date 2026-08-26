@@ -1905,6 +1905,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Watch an ad for one more'**
   String get premiumDialogWatchAdForDeadline;
+
+  /// No description provided for @premiumDialogAdLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading ad...'**
+  String get premiumDialogAdLoading;
 }
 
 class _AppLocalizationsDelegate

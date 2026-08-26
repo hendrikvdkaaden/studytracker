@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../services/ad_service.dart';
-import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
@@ -31,13 +30,6 @@ Future<PremiumGateResult> showPremiumGateSheet(
   bool allowAdReward = false,
   String? adRewardLabel,
 }) async {
-  if (allowAdReward) {
-    // Settle consent before the sheet opens, so the form is never stacked on
-    // top of it.
-    await AdService.ensureConsent();
-    if (!context.mounted) return PremiumGateResult.dismissed;
-  }
-
   final outcome = await showModalBottomSheet<PremiumGateResult>(
     context: context,
     isScrollControlled: true,
@@ -82,11 +74,17 @@ class _PremiumGateSheet extends StatefulWidget {
   State<_PremiumGateSheet> createState() => _PremiumGateSheetState();
 }
 
+/// How far along the rewarded ad is. The button is shown from the start, so
+/// someone who glances at the sheet and looks away still learns the option is
+/// there; it only disappears if the ad turns out to be unavailable.
+enum _AdState { loading, ready, unavailable }
+
 class _PremiumGateSheetState extends State<_PremiumGateSheet> {
-  /// Only true once an ad is loaded and ready — the button is never shown for
-  /// an ad that cannot play.
-  bool _adReady = false;
+  _AdState _adState = _AdState.loading;
   bool _watchingAd = false;
+
+  bool get _showAdButton =>
+      widget.allowAdReward && _adState != _AdState.unavailable;
 
   @override
   void initState() {
@@ -102,10 +100,13 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
 
   Future<void> _prepareAd() async {
     if (!widget.allowAdReward) return;
-    if (!SettingsService.canUseAdTrialToday) return;
 
+    // loadRewardedAd settles consent itself. Doing it before the sheet opened
+    // meant a first-run user could tap and watch nothing happen for as long
+    // as the consent flow took.
     final ready = await AdService.loadRewardedAd();
-    if (mounted && ready) setState(() => _adReady = true);
+    if (!mounted) return;
+    setState(() => _adState = ready ? _AdState.ready : _AdState.unavailable);
   }
 
   Future<void> _watchAd() async {
@@ -120,7 +121,7 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
       // still upgrade, and drop the button since the ad is spent.
       setState(() {
         _watchingAd = false;
-        _adReady = false;
+        _adState = _AdState.unavailable;
       });
     }
   }
@@ -220,11 +221,15 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
               ),
             ),
           ),
-          // Ad option — only rendered once an ad is loaded and ready.
-          if (_adReady) ...[
+          // Shown from the moment the sheet opens, disabled until the ad has
+          // loaded. Waiting for the load would hide the option from anyone who
+          // does not stare at the sheet for a second first.
+          if (_showAdButton) ...[
             const SizedBox(height: 12),
             OutlinedButton.icon(
-              onPressed: _watchingAd ? null : _watchAd,
+              onPressed: _watchingAd || _adState != _AdState.ready
+                  ? null
+                  : _watchAd,
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 52),
                 foregroundColor: AppColors.primary,
@@ -233,7 +238,7 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              icon: _watchingAd
+              icon: _watchingAd || _adState == _AdState.loading
                   ? const SizedBox(
                       width: 18,
                       height: 18,
@@ -241,7 +246,10 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
                     )
                   : const Icon(Icons.play_circle_outline, size: 20),
               label: Text(
-                widget.adRewardLabel ?? context.l10n.premiumDialogWatchAd,
+                _adState == _AdState.loading
+                    ? context.l10n.premiumDialogAdLoading
+                    : widget.adRewardLabel ??
+                        context.l10n.premiumDialogWatchAd,
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

@@ -194,7 +194,9 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         context,
         title: context.l10n.premiumAutoPlanTitle,
         message: context.l10n.premiumAutoPlanMessage,
-        allowAdReward: true,
+        // The auto-plan reward is one try a day, so the option is only worth
+        // offering while today's is unspent.
+        allowAdReward: SettingsService.canUseAdTrialToday,
       );
       if (outcome == PremiumGateResult.dismissed || !mounted) return;
 

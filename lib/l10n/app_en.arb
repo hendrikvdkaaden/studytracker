@@ -451,5 +451,6 @@
   "premiumDialogUpgradeButton": "Upgrade to Premium",
   "premiumDialogNotNow": "Not Now",
   "premiumDialogWatchAd": "Watch an ad to try once",
-  "premiumDialogWatchAdForDeadline": "Watch an ad for one more"
+  "premiumDialogWatchAdForDeadline": "Watch an ad for one more",
+  "premiumDialogAdLoading": "Loading ad..."
 }

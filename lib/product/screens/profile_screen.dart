@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/app_providers.dart';
 import '../../services/ad_service.dart';
-import '../../services/calendar_event_mapper.dart';
 import '../../services/calendar_sync_service.dart';
 import '../../services/hive_service.dart';
 import '../../services/settings_service.dart';
@@ -110,56 +109,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       return;
     }
 
-    await SettingsService.setCalendarSyncEnabled(true);
-    final ready = await CalendarSyncService.prepareCalendar();
-    if (ready) {
-      await _backfillCalendar();
-    } else {
-      await SettingsService.setCalendarSyncEnabled(false);
-    }
+    await CalendarSyncService.enableAndBackfill(
+      goalRepo: ref.read(goalRepositoryProvider),
+      sessionRepo: ref.read(studySessionRepositoryProvider),
+    );
     if (!mounted) return;
     setState(() {
       _calendarSyncEnabled = SettingsService.calendarSyncEnabled;
     });
-  }
-
-  /// Adds everything still ahead. Past and finished items are left out, so
-  /// switching sync on does not flood the calendar with history.
-  Future<void> _backfillCalendar() async {
-    final now = DateTime.now();
-    final goalRepo = ref.read(goalRepositoryProvider);
-    final sessionRepo = ref.read(studySessionRepositoryProvider);
-
-    for (final goal in goalRepo.getAllGoals()) {
-      if (!CalendarEventMapper.shouldSyncGoal(goal, now)) continue;
-      // Drop any entry left over from an earlier sync before writing a fresh
-      // one, so switching sync off and on again cannot duplicate a deadline.
-      await CalendarSyncService.deleteEvent(goal.calendarEventId);
-      final eventId = await CalendarSyncService.syncDeadline(goal);
-      if (eventId == null) continue;
-      await goalRepo.updateGoal(goal.copyWith(calendarEventId: eventId));
-
-      final sessions = sessionRepo
-          .getPlannedSessionsByGoalId(goal.id)
-          .where((s) => CalendarEventMapper.shouldSyncSession(s, now))
-          .toList();
-      if (sessions.isEmpty) continue;
-
-      await CalendarSyncService.deleteEvents(
-        sessions.map((s) => s.calendarEventId),
-      );
-      final ids = await CalendarSyncService.syncSessions(
-        sessions,
-        goal.title,
-        goal.subject,
-      );
-      for (final session in sessions) {
-        final id = ids[session.id];
-        if (id == null) continue;
-        await sessionRepo
-            .updateSession(session.copyWith(calendarEventId: id));
-      }
-    }
   }
 
   Future<void> _disableCalendarSync() async {

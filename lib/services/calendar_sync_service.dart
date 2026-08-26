@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import '../models/goal.dart';
 import '../models/study_session.dart';
 import 'calendar_event_mapper.dart';
+import 'goal_repository.dart';
 import 'settings_service.dart';
+import 'study_session_repository.dart';
 
 /// Writes deadlines and study sessions to a calendar the app owns.
 ///
@@ -98,6 +100,61 @@ class CalendarSyncService {
   /// Creates the calendar so the toggle can report real success before any
   /// events exist.
   static Future<bool> prepareCalendar() async => await _ensureCalendar() != null;
+
+  /// Turns sync on and fills the calendar with everything still ahead.
+  ///
+  /// Shared by the settings toggle and the one-off prompt for users who
+  /// upgraded past onboarding, so neither can end up with sync enabled and an
+  /// empty calendar. Returns whether sync is on afterwards.
+  static Future<bool> enableAndBackfill({
+    GoalRepository? goalRepo,
+    StudySessionRepository? sessionRepo,
+  }) async {
+    // The setting has to be on before prepareCalendar, which checks it.
+    await SettingsService.setCalendarSyncEnabled(true);
+    if (!await prepareCalendar()) {
+      await SettingsService.setCalendarSyncEnabled(false);
+      return false;
+    }
+    await backfill(
+      goalRepo: goalRepo ?? GoalRepository(),
+      sessionRepo: sessionRepo ?? StudySessionRepository(),
+    );
+    return true;
+  }
+
+  /// Adds everything still ahead. Past and finished items are left out, so
+  /// switching sync on does not flood the calendar with history.
+  static Future<void> backfill({
+    required GoalRepository goalRepo,
+    required StudySessionRepository sessionRepo,
+  }) async {
+    final now = DateTime.now();
+
+    for (final goal in goalRepo.getAllGoals()) {
+      if (!CalendarEventMapper.shouldSyncGoal(goal, now)) continue;
+      // Drop any entry left over from an earlier sync before writing a fresh
+      // one, so switching sync off and on again cannot duplicate a deadline.
+      await deleteEvent(goal.calendarEventId);
+      final eventId = await syncDeadline(goal);
+      if (eventId == null) continue;
+      await goalRepo.updateGoal(goal.copyWith(calendarEventId: eventId));
+
+      final sessions = sessionRepo
+          .getPlannedSessionsByGoalId(goal.id)
+          .where((s) => CalendarEventMapper.shouldSyncSession(s, now))
+          .toList();
+      if (sessions.isEmpty) continue;
+
+      await deleteEvents(sessions.map((s) => s.calendarEventId));
+      final ids = await syncSessions(sessions, goal.title, goal.subject);
+      for (final session in sessions) {
+        final id = ids[session.id];
+        if (id == null) continue;
+        await sessionRepo.updateSession(session.copyWith(calendarEventId: id));
+      }
+    }
+  }
 
   /// Forgets the resolved calendar id after a write failed.
   ///

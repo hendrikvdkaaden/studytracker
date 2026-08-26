@@ -48,7 +48,7 @@ class CalendarEventMapper {
     return parts.join('\n\n');
   }
 
-  /// Title for a deadline, e.g. "Deadline (Math): Chapter 5 Exam".
+  /// Title for a deadline, e.g. "Deadline Math: Chapter 5 Exam".
   ///
   /// The subject is named up front so a deadline is recognisable in a week
   /// view, where the calendar often cuts the title off after a few words.
@@ -56,7 +56,7 @@ class CalendarEventMapper {
   static String deadlineTitle(Goal goal) {
     final subject = goal.subject.trim();
     if (subject.isEmpty) return 'Deadline: ${goal.title}';
-    return 'Deadline ($subject): ${goal.title}';
+    return 'Deadline $subject: ${goal.title}';
   }
 
   /// Deadlines are all-day entries, so the span is the whole calendar day.

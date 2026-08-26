@@ -173,14 +173,14 @@ void main() {
       expect(CalendarEventMapper.sessionTitle('Chapter 5 Exam'),
           'Study: Chapter 5 Exam');
       expect(CalendarEventMapper.deadlineTitle(_goal(date: _now)),
-          'Deadline (Math): Chapter 5 Exam');
+          'Deadline Math: Chapter 5 Exam');
     });
 
     test('a deadline without a subject keeps a plain title', () {
       expect(
         CalendarEventMapper.deadlineTitle(_goal(date: _now, subject: '')),
         'Deadline: Chapter 5 Exam',
-        reason: 'an empty subject must not leave empty brackets behind',
+        reason: 'an empty subject must not leave a dangling separator',
       );
       expect(
         CalendarEventMapper.deadlineTitle(_goal(date: _now, subject: '   ')),

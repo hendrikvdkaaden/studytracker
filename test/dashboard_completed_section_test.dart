@@ -80,17 +80,16 @@ void main() {
     expect(find.text('Hide'), findsOneWidget);
   });
 
-  testWidgets('folding removes the cards but keeps the section',
+  testWidgets('folding removes the cards but keeps the heading',
       (tester) async {
     await pump(tester, collapsed: true);
 
     expect(find.text('Verslag'), findsNothing);
     expect(find.text('Toets'), findsNothing);
-    expect(find.text('Show'), findsOneWidget);
     expect(
-      find.text('2 deadlines'),
+      find.text('Show'),
       findsOneWidget,
-      reason: 'a folded section must not read as an empty one',
+      reason: 'the heading and its button are the way back',
     );
   });
 

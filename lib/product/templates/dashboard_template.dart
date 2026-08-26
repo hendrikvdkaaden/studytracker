@@ -200,22 +200,7 @@ class DashboardTemplate extends StatelessWidget {
               trailing: _toggleButton(context),
             ),
           ),
-          if (completedCollapsed)
-            // Naming the count keeps the section from reading as empty when
-            // it is only folded away.
-            _inset(
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  context.l10n.dashboardCompletedCount(completedGoals.length),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.colors.textTertiary,
-                  ),
-                ),
-              ),
-            )
-          else ...[
+          if (!completedCollapsed) ...[
             const SizedBox(height: 12),
             GoalCarousel(
               horizontalPadding: _sidePadding,

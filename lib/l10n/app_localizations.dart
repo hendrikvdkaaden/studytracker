@@ -832,12 +832,6 @@ abstract class AppLocalizations {
   /// **'Show'**
   String get dashboardShowCompleted;
 
-  /// No description provided for @dashboardCompletedCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 deadline} other{{count} deadlines}}'**
-  String dashboardCompletedCount(int count);
-
   /// No description provided for @dashboardEmptyTitle.
   ///
   /// In en, this message translates to:

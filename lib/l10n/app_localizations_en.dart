@@ -424,17 +424,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardShowCompleted => 'Show';
 
   @override
-  String dashboardCompletedCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count deadlines',
-      one: '1 deadline',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get dashboardEmptyTitle => 'No deadlines yet';
 
   @override

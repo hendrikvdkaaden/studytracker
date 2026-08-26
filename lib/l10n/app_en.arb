@@ -165,14 +165,6 @@
   "dashboardSectionCompleted": "Completed",
   "dashboardHideCompleted": "Hide",
   "dashboardShowCompleted": "Show",
-  "dashboardCompletedCount": "{count, plural, =1{1 deadline} other{{count} deadlines}}",
-  "@dashboardCompletedCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "dashboardEmptyTitle": "No deadlines yet",
   "dashboardEmptySubtitle": "Tap + to create your first deadline",
   "dashboardSeeAll": "SEE ALL",

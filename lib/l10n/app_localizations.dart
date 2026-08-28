@@ -1555,14 +1555,8 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingCalendarConnectButton.
   ///
   /// In en, this message translates to:
-  /// **'Connect calendar'**
+  /// **'Continue'**
   String get onboardingCalendarConnectButton;
-
-  /// No description provided for @onboardingCalendarSkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Maybe later'**
-  String get onboardingCalendarSkip;
 
   /// No description provided for @onboardingCalendarConnecting.
   ///
@@ -1603,7 +1597,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarPromptConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Connect calendar'**
+  /// **'Continue'**
   String get calendarPromptConfirm;
 
   /// No description provided for @calendarPromptDismiss.

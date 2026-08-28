@@ -10,9 +10,10 @@ import 'onboarding_top_nav.dart';
 /// Last onboarding step: offers to mirror deadlines and sessions to the
 /// device calendar.
 ///
-/// Connecting is the primary button rather than a settings row, so it reads
-/// as the thing to do here. Skipping stays available underneath, and the
-/// button turns into "Let's go!" once the calendar is connected.
+/// The step explains what the calendar entries look like and then continues
+/// straight to the system permission prompt -- no skip beside it, which App
+/// Review treats as steering the user away from that prompt. Declining in the
+/// prompt lands on the refused state, which finishes onboarding.
 class OnboardingStepCalendar extends StatelessWidget {
   final bool isConnected;
 
@@ -240,31 +241,16 @@ class OnboardingStepCalendar extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: [
-        OnboardingLandingButton(
-          label: isBusy
-              ? l10n.onboardingCalendarConnecting
-              : l10n.onboardingCalendarConnectButton,
-          onTap: isBusy ? null : onConnectTap,
-          width: double.infinity,
-        ),
-        const SizedBox(height: 4),
-        TextButton(
-          onPressed: isBusy ? null : onComplete,
-          style: TextButton.styleFrom(
-            minimumSize: const Size(double.infinity, 48),
-            foregroundColor: AppColors.textTertiary,
-          ),
-          child: Text(
-            l10n.onboardingCalendarSkip,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
+    // One way forward and no way around it. App Review reads a skip button
+    // beside an explanation as steering the user away from the permission
+    // prompt; declining belongs in the prompt itself, where "Don't Allow" is
+    // a real answer that the next step handles.
+    return OnboardingLandingButton(
+      label: isBusy
+          ? l10n.onboardingCalendarConnecting
+          : l10n.onboardingCalendarConnectButton,
+      onTap: isBusy ? null : onConnectTap,
+      width: double.infinity,
     );
   }
 }

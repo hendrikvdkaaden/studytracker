@@ -70,6 +70,13 @@ class _HomePageState extends State<HomePage> {
     await SettingsService.setCalendarPromptShown(true);
     if (!mounted) return;
 
+    // "Continue" rather than "Connect calendar": App Review reads a button
+    // that names the permission as steering the user toward granting it.
+    //
+    // The dismiss option stays. Unlike the onboarding step, this appears
+    // unasked at launch, so a dialog with no way out would be worse than the
+    // guideline it satisfies -- and someone who never opens it is never taken
+    // to the system prompt at all.
     final accepted = await showAppConfirmDialog(
       context: context,
       title: l10n.calendarPromptTitle,

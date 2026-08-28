@@ -858,10 +858,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'See your deadlines and study sessions next to everything else you have planned';
 
   @override
-  String get onboardingCalendarConnectButton => 'Connect calendar';
-
-  @override
-  String get onboardingCalendarSkip => 'Maybe later';
+  String get onboardingCalendarConnectButton => 'Continue';
 
   @override
   String get onboardingCalendarConnecting => 'Connecting...';
@@ -885,7 +882,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.';
 
   @override
-  String get calendarPromptConfirm => 'Connect calendar';
+  String get calendarPromptConfirm => 'Continue';
 
   @override
   String get calendarPromptDismiss => 'Not now';

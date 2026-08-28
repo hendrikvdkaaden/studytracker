@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// The calendar step is the one place a new user can turn sync on. Connecting
-/// has to read as the offer, and skipping has to stay possible — these check
-/// both, plus that neither button fires twice while the prompt is open.
+/// The calendar step is the one place a new user can turn sync on.
+///
+/// App Review (5.1.1(iv)) does not allow steering around a permission prompt,
+/// so there is one neutral button and no skip beside it. Declining lands in
+/// the refused state, which is what finishes onboarding for someone who says
+/// no.
 void main() {
   Future<void> pump(
     WidgetTester tester, {
@@ -43,39 +46,51 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('leads with connecting as the primary action', (tester) async {
+  testWidgets('offers one neutral way forward', (tester) async {
     var taps = 0;
     await pump(tester,
         isConnected: false, isBusy: false, onConnect: () => taps++);
 
-    expect(find.text('Connect calendar'), findsOneWidget);
-    expect(find.text('Maybe later'), findsOneWidget);
+    expect(
+      find.text('Continue'),
+      findsOneWidget,
+      reason: 'a button naming the permission reads as steering toward it',
+    );
 
-    await tester.tap(find.text('Connect calendar'));
+    await tester.tap(find.text('Continue'));
     expect(taps, 1);
   });
 
-  testWidgets('skipping finishes onboarding without connecting',
+  testWidgets('declining in the prompt still finishes onboarding',
       (tester) async {
-    var connects = 0;
+    // With the skip gone this is the only way past the step for someone who
+    // says no, so a dead end here would trap them in onboarding.
     var completed = false;
     await pump(
       tester,
       isConnected: false,
       isBusy: false,
-      onConnect: () => connects++,
+      isDenied: true,
       onComplete: () => completed = true,
     );
 
-    await tester.tap(find.text('Maybe later'));
+    await tester.tap(find.text("Let's go!"));
     await tester.pump();
 
     expect(completed, isTrue);
-    expect(connects, 0);
   });
 
-  testWidgets('both buttons are inert while the prompt is open',
-      (tester) async {
+  testWidgets('has no way around the permission prompt', (tester) async {
+    await pump(tester, isConnected: false, isBusy: false);
+
+    // 5.1.1(iv): a skip beside the explanation delays the prompt, which is
+    // what got this rejected. Declining happens in the prompt itself.
+    expect(find.text('Maybe later'), findsNothing);
+    expect(find.text('Skip'), findsNothing);
+    expect(find.byType(TextButton), findsNothing);
+  });
+
+  testWidgets('the button is inert while the prompt is open', (tester) async {
     var connects = 0;
     var completed = false;
     await pump(
@@ -89,12 +104,10 @@ void main() {
     expect(find.text('Connecting...'), findsOneWidget);
 
     await tester.tap(find.text('Connecting...'));
-    await tester.tap(find.text('Maybe later'));
     await tester.pump();
 
     expect(connects, 0, reason: 'a second permission prompt must not open');
-    expect(completed, isFalse,
-        reason: 'leaving mid-prompt would strand the request');
+    expect(completed, isFalse);
   });
 
   testWidgets('explains a refusal instead of offering a dead button',
@@ -111,7 +124,7 @@ void main() {
     );
 
     expect(find.textContaining('No calendar access'), findsOneWidget);
-    expect(find.text('Connect calendar'), findsNothing,
+    expect(find.text('Continue'), findsNothing,
         reason: 'iOS prompts once — a second press would do nothing');
 
     await tester.tap(find.text("Let's go!"));
@@ -132,7 +145,7 @@ void main() {
 
     expect(find.text('Connected'), findsOneWidget);
     expect(find.byIcon(Icons.check_circle), findsOneWidget);
-    expect(find.text('Connect calendar'), findsNothing,
+    expect(find.text('Continue'), findsNothing,
         reason: 'connecting again would only re-prompt for nothing');
 
     await tester.tap(find.text("Let's go!"));

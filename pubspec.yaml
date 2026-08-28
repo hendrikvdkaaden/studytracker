@@ -1,7 +1,7 @@
 name: deadly
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.2.0+8
+version: 1.2.0+9
 environment:
   sdk: ^3.9.2
 

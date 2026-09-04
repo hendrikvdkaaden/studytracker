@@ -52,12 +52,12 @@ class _AutoPlanWizardSheet extends StatefulWidget {
 
 class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _totalHours = 5;
-  int _totalMinutes = 30;
+  int _totalMinutes = 0;
   final List<int> _weekdays = [2, 3, 4]; // Di, Wo, Do default
   double _startHour = 8;
   double _endHour = 18;
-  int _sessionDurationHours = 0;
-  int _sessionDurationMinutes = 45;
+  int _sessionDurationHours = 1;
+  int _sessionDurationMinutes = 0;
   int _breakMinutes = 15;
   String? _errorMessage;
 
@@ -373,16 +373,8 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                         ),
                       ],
                     ),
-                    child: ElevatedButton.icon(
+                    child: ElevatedButton(
                       onPressed: _confirm,
-                      icon: const Icon(Icons.arrow_forward, size: 18),
-                      label: Text(
-                        context.l10n.autoPlanConfirmButton,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         foregroundColor: Colors.white,
@@ -390,6 +382,13 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(
+                        context.l10n.autoPlanConfirmButton,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

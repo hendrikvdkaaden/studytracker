@@ -57,15 +57,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   /// Switching sync off here has to clear the stored event ids as well.
   /// Without that, re-enabling would write a second entry for every goal and
   /// session that still carried an id from before.
+  ///
+  /// Planning around appointments is cleared with it: it depends on the same
+  /// access, so leaving it set would silently switch back on with sync.
   Future<void> _loadCalendarSyncStatus() async {
     var enabled = SettingsService.calendarSyncEnabled;
     if (enabled && !await CalendarSyncService.hasPermission()) {
       await SettingsService.setCalendarSyncEnabled(false);
       await SettingsService.setCalendarId(null);
+      await SettingsService.setPlanAroundCalendar(false);
       await _clearStoredEventIds();
       enabled = false;
     }
-    if (mounted) setState(() => _calendarSyncEnabled = enabled);
+    if (mounted) {
+      setState(() {
+        _calendarSyncEnabled = enabled;
+        _planAroundCalendar = SettingsService.planAroundCalendar;
+      });
+    }
   }
 
   Future<void> _togglePlanAroundCalendar() async {

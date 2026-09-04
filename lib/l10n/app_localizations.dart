@@ -436,18 +436,6 @@ abstract class AppLocalizations {
   /// **'Break Between Sessions'**
   String get autoPlanBreakDurationLabel;
 
-  /// No description provided for @autoPlanAvoidCalendarLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan around my calendar'**
-  String get autoPlanAvoidCalendarLabel;
-
-  /// No description provided for @autoPlanAvoidCalendarDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip times when you already have an appointment'**
-  String get autoPlanAvoidCalendarDescription;
-
   /// No description provided for @autoPlanBreakNone.
   ///
   /// In en, this message translates to:
@@ -940,35 +928,11 @@ abstract class AppLocalizations {
   /// **'Sync to calendar'**
   String get profileCalendarSyncLabel;
 
-  /// No description provided for @profileCalendarSyncOn.
-  ///
-  /// In en, this message translates to:
-  /// **'On'**
-  String get profileCalendarSyncOn;
-
-  /// No description provided for @profileCalendarSyncOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Off'**
-  String get profileCalendarSyncOff;
-
   /// No description provided for @profilePlanAroundCalendarLabel.
   ///
   /// In en, this message translates to:
   /// **'Plan around appointments'**
   String get profilePlanAroundCalendarLabel;
-
-  /// No description provided for @profilePlanAroundCalendarOn.
-  ///
-  /// In en, this message translates to:
-  /// **'On'**
-  String get profilePlanAroundCalendarOn;
-
-  /// No description provided for @profilePlanAroundCalendarOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Off'**
-  String get profilePlanAroundCalendarOff;
 
   /// No description provided for @calendarSyncEnableTitle.
   ///
@@ -1105,7 +1069,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileSessionReminderFormat.
   ///
   /// In en, this message translates to:
-  /// **'{minutes, plural, =0{Disabled} =1{1 minute before} other{{minutes} minutes before}}'**
+  /// **'{minutes, plural, =0{Disabled} =1{1 minute} other{{minutes} minutes}}'**
   String profileSessionReminderFormat(int minutes);
 
   /// No description provided for @profileDeadlineReminderFormat.

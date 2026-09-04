@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/common/app_switch.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/common/premium_icon.dart';
@@ -168,14 +169,12 @@ class ProfileTemplate extends StatelessWidget {
         _buildGroupCard(
           context,
           children: [
-            _buildSettingsRow(
+            _buildSwitchRow(
               context,
               icon: Icons.calendar_month_outlined,
               iconColor: AppColors.iconOrange,
               label: l10n.profileCalendarSyncLabel,
-              value: calendarSyncEnabled
-                  ? l10n.profileCalendarSyncOn
-                  : l10n.profileCalendarSyncOff,
+              value: calendarSyncEnabled,
               onTap: onCalendarSyncTap,
               busy: calendarSyncBusy,
             ),
@@ -184,14 +183,12 @@ class ProfileTemplate extends StatelessWidget {
             // for that access.
             if (calendarSyncEnabled) ...[
               _buildDivider(context),
-              _buildSettingsRow(
+              _buildSwitchRow(
                 context,
                 icon: Icons.event_busy_outlined,
                 iconColor: AppColors.iconPurple,
                 label: l10n.profilePlanAroundCalendarLabel,
-                value: planAroundCalendar
-                    ? l10n.profilePlanAroundCalendarOn
-                    : l10n.profilePlanAroundCalendarOff,
+                value: planAroundCalendar,
                 onTap: onPlanAroundCalendarTap,
               ),
             ],
@@ -309,35 +306,33 @@ class ProfileTemplate extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      userName.isEmpty ? context.l10n.profileNamePlaceholder : userName,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: userName.isEmpty
-                            ? context.colors.textTertiary
-                            : context.colors.textPrimary,
-                      ),
-                    ),
-                    if (isPremium) ...[
-                      const SizedBox(width: 8),
-                      _buildPremiumPill(context),
-                    ],
-                  ],
+                Text(
+                  userName.isEmpty ? context.l10n.profileNamePlaceholder : userName,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    height: 1.0,
+                    color: userName.isEmpty
+                        ? context.colors.textTertiary
+                        : context.colors.textPrimary,
+                  ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
+                // Tapping the school name edits the profile, same as the
+                // pencil: the icon alone is a small target for a row this wide.
                 GestureDetector(
                   onTap: onEditName,
                   child: Text(
                     schoolName.isEmpty ? context.l10n.profileSchoolNamePlaceholder : schoolName,
                     style: TextStyle(
                       fontSize: 13,
+                      height: 1.0,
                       color: context.colors.textTertiary,
                     ),
                   ),
                 ),
+                const SizedBox(height: 6),
+                if (isPremium) _buildPremiumPill(context),
               ],
             ),
           ),
@@ -391,6 +386,11 @@ class ProfileTemplate extends StatelessWidget {
     );
   }
 
+  /// One row in a settings group: icon, label, and something on the right.
+  ///
+  /// The right-hand side is a value and chevron by default; [trailing]
+  /// replaces it, which is how the calendar rows show a switch instead. A
+  /// [busy] row shows a spinner there and stops responding to taps.
   Widget _buildSettingsRow(
     BuildContext context, {
     required IconData icon,
@@ -401,6 +401,7 @@ class ProfileTemplate extends StatelessWidget {
     required VoidCallback onTap,
     bool showChevron = true,
     bool busy = false,
+    Widget? trailing,
   }) {
     return InkWell(
       // Ignored while busy so the row cannot be re-entered mid-operation.
@@ -442,6 +443,8 @@ class ProfileTemplate extends StatelessWidget {
                   color: context.colors.textTertiary,
                 ),
               )
+            else if (trailing != null)
+              trailing
             else ...[
               if (value != null) ...[
                 Text(
@@ -462,6 +465,36 @@ class ProfileTemplate extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+
+  /// A settings row whose value is a switch rather than a label and chevron.
+  ///
+  /// Used for the calendar rows, where the setting is plainly on or off and a
+  /// switch says so at a glance. The row itself stays tappable, so the whole
+  /// width works and not just the switch.
+  Widget _buildSwitchRow(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required bool value,
+    required VoidCallback onTap,
+    bool busy = false,
+  }) {
+    return _buildSettingsRow(
+      context,
+      icon: icon,
+      iconColor: iconColor,
+      label: label,
+      onTap: onTap,
+      busy: busy,
+      // The switch reports to the same handler as the row, so flipping it
+      // cannot bypass the confirmation that runs before anything changes.
+      trailing: AppSwitch(
+        value: value,
+        onChanged: (_) => onTap(),
       ),
     );
   }

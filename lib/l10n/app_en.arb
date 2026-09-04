@@ -64,8 +64,6 @@
   "autoPlanStudyWindowLabel": "Study Window",
   "autoPlanSessionDurationLabel": "Session Duration",
   "autoPlanBreakDurationLabel": "Break Between Sessions",
-  "autoPlanAvoidCalendarLabel": "Plan around my calendar",
-  "autoPlanAvoidCalendarDescription": "Skip times when you already have an appointment",
   "autoPlanBreakNone": "None",
   "autoPlanBreak15": "15 min",
   "autoPlanBreak30": "30 min",
@@ -197,11 +195,7 @@
   "profileSectionData": "DATA",
   "profileSectionCalendar": "CALENDAR",
   "profileCalendarSyncLabel": "Sync to calendar",
-  "profileCalendarSyncOn": "On",
-  "profileCalendarSyncOff": "Off",
   "profilePlanAroundCalendarLabel": "Plan around appointments",
-  "profilePlanAroundCalendarOn": "On",
-  "profilePlanAroundCalendarOff": "Off",
   "calendarSyncEnableTitle": "Sync to your calendar",
   "calendarSyncEnableMessage": "Deadly adds your deadlines and study sessions to a calendar named Deadly, so they show up next to your other plans. You can hide or remove it at any time.",
   "calendarSyncEnableConfirm": "Turn on",
@@ -231,7 +225,7 @@
       }
     }
   },
-  "profileSessionReminderFormat": "{minutes, plural, =0{Disabled} =1{1 minute before} other{{minutes} minutes before}}",
+  "profileSessionReminderFormat": "{minutes, plural, =0{Disabled} =1{1 minute} other{{minutes} minutes}}",
   "@profileSessionReminderFormat": {
     "placeholders": {
       "minutes": {

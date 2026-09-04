@@ -9,9 +9,6 @@ import '../../theme/app_theme_extension.dart';
 /// configurable — so a wider, flatter shape means drawing it here. Scaling a
 /// built-in switch was tried first and stretches its round knob into an oval.
 class AppSwitch extends StatelessWidget {
-  // Narrowed without lowering, so the switch reads flatter than the iOS one
-  // it started from. The knob is narrowed with the track, keeping the 2pt of
-  // track showing around it and 18pt of travel between the ends.
   static const double _trackWidth = 52;
   static const double _trackHeight = 22;
   static const double _knobWidth = 30;
@@ -20,10 +17,6 @@ class AppSwitch extends StatelessWidget {
   /// Leaves 2pt of track visible above and below the knob.
   static const double _inset = (_trackHeight - _knobHeight) / 2;
 
-  /// Both radii are larger than half of their shortest side, so each shape is
-  /// fully rounded. Kept at the values they were specified with rather than
-  /// clamped to 14 and 12, since the result is identical and these say what
-  /// was asked for.
   static const double _trackRadius = 50;
   static const double _knobRadius = 67;
 
@@ -38,7 +31,7 @@ class AppSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.colors.isDark;
+    final trackColor = value ? AppColors.success : context.colors.divider;
 
     return GestureDetector(
       onTap: () => onChanged(!value),
@@ -50,11 +43,7 @@ class AppSwitch extends StatelessWidget {
         width: _trackWidth,
         height: _trackHeight,
         decoration: BoxDecoration(
-          color: value
-              ? AppColors.success
-              : (isDark
-                  ? Colors.white.withValues(alpha: 0.16)
-                  : Colors.black.withValues(alpha: 0.12)),
+          color: trackColor,
           borderRadius: BorderRadius.circular(_trackRadius),
         ),
         child: AnimatedAlign(

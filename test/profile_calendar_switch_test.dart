@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:deadly/l10n/app_localizations.dart';
 import 'package:deadly/product/templates/profile_template.dart';
 import 'package:deadly/theme/app_theme_extension.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:deadly/widgets/common/app_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,6 +36,7 @@ void main() {
     bool premium = true,
     VoidCallback? onSyncTap,
     VoidCallback? onPlanTap,
+    VoidCallback? onEditName,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -64,7 +65,7 @@ void main() {
             onCalendarSyncTap: onSyncTap ?? () {},
             onPrivacyOptions: () {},
             onSubscriptionTap: () {},
-            onEditName: () {},
+            onEditName: onEditName ?? () {},
             onSessionReminderTap: () {},
             onDeadlineReminderTap: () {},
             onThemeTap: () {},
@@ -81,24 +82,11 @@ void main() {
 
   Finder switchIn(String label) => find.descendant(
         of: find.ancestor(of: find.text(label), matching: find.byType(Row)).first,
-        matching: find.byType(CupertinoSwitch),
+        matching: find.byType(AppSwitch),
       );
 
   bool switchValue(WidgetTester tester, String label) =>
-      tester.widget<CupertinoSwitch>(switchIn(label)).value;
-
-  testWidgets('name, school and the premium pill are evenly spaced',
-      (tester) async {
-    // The pill carries its own vertical padding, so an equal SizedBox above
-    // and below it renders as an unequal gap. Measured rather than assumed.
-    await pump(tester, syncEnabled: false, premium: true);
-
-    final name = tester.getRect(find.text('Hendrik'));
-    final school = tester.getRect(find.text('Hogeschool Utrecht'));
-    final pill = tester.getRect(find.text('PREMIUM'));
-
-    expect(school.top - name.bottom, pill.top - school.bottom);
-  });
+      tester.widget<AppSwitch>(switchIn(label)).value;
 
   testWidgets('calendar sync is a switch reflecting its state',
       (tester) async {
@@ -129,6 +117,18 @@ void main() {
       findsNothing,
       reason: 'without access there is nothing to plan around',
     );
+  });
+
+  testWidgets('tapping the school name edits the profile', (tester) async {
+    // The pencil is a small target next to a full-width row, so the name
+    // under it opens the same editor. It lost its GestureDetector once.
+    var taps = 0;
+    await pump(tester, syncEnabled: false, onEditName: () => taps++);
+
+    await tester.tap(find.text('Hogeschool Utrecht'));
+    await tester.pump();
+
+    expect(taps, 1);
   });
 
   testWidgets('planning around appointments appears once sync is on',

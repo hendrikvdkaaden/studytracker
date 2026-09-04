@@ -191,13 +191,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoPlanBreakDurationLabel => 'Break Between Sessions';
 
   @override
-  String get autoPlanAvoidCalendarLabel => 'Plan around my calendar';
-
-  @override
-  String get autoPlanAvoidCalendarDescription =>
-      'Skip times when you already have an appointment';
-
-  @override
   String get autoPlanBreakNone => 'None';
 
   @override
@@ -498,19 +491,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileCalendarSyncLabel => 'Sync to calendar';
 
   @override
-  String get profileCalendarSyncOn => 'On';
-
-  @override
-  String get profileCalendarSyncOff => 'Off';
-
-  @override
   String get profilePlanAroundCalendarLabel => 'Plan around appointments';
-
-  @override
-  String get profilePlanAroundCalendarOn => 'On';
-
-  @override
-  String get profilePlanAroundCalendarOff => 'Off';
 
   @override
   String get calendarSyncEnableTitle => 'Sync to your calendar';
@@ -588,8 +569,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
-      other: '$minutes minutes before',
-      one: '1 minute before',
+      other: '$minutes minutes',
+      one: '1 minute',
       zero: 'Disabled',
     );
     return '$_temp0';

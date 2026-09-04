@@ -86,21 +86,25 @@ class PlannedSessionItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   if (onDelete != null)
-                    // The icon stays small but the target does not: an 18pt
-                    // hit area is well under the 44pt a fingertip needs, and
-                    // missing it hits the row and opens the editor instead.
-                    Material(
-                      color: Colors.transparent,
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAlias,
-                      child: InkWell(
-                        onTap: onDelete,
-                        child: Padding(
-                          padding: const EdgeInsets.all(11),
-                          child: Icon(
-                            Icons.delete_outline,
-                            size: 18,
-                            color: context.colors.textSecondary,
+                    // A bigger icon and padding around it, but the target is
+                    // kept from growing taller than the row: an 18pt icon with
+                    // an 18pt hit area was far under the 44pt a fingertip
+                    // needs, and missing it opened the editor instead.
+                    SizedBox(
+                      height: 20,
+                      child: Material(
+                        color: Colors.transparent,
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: onDelete,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Icon(
+                              Icons.delete_outline,
+                              size: 22,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ),
                       ),

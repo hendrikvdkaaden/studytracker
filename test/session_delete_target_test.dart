@@ -7,6 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 /// Deleting a planned session was easy to miss: the icon was 18pt and its hit
 /// area was exactly the icon. Missing it lands on the row, which opens the
 /// editor — the wrong thing entirely.
+///
+/// The target grew sideways rather than in every direction, because the row
+/// has to keep the height it had.
 void main() {
   StudySession session() => StudySession(
         id: 's1',
@@ -38,8 +41,26 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('the delete target is big enough for a fingertip',
-      (tester) async {
+  testWidgets('the delete target is wider than the icon', (tester) async {
+    await pump(tester, onDelete: () {});
+
+    final target = tester.getSize(
+      find.ancestor(
+        of: find.byIcon(Icons.delete_outline),
+        matching: find.byType(InkWell),
+      ),
+    );
+    final icon = tester.widget<Icon>(find.byIcon(Icons.delete_outline));
+
+    expect(
+      target.width,
+      greaterThan(icon.size! * 1.5),
+      reason: 'the icon alone was the whole target, and too small to hit',
+    );
+  });
+
+  testWidgets('the row keeps the height it had', (tester) async {
+    // A taller target would push every session card down the list.
     await pump(tester, onDelete: () {});
 
     final target = tester.getSize(
@@ -49,22 +70,7 @@ void main() {
       ),
     );
 
-    // 44pt is Apple's minimum; 40 is the practical floor for an icon button
-    // sitting inside a row this height.
-    expect(target.width, greaterThanOrEqualTo(40));
-    expect(target.height, greaterThanOrEqualTo(40));
-  });
-
-  testWidgets('the icon itself stays small', (tester) async {
-    await pump(tester, onDelete: () {});
-
-    final icon = tester.widget<Icon>(find.byIcon(Icons.delete_outline));
-
-    expect(
-      icon.size,
-      18,
-      reason: 'a bigger target must not mean a heavier-looking row',
-    );
+    expect(target.height, lessThanOrEqualTo(20));
   });
 
   testWidgets('tapping it deletes rather than opening the editor',

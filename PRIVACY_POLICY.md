@@ -12,7 +12,7 @@ Deadly is built to be offline-first. Your study data never leaves your device. T
 - We do not have a user account system, so we never ask for your email or password.
 - We do not track you across other apps or websites, and we do not ask for permission to do so.
 - Advertisements are optional. They only appear if you choose to watch one, and they are never personalised.
-- Calendar sync is optional and one-way: Deadly can add your plans to your calendar, but never reads what is already in it.
+- Calendar sync is optional: Deadly adds your plans to a calendar of its own. If you ask it to, it can also check when you are already busy so it does not schedule study time over your appointments — that check happens on your device and nothing about your appointments is stored or sent anywhere.
 
 ## Data stored on your device
 
@@ -69,7 +69,9 @@ What Deadly writes:
 - Deadlines, as all-day entries with the title and subject you entered
 - Study sessions, as time blocks with the title, duration and any note you added
 
-**Deadly does not read your calendar.** It cannot see your existing appointments or events. It looks up the list of calendars on your device only to find or create its own "Deadly" calendar, and it only ever writes to that one — never to your personal calendars.
+**Deadly only ever writes to its own calendar.** It creates a calendar named "Deadly" and adds your deadlines and study sessions there — never to your personal calendars.
+
+If you switch on "Plan around my calendar" when planning study sessions, Deadly reads the start and end times of your appointments for the period it is planning, so it can leave those times free. It uses only when you are busy, not what you are doing: titles, locations, notes and guests are never used. This happens entirely on your device, nothing is stored, and nothing about your appointments is sent anywhere. The option is off unless you turn it on.
 
 You stay in control:
 
@@ -88,7 +90,7 @@ Deadly does not collect, use or share:
 - Analytics or usage statistics about how you use the app
 - Location data
 - Contacts, photos or health data
-- The contents of your calendar — Deadly writes to its own calendar but never reads yours
+- The contents of your calendar — when planning around your appointments, Deadly reads their times on your device and keeps nothing
 - Your name, email address or any other contact information
 
 Deadly does not track you across apps or websites owned by other companies, and does not build an advertising profile about you.

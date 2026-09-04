@@ -86,8 +86,11 @@ class PlannedSessionItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   if (onDelete != null)
+                    // The target grows sideways only: the row has to keep the
+                    // height it had, and a taller box pushes every card down
+                    // the list. Icon and box are both 20pt so nothing clips.
                     SizedBox(
-                      height: 22,
+                      height: 20,
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -96,7 +99,7 @@ class PlannedSessionItem extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 16),
                             child: Icon(
                               Icons.delete_outline,
-                              size: 22,
+                              size: 20,
                               color: subtleColor,
                             ),
                           ),

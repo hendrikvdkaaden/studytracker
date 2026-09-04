@@ -1,6 +1,22 @@
 import 'package:uuid/uuid.dart';
 import '../models/study_session.dart';
 
+/// A stretch of time the planner may not schedule into.
+///
+/// Half-open: a block ending at 10:00 leaves 10:00 itself free.
+class BusyBlock {
+  final DateTime start;
+  final DateTime end;
+
+  const BusyBlock(this.start, this.end);
+
+  bool overlaps(DateTime otherStart, DateTime otherEnd) =>
+      otherStart.isBefore(end) && otherEnd.isAfter(start);
+
+  @override
+  String toString() => 'BusyBlock($start -> $end)';
+}
+
 class AutoPlannerService {
   static List<StudySession> generateSessions({
     required String goalId,
@@ -14,6 +30,10 @@ class AutoPlannerService {
     required int sessionDuration,
     required int breakMinutes,
     required List<StudySession> existingSessions,
+
+    /// Times the user is already occupied, typically their calendar. Empty by
+    /// default so callers that do not read the calendar are unaffected.
+    List<BusyBlock> busyBlocks = const [],
   }) {
     if (sessionDuration <= 0 || weekdays.isEmpty || totalMinutes <= 0) {
       return [];
@@ -50,7 +70,15 @@ class AutoPlannerService {
     // sessionsPerDay[dayIndex] = number of sessions already placed that day
     final sessionsPerDay = List<int>.filled(availableDays.length, 0);
 
-    final allSessions = List<StudySession>.from(existingSessions);
+    // Sessions and calendar entries are the same thing to the planner: time
+    // that is taken. Converting once up front keeps the overlap check to a
+    // single concept.
+    final blocked = <BusyBlock>[
+      ...busyBlocks,
+      for (final s in existingSessions)
+        if (s.startTime != null)
+          BusyBlock(s.startTime!, s.startTime!.add(Duration(minutes: s.duration))),
+    ];
     final result = <StudySession>[];
     int minutesRemaining = totalMinutes;
 
@@ -80,7 +108,7 @@ class AutoPlannerService {
           slotStartMinutes % 60,
         );
 
-        if (!_hasOverlap(slotStart, sessionDuration, allSessions)) {
+        if (!_hasOverlap(slotStart, sessionDuration, blocked)) {
           final session = StudySession(
             id: const Uuid().v4(),
             goalId: goalId,
@@ -90,7 +118,10 @@ class AutoPlannerService {
             startTime: slotStart,
           );
           result.add(session);
-          allSessions.add(session);
+          // Generated sessions block each other too.
+          blocked.add(
+            BusyBlock(slotStart, slotStart.add(Duration(minutes: sessionDuration))),
+          );
           sessionsPerDay[i]++;
           minutesRemaining -= sessionDuration;
           addedAny = true;
@@ -107,13 +138,11 @@ class AutoPlannerService {
   static bool _hasOverlap(
     DateTime start,
     int duration,
-    List<StudySession> existing,
+    List<BusyBlock> blocked,
   ) {
     final end = start.add(Duration(minutes: duration));
-    for (final s in existing) {
-      if (s.startTime == null) continue;
-      final sEnd = s.startTime!.add(Duration(minutes: s.duration));
-      if (start.isBefore(sEnd) && end.isAfter(s.startTime!)) return true;
+    for (final block in blocked) {
+      if (block.overlaps(start, end)) return true;
     }
     return false;
   }

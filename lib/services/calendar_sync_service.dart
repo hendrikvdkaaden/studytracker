@@ -3,14 +3,18 @@ import 'package:flutter/foundation.dart';
 
 import '../models/goal.dart';
 import '../models/study_session.dart';
+import 'auto_planner_service.dart';
+import 'calendar_busy_mapper.dart';
 import 'calendar_event_mapper.dart';
 import 'goal_repository.dart';
 import 'settings_service.dart';
 import 'study_session_repository.dart';
 
-/// Writes deadlines and study sessions to a calendar the app owns.
+/// Keeps the device calendar in step with deadlines and study sessions.
 ///
-/// One-way only: the app never reads events back. Mirrors NotificationService
+/// Writes to a calendar the app owns and never to the user's own. It reads
+/// only for [busyBlocks], so the planner can avoid times they are already
+/// occupied. Mirrors NotificationService
 /// in posture — every method swallows its errors, because a calendar entry is
 /// a convenience and must never break a user action.
 ///
@@ -234,6 +238,39 @@ class CalendarSyncService {
       }
     }
     return result;
+  }
+
+  /// The times the user is already occupied between [from] and [to].
+  ///
+  /// Never prompts. The plugin only asks for permission when its
+  /// `autoPermissions` is set, which this app deliberately leaves null, so a
+  /// missing grant throws and is caught below rather than putting a system
+  /// dialog in front of someone mid-plan.
+  ///
+  /// Returns an empty list on anything unexpected: planning around the
+  /// calendar is a convenience, and losing it must never cost the user a plan.
+  static Future<List<BusyBlock>> busyBlocks({
+    required DateTime from,
+    required DateTime to,
+  }) async {
+    if (!isEnabled) return const [];
+
+    try {
+      // Checked rather than assumed: access can be revoked in system settings
+      // long after sync was switched on.
+      if (!await hasPermission()) return const [];
+
+      final events = await _plugin.listEvents(from, to);
+      return CalendarBusyMapper.toBusyBlocks(
+        events,
+        windowStart: from,
+        windowEnd: to,
+        ownCalendarId: _cachedCalendarId ?? SettingsService.calendarId,
+      );
+    } catch (e) {
+      debugPrint('Reading calendar events failed: $e');
+      return const [];
+    }
   }
 
   /// Removes a single event. Safe to call with null or an id that no longer

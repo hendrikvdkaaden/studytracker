@@ -242,6 +242,19 @@ class SettingsService {
     await _box.put(_keyLastAdTrialDate, value.toIso8601String());
   }
 
+  /// Whether the auto planner should avoid times the user is already busy.
+  ///
+  /// Remembered because the reason for wanting it -- a full timetable -- does
+  /// not change between plans.
+  static const String _keyPlanAroundCalendar = 'planAroundCalendar';
+
+  static bool get planAroundCalendar =>
+      _box.get(_keyPlanAroundCalendar, defaultValue: false) as bool;
+
+  static Future<void> setPlanAroundCalendar(bool value) async {
+    await _box.put(_keyPlanAroundCalendar, value);
+  }
+
   // Rewarded-ad slots for extra deadlines
   static const String _keyEarnedGoalSlots = 'earnedGoalSlots';
 

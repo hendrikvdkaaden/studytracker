@@ -16,7 +16,7 @@ class SubscriptionService {
   /// leaving it on cannot hand out premium to everyone.
   ///
   /// Set back to false when you are done.
-  static const bool unlockPremiumForTesting = true;
+  static const bool unlockPremiumForTesting = false;
 
   /// How many deadlines a free user may keep: the free limit plus whatever
   /// they have unlocked by watching ads.

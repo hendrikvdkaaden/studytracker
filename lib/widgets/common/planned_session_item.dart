@@ -84,14 +84,25 @@ class PlannedSessionItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   if (onDelete != null)
-                    GestureDetector(
-                      onTap: onDelete,
-                      child: Icon(
-                        Icons.delete_outline,
-                        size: 18,
-                        color: context.colors.textSecondary,
+                    // The icon stays small but the target does not: an 18pt
+                    // hit area is well under the 44pt a fingertip needs, and
+                    // missing it hits the row and opens the editor instead.
+                    Material(
+                      color: Colors.transparent,
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        onTap: onDelete,
+                        child: Padding(
+                          padding: const EdgeInsets.all(11),
+                          child: Icon(
+                            Icons.delete_outline,
+                            size: 18,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
                       ),
                     )
                   else

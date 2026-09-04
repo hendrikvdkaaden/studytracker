@@ -38,6 +38,23 @@ class FormatHelpers {
     return '${date.day} ${_fullMonths[date.month - 1]} ${date.year}';
   }
 
+  /// Names the month a week belongs to, for a week strip the user scrolls
+  /// through (e.g., "September 2026", or "Sep - Oct 2026" across a boundary).
+  ///
+  /// The year is shown once when both ends share it, and dropped from the
+  /// first half when they do not sit in the same year either.
+  static String formatWeekMonth(DateTime first, DateTime last) {
+    if (first.month == last.month && first.year == last.year) {
+      return '${_fullMonths[first.month - 1]} ${first.year}';
+    }
+    if (first.year == last.year) {
+      return '${_shortMonths[first.month - 1]} - '
+          '${_shortMonths[last.month - 1]} ${first.year}';
+    }
+    return '${_shortMonths[first.month - 1]} ${first.year} - '
+        '${_shortMonths[last.month - 1]} ${last.year}';
+  }
+
   /// Format a TimeOfDay into a 24-hour time string (e.g., "14:30")
   static String formatTimeOfDay(int hour, int minute) {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';

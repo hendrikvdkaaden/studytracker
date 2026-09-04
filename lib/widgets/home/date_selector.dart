@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
+import '../../utils/format_helpers.dart';
 
 class DateSelector extends StatefulWidget {
   final DateTime selectedDate;
@@ -19,6 +20,10 @@ class DateSelector extends StatefulWidget {
 class _DateSelectorState extends State<DateSelector> {
   static const int _initialPage = 1000;
   late final PageController _pageController;
+
+  /// The week on screen. Tracked separately from the selected date: scrolling
+  /// past a week without picking a day still has to move the month heading.
+  int _visiblePage = _initialPage;
 
   // Monday of the current real week
   late final DateTime _baseMonday;
@@ -61,11 +66,30 @@ class _DateSelectorState extends State<DateSelector> {
   Widget build(BuildContext context) {
     final today = DateTime.now();
 
-    return SizedBox(
-      height: 80,
-      child: PageView.builder(
+    final visibleWeek = _weekDatesForPage(_visiblePage);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Names the month on screen, so scrolling several weeks out does not
+        // leave the user guessing where they are.
+        Padding(
+          padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
+          child: Text(
+            FormatHelpers.formatWeekMonth(visibleWeek.first, visibleWeek.last),
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: context.colors.textSecondary,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 80,
+          child: PageView.builder(
         controller: _pageController,
         onPageChanged: (page) {
+          setState(() => _visiblePage = page);
           // Auto-select Monday of the new week if selected date is not in it
           final weekDates = _weekDatesForPage(page);
           final isInWeek = weekDates.any((d) => _isSameDay(d, widget.selectedDate));
@@ -174,7 +198,9 @@ class _DateSelectorState extends State<DateSelector> {
             ),
           );
         },
-      ),
+          ),
+        ),
+      ],
     );
   }
 }

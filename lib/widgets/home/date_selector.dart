@@ -74,7 +74,7 @@ class _DateSelectorState extends State<DateSelector> {
         // Names the month on screen, so scrolling several weeks out does not
         // leave the user guessing where they are.
         Padding(
-          padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
           child: Text(
             FormatHelpers.formatWeekMonth(visibleWeek.first, visibleWeek.last),
             style: TextStyle(

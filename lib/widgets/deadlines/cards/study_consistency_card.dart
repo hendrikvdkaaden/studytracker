@@ -78,17 +78,33 @@ class StudyConsistencyCard extends StatelessWidget {
                 children: [
                   Icon(Icons.event_busy, color: Colors.amber.shade700, size: 16),
                   const SizedBox(width: 8),
-                  Text(
-                    context.l10n.consistencyTitle,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: context.colors.isDark
-                          ? Colors.amber.shade400
-                          : Colors.amber.shade700,
-                      letterSpacing: 1.2,
+                  Expanded(
+                    child: Text(
+                      context.l10n.consistencyTitle,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: context.colors.isDark
+                            ? Colors.amber.shade400
+                            : Colors.amber.shade700,
+                        letterSpacing: 1.2,
+                      ),
                     ),
                   ),
+                  // In the header row rather than floating over the card, so
+                  // it lines up with the title instead of approximately so.
+                  if (studyStreak >= 2) ...[
+                    const Text('🔥', style: TextStyle(fontSize: 15)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$studyStreak',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange.shade700,
+                      ),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 12),
@@ -137,38 +153,6 @@ class StudyConsistencyCard extends StatelessWidget {
               ),
             ],
           ),
-
-          // Streak badge — top right
-          if (studyStreak >= 2)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.orange.withValues(alpha: 0.4),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('🔥', style: TextStyle(fontSize: 14)),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$studyStreak',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
         ],
       ),
     );

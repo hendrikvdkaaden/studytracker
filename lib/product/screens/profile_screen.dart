@@ -35,6 +35,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String _schoolName = '';
   bool _showPrivacyOptions = false;
   bool _calendarSyncEnabled = false;
+  bool _planAroundCalendar = SettingsService.planAroundCalendar;
   bool _calendarBusy = false;
 
   @override
@@ -65,6 +66,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       enabled = false;
     }
     if (mounted) setState(() => _calendarSyncEnabled = enabled);
+  }
+
+  Future<void> _togglePlanAroundCalendar() async {
+    final next = !_planAroundCalendar;
+    setState(() => _planAroundCalendar = next);
+    await SettingsService.setPlanAroundCalendar(next);
   }
 
   Future<void> _onCalendarSyncTap() async {
@@ -652,6 +659,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       isPremium: isPremium,
       showPrivacyOptions: _showPrivacyOptions,
       calendarSyncEnabled: _calendarSyncEnabled,
+      planAroundCalendar: _planAroundCalendar,
+      onPlanAroundCalendarTap: _togglePlanAroundCalendar,
       calendarSyncBusy: _calendarBusy,
       onCalendarSyncTap: _onCalendarSyncTap,
       onPrivacyOptions: AdService.showPrivacyOptionsForm,

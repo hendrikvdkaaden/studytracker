@@ -94,8 +94,7 @@ class StudyConsistencyCard extends StatelessWidget {
                   // In the header row rather than floating over the card, so
                   // it lines up with the title instead of approximately so.
                   if (studyStreak >= 2) ...[
-                    const Text('🔥', style: TextStyle(fontSize: 15)),
-                    const SizedBox(width: 4),
+                    const Text('🔥 ', style: TextStyle(fontSize: 15)),
                     Text(
                       '$studyStreak',
                       style: TextStyle(

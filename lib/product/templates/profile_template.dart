@@ -16,6 +16,8 @@ class ProfileTemplate extends StatelessWidget {
   final bool isPremium;
   final bool showPrivacyOptions;
   final bool calendarSyncEnabled;
+  final bool planAroundCalendar;
+  final VoidCallback onPlanAroundCalendarTap;
   final bool calendarSyncBusy;
   final VoidCallback onSubscriptionTap;
   final VoidCallback onPrivacyOptions;
@@ -40,6 +42,8 @@ class ProfileTemplate extends StatelessWidget {
     required this.isPremium,
     required this.showPrivacyOptions,
     required this.calendarSyncEnabled,
+    required this.planAroundCalendar,
+    required this.onPlanAroundCalendarTap,
     required this.calendarSyncBusy,
     required this.onCalendarSyncTap,
     required this.onPrivacyOptions,
@@ -175,6 +179,22 @@ class ProfileTemplate extends StatelessWidget {
               onTap: onCalendarSyncTap,
               busy: calendarSyncBusy,
             ),
+            // Only while sync is on: without calendar access there is nothing
+            // to plan around, and this must not become a second way to ask
+            // for that access.
+            if (calendarSyncEnabled) ...[
+              _buildDivider(context),
+              _buildSettingsRow(
+                context,
+                icon: Icons.event_busy_outlined,
+                iconColor: AppColors.iconPurple,
+                label: l10n.profilePlanAroundCalendarLabel,
+                value: planAroundCalendar
+                    ? l10n.profilePlanAroundCalendarOn
+                    : l10n.profilePlanAroundCalendarOff,
+                onTap: onPlanAroundCalendarTap,
+              ),
+            ],
           ],
         ),
         const SizedBox(height: 24),
@@ -289,15 +309,23 @@ class ProfileTemplate extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  userName.isEmpty ? context.l10n.profileNamePlaceholder : userName,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: userName.isEmpty
-                        ? context.colors.textTertiary
-                        : context.colors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      userName.isEmpty ? context.l10n.profileNamePlaceholder : userName,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: userName.isEmpty
+                            ? context.colors.textTertiary
+                            : context.colors.textPrimary,
+                      ),
+                    ),
+                    if (isPremium) ...[
+                      const SizedBox(width: 8),
+                      _buildPremiumPill(context),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 2),
                 GestureDetector(
@@ -310,10 +338,6 @@ class ProfileTemplate extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (isPremium) ...[
-                  const SizedBox(height: 8),
-                  _buildPremiumPill(context),
-                ],
               ],
             ),
           ),

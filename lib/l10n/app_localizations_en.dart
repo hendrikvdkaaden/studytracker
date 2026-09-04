@@ -504,6 +504,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileCalendarSyncOff => 'Off';
 
   @override
+  String get profilePlanAroundCalendarLabel => 'Plan around appointments';
+
+  @override
+  String get profilePlanAroundCalendarOn => 'On';
+
+  @override
+  String get profilePlanAroundCalendarOff => 'Off';
+
+  @override
   String get calendarSyncEnableTitle => 'Sync to your calendar';
 
   @override
@@ -862,7 +871,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingStep4Subtitle =>
-      'See your deadlines and study sessions next to everything else you have planned';
+      'See your plans in your own calendar, and let Deadly work around the times you are busy';
 
   @override
   String get onboardingCalendarConnectButton => 'Continue';
@@ -879,14 +888,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingStep4Note =>
-      'Deadly writes to its own calendar and never reads yours. You can change this later in your Profile.';
+      'Deadly writes to its own calendar, never to yours. You can change this later in your Profile.';
 
   @override
   String get calendarPromptTitle => 'Add Deadly to your calendar';
 
   @override
   String get calendarPromptMessage =>
-      'See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.';
+      'See your deadlines and study sessions next to everything else you have planned, and let Deadly avoid the times you are already busy. It writes to its own calendar, never to yours.';
 
   @override
   String get calendarPromptConfirm => 'Continue';

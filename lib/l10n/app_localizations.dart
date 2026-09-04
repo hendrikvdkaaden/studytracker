@@ -952,6 +952,24 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get profileCalendarSyncOff;
 
+  /// No description provided for @profilePlanAroundCalendarLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan around appointments'**
+  String get profilePlanAroundCalendarLabel;
+
+  /// No description provided for @profilePlanAroundCalendarOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get profilePlanAroundCalendarOn;
+
+  /// No description provided for @profilePlanAroundCalendarOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get profilePlanAroundCalendarOff;
+
   /// No description provided for @calendarSyncEnableTitle.
   ///
   /// In en, this message translates to:
@@ -1561,7 +1579,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStep4Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'See your deadlines and study sessions next to everything else you have planned'**
+  /// **'See your plans in your own calendar, and let Deadly work around the times you are busy'**
   String get onboardingStep4Subtitle;
 
   /// No description provided for @onboardingCalendarConnectButton.
@@ -1591,7 +1609,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStep4Note.
   ///
   /// In en, this message translates to:
-  /// **'Deadly writes to its own calendar and never reads yours. You can change this later in your Profile.'**
+  /// **'Deadly writes to its own calendar, never to yours. You can change this later in your Profile.'**
   String get onboardingStep4Note;
 
   /// No description provided for @calendarPromptTitle.
@@ -1603,7 +1621,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarPromptMessage.
   ///
   /// In en, this message translates to:
-  /// **'See your deadlines and study sessions next to everything else you have planned. Deadly writes to its own calendar and never reads yours.'**
+  /// **'See your deadlines and study sessions next to everything else you have planned, and let Deadly avoid the times you are already busy. It writes to its own calendar, never to yours.'**
   String get calendarPromptMessage;
 
   /// No description provided for @calendarPromptConfirm.

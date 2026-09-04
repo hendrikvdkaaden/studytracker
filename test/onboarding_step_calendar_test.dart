@@ -74,6 +74,8 @@ void main() {
       onComplete: () => completed = true,
     );
 
+    await tester.ensureVisible(find.text("Let's go!"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text("Let's go!"));
     await tester.pump();
 
@@ -127,6 +129,8 @@ void main() {
     expect(find.text('Continue'), findsNothing,
         reason: 'iOS prompts once — a second press would do nothing');
 
+    await tester.ensureVisible(find.text("Let's go!"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text("Let's go!"));
     await tester.pump();
     expect(completed, isTrue);
@@ -148,6 +152,8 @@ void main() {
     expect(find.text('Continue'), findsNothing,
         reason: 'connecting again would only re-prompt for nothing');
 
+    await tester.ensureVisible(find.text("Let's go!"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text("Let's go!"));
     await tester.pump();
     expect(completed, isTrue);

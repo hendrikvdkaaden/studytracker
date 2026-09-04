@@ -11,6 +11,13 @@ class SubscriptionService {
   static const int freeGoalLimit = 3;
   static const int freeSubjectLimit = 3;
 
+  /// Treats the user as a subscriber so paid features can be tried without
+  /// buying anything. Debug builds only -- a release build ignores it, so
+  /// leaving it on cannot hand out premium to everyone.
+  ///
+  /// Set back to false when you are done.
+  static const bool unlockPremiumForTesting = true;
+
   /// How many deadlines a free user may keep: the free limit plus whatever
   /// they have unlocked by watching ads.
   static int get goalLimitWithEarned =>
@@ -24,6 +31,8 @@ class SubscriptionService {
   }
 
   Future<bool> isPremium() async {
+    if (unlockPremiumForTesting && kDebugMode) return true;
+
     try {
       final info = await Purchases.getCustomerInfo();
       return info.entitlements.active.containsKey(_entitlementId);

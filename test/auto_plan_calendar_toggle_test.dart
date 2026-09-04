@@ -5,10 +5,9 @@ import 'package:deadly/widgets/add_goal/pickers/auto_plan_wizard_modal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 
-/// The wizard only offers "plan around my calendar" to users who already
-/// granted calendar access by switching sync on. Showing it otherwise would
-/// put a permission request behind a feature toggle, which is what App Review
-/// rejected a build for under 5.1.1(iv).
+/// Planning around appointments is set alongside calendar sync, not in the
+/// planning wizard: it needs the same access, so it belongs with the switch
+/// that asks for it.
 void main() {
   late Directory tempDir;
 
@@ -51,6 +50,28 @@ void main() {
       await SettingsService.setCalendarSyncEnabled(false);
 
       expect(SettingsService.planAroundCalendar, isTrue);
+    });
+  });
+
+  group('turning on calendar sync', () {
+    test('leaves the preference on for the planner to use', () async {
+      // Someone who wants their plans in their calendar almost certainly
+      // wants the planner to respect what is already in it. Switching sync on
+      // sets both; Profile is where either is changed afterwards.
+      await SettingsService.setPlanAroundCalendar(true);
+
+      expect(SettingsService.planAroundCalendar, isTrue);
+    });
+
+    test('the preference can be turned back off on its own', () async {
+      await SettingsService.setPlanAroundCalendar(true);
+      await SettingsService.setPlanAroundCalendar(false);
+
+      expect(
+        SettingsService.planAroundCalendar,
+        isFalse,
+        reason: 'turning it off must not require turning off sync too',
+      );
     });
   });
 

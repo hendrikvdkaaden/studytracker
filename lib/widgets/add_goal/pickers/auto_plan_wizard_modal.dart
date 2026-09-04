@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../services/calendar_sync_service.dart';
 import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
@@ -60,7 +59,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _sessionDurationHours = 0;
   int _sessionDurationMinutes = 45;
   int _breakMinutes = 15;
-  bool _avoidCalendar = SettingsService.planAroundCalendar;
   String? _errorMessage;
 
   static const _dayLabels = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
@@ -105,9 +103,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
       return;
     }
 
-    // Remembered for next time; a full timetable does not change between plans.
-    SettingsService.setPlanAroundCalendar(_avoidCalendar);
-
     Navigator.pop(
       context,
       AutoPlanWizardResult(
@@ -119,7 +114,8 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         endMinute: 0,
         sessionDuration: sessionMins,
         breakMinutes: _breakMinutes,
-        avoidCalendarEvents: _avoidCalendar,
+        // Set in Profile, not here: it belongs with calendar sync.
+        avoidCalendarEvents: SettingsService.planAroundCalendar,
       ),
     );
   }
@@ -187,14 +183,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
               children: [
-                // A quiet switch above the settings rather than a section of
-                // its own: it qualifies the plan rather than shaping it, and
-                // it only appears for users who already granted access.
-                if (CalendarSyncService.isEnabled) ...[
-                  _buildAvoidCalendarRow(subtleText: subtleText),
-                  const SizedBox(height: 20),
-                ],
-
                 // 1. Totale studietijd
                 _buildSectionHeader(
                   label: context.l10n.autoPlanTotalStudyTimeLabel,
@@ -461,49 +449,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
       maxHours: maxHours,
       onHoursChanged: onHoursChanged,
       onMinutesChanged: onMinutesChanged,
-    );
-  }
-
-  /// Compact switch: no card, no section header. It is a qualifier on the
-  /// plan, not one of the values that shapes it, so it stays visually below
-  /// the settings it sits above.
-  Widget _buildAvoidCalendarRow({required Color subtleText}) {
-    return Row(
-      children: [
-        Icon(
-          Icons.event_busy_outlined,
-          size: 16,
-          color: subtleText,
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.l10n.autoPlanAvoidCalendarLabel,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textPrimary,
-                ),
-              ),
-              Text(
-                context.l10n.autoPlanAvoidCalendarDescription,
-                style: TextStyle(fontSize: 11, color: subtleText),
-              ),
-            ],
-          ),
-        ),
-        Transform.scale(
-          scale: 0.8,
-          child: Switch.adaptive(
-            value: _avoidCalendar,
-            activeThumbColor: AppColors.primary,
-            onChanged: (v) => setState(() => _avoidCalendar = v),
-          ),
-        ),
-      ],
     );
   }
 

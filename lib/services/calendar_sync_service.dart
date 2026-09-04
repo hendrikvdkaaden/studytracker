@@ -120,6 +120,11 @@ class CalendarSyncService {
       await SettingsService.setCalendarSyncEnabled(false);
       return false;
     }
+    // Switching sync on grants the access this needs, and someone who wants
+    // their plans in their calendar almost certainly wants the planner to
+    // respect what is already in it. They can turn it off in Profile.
+    await SettingsService.setPlanAroundCalendar(true);
+
     await backfill(
       goalRepo: goalRepo ?? GoalRepository(),
       sessionRepo: sessionRepo ?? StudySessionRepository(),

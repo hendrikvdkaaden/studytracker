@@ -66,8 +66,6 @@
   "autoPlanBreakDurationLabel": "Break Between Sessions",
   "autoPlanAvoidCalendarLabel": "Plan around my calendar",
   "autoPlanAvoidCalendarDescription": "Skip times when you already have an appointment",
-  "autoPlanAvoidCalendarOn": "On",
-  "autoPlanAvoidCalendarOff": "Off",
   "autoPlanBreakNone": "None",
   "autoPlanBreak15": "15 min",
   "autoPlanBreak30": "30 min",

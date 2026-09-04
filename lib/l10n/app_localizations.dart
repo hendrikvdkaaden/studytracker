@@ -448,18 +448,6 @@ abstract class AppLocalizations {
   /// **'Skip times when you already have an appointment'**
   String get autoPlanAvoidCalendarDescription;
 
-  /// No description provided for @autoPlanAvoidCalendarOn.
-  ///
-  /// In en, this message translates to:
-  /// **'On'**
-  String get autoPlanAvoidCalendarOn;
-
-  /// No description provided for @autoPlanAvoidCalendarOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Off'**
-  String get autoPlanAvoidCalendarOff;
-
   /// No description provided for @autoPlanBreakNone.
   ///
   /// In en, this message translates to:

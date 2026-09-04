@@ -198,12 +198,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Skip times when you already have an appointment';
 
   @override
-  String get autoPlanAvoidCalendarOn => 'On';
-
-  @override
-  String get autoPlanAvoidCalendarOff => 'Off';
-
-  @override
   String get autoPlanBreakNone => 'None';
 
   @override

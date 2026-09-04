@@ -187,6 +187,14 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
               children: [
+                // A quiet switch above the settings rather than a section of
+                // its own: it qualifies the plan rather than shaping it, and
+                // it only appears for users who already granted access.
+                if (CalendarSyncService.isEnabled) ...[
+                  _buildAvoidCalendarRow(subtleText: subtleText),
+                  const SizedBox(height: 20),
+                ],
+
                 // 1. Totale studietijd
                 _buildSectionHeader(
                   label: context.l10n.autoPlanTotalStudyTimeLabel,
@@ -309,25 +317,6 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 const SizedBox(height: 12),
                 _buildBreakPicker(sectionBg: sectionBg, subtleText: subtleText),
 
-                // 6. Om de eigen agenda heen plannen.
-                //
-                // Only offered when calendar sync is already on, which means
-                // access was already granted. Showing it otherwise would put a
-                // permission request behind a feature toggle.
-                if (CalendarSyncService.isEnabled) ...[
-                  const SizedBox(height: 28),
-                  _buildSectionHeader(
-                    label: context.l10n.autoPlanAvoidCalendarLabel,
-                    icon: Icons.event_busy_outlined,
-                    iconBg: AppColors.iconBgPurple,
-                    iconColor: AppColors.iconPurple,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildAvoidCalendarPicker(
-                    sectionBg: sectionBg,
-                    subtleText: subtleText,
-                  ),
-                ],
                 const SizedBox(height: 24),
               ],
             ),
@@ -475,72 +464,46 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
     );
   }
 
-  Widget _buildAvoidCalendarPicker({
-    required Color sectionBg,
-    required Color subtleText,
-  }) {
-    final labels = [
-      context.l10n.autoPlanAvoidCalendarOff,
-      context.l10n.autoPlanAvoidCalendarOn,
-    ];
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: sectionBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.autoPlanAvoidCalendarDescription,
-            style: TextStyle(fontSize: 12, color: subtleText),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: List.generate(2, (i) {
-              final selected = _avoidCalendar == (i == 1);
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _avoidCalendar = i == 1),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    margin: EdgeInsets.only(right: i == 0 ? 6 : 0),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: selected
-                          ? AppColors.primary
-                          : (context.colors.isDark
-                              ? Colors.white.withValues(alpha: 0.06)
-                              : Colors.white),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: selected
-                            ? AppColors.primary
-                            : (context.colors.isDark
-                                ? Colors.white.withValues(alpha: 0.1)
-                                : Colors.grey[200]!),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        labels[i],
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: selected ? Colors.white : subtleText,
-                        ),
-                      ),
-                    ),
-                  ),
+  /// Compact switch: no card, no section header. It is a qualifier on the
+  /// plan, not one of the values that shapes it, so it stays visually below
+  /// the settings it sits above.
+  Widget _buildAvoidCalendarRow({required Color subtleText}) {
+    return Row(
+      children: [
+        Icon(
+          Icons.event_busy_outlined,
+          size: 16,
+          color: subtleText,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.l10n.autoPlanAvoidCalendarLabel,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: context.colors.textPrimary,
                 ),
-              );
-            }),
+              ),
+              Text(
+                context.l10n.autoPlanAvoidCalendarDescription,
+                style: TextStyle(fontSize: 11, color: subtleText),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Transform.scale(
+          scale: 0.8,
+          child: Switch.adaptive(
+            value: _avoidCalendar,
+            activeThumbColor: AppColors.primary,
+            onChanged: (v) => setState(() => _avoidCalendar = v),
+          ),
+        ),
+      ],
     );
   }
 

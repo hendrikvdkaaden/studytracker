@@ -436,6 +436,30 @@ abstract class AppLocalizations {
   /// **'Break Between Sessions'**
   String get autoPlanBreakDurationLabel;
 
+  /// No description provided for @autoPlanAvoidCalendarLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan around my calendar'**
+  String get autoPlanAvoidCalendarLabel;
+
+  /// No description provided for @autoPlanAvoidCalendarDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip times when you already have an appointment'**
+  String get autoPlanAvoidCalendarDescription;
+
+  /// No description provided for @autoPlanAvoidCalendarOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get autoPlanAvoidCalendarOn;
+
+  /// No description provided for @autoPlanAvoidCalendarOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get autoPlanAvoidCalendarOff;
+
   /// No description provided for @autoPlanBreakNone.
   ///
   /// In en, this message translates to:

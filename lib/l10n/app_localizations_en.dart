@@ -191,6 +191,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoPlanBreakDurationLabel => 'Break Between Sessions';
 
   @override
+  String get autoPlanAvoidCalendarLabel => 'Plan around my calendar';
+
+  @override
+  String get autoPlanAvoidCalendarDescription =>
+      'Skip times when you already have an appointment';
+
+  @override
+  String get autoPlanAvoidCalendarOn => 'On';
+
+  @override
+  String get autoPlanAvoidCalendarOff => 'Off';
+
+  @override
   String get autoPlanBreakNone => 'None';
 
   @override

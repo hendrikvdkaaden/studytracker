@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../services/calendar_sync_service.dart';
+import '../../../services/settings_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../utils/l10n_extension.dart';
@@ -14,6 +16,10 @@ class AutoPlanWizardResult {
   final int sessionDuration; // minutes
   final int breakMinutes; // break between sessions on the same day
 
+  /// Whether the planner should avoid times the user is already busy in
+  /// their own calendar.
+  final bool avoidCalendarEvents;
+
   const AutoPlanWizardResult({
     required this.totalMinutes,
     required this.weekdays,
@@ -23,6 +29,7 @@ class AutoPlanWizardResult {
     required this.endMinute,
     required this.sessionDuration,
     required this.breakMinutes,
+    this.avoidCalendarEvents = false,
   });
 }
 
@@ -53,6 +60,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
   int _sessionDurationHours = 0;
   int _sessionDurationMinutes = 45;
   int _breakMinutes = 15;
+  bool _avoidCalendar = SettingsService.planAroundCalendar;
   String? _errorMessage;
 
   static const _dayLabels = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
@@ -97,6 +105,9 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
       return;
     }
 
+    // Remembered for next time; a full timetable does not change between plans.
+    SettingsService.setPlanAroundCalendar(_avoidCalendar);
+
     Navigator.pop(
       context,
       AutoPlanWizardResult(
@@ -108,6 +119,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
         endMinute: 0,
         sessionDuration: sessionMins,
         breakMinutes: _breakMinutes,
+        avoidCalendarEvents: _avoidCalendar,
       ),
     );
   }
@@ -296,6 +308,26 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 ),
                 const SizedBox(height: 12),
                 _buildBreakPicker(sectionBg: sectionBg, subtleText: subtleText),
+
+                // 6. Om de eigen agenda heen plannen.
+                //
+                // Only offered when calendar sync is already on, which means
+                // access was already granted. Showing it otherwise would put a
+                // permission request behind a feature toggle.
+                if (CalendarSyncService.isEnabled) ...[
+                  const SizedBox(height: 28),
+                  _buildSectionHeader(
+                    label: context.l10n.autoPlanAvoidCalendarLabel,
+                    icon: Icons.event_busy_outlined,
+                    iconBg: AppColors.iconBgPurple,
+                    iconColor: AppColors.iconPurple,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildAvoidCalendarPicker(
+                    sectionBg: sectionBg,
+                    subtleText: subtleText,
+                  ),
+                ],
                 const SizedBox(height: 24),
               ],
             ),
@@ -440,6 +472,75 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
       maxHours: maxHours,
       onHoursChanged: onHoursChanged,
       onMinutesChanged: onMinutesChanged,
+    );
+  }
+
+  Widget _buildAvoidCalendarPicker({
+    required Color sectionBg,
+    required Color subtleText,
+  }) {
+    final labels = [
+      context.l10n.autoPlanAvoidCalendarOff,
+      context.l10n.autoPlanAvoidCalendarOn,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: sectionBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: context.colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.autoPlanAvoidCalendarDescription,
+            style: TextStyle(fontSize: 12, color: subtleText),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: List.generate(2, (i) {
+              final selected = _avoidCalendar == (i == 1);
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _avoidCalendar = i == 1),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    margin: EdgeInsets.only(right: i == 0 ? 6 : 0),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? AppColors.primary
+                          : (context.colors.isDark
+                              ? Colors.white.withValues(alpha: 0.06)
+                              : Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selected
+                            ? AppColors.primary
+                            : (context.colors.isDark
+                                ? Colors.white.withValues(alpha: 0.1)
+                                : Colors.grey[200]!),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        labels[i],
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: selected ? Colors.white : subtleText,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 

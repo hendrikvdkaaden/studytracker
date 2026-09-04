@@ -200,6 +200,16 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
     final result = await showAutoPlanWizard(context: context);
     if (result == null || !mounted) return;
 
+    // The planner starts tomorrow, so now is a safe lower bound; the deadline
+    // day is inclusive, hence the extra day on top.
+    final busy = result.avoidCalendarEvents
+        ? await CalendarSyncService.busyBlocks(
+            from: DateTime.now(),
+            to: _goal.date.add(const Duration(days: 1)),
+          )
+        : const <BusyBlock>[];
+    if (!mounted) return;
+
     final generated = AutoPlannerService.generateSessions(
       goalId: _goal.id,
       deadline: _goal.date,
@@ -212,6 +222,7 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
       sessionDuration: result.sessionDuration,
       breakMinutes: result.breakMinutes,
       existingSessions: _plannedSessions,
+      busyBlocks: busy,
     );
 
     if (!mounted) return;

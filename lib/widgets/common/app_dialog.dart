@@ -119,17 +119,22 @@ class _AppDialog extends StatelessWidget {
                       onPressed: () => Navigator.pop(context, false),
                       style: TextButton.styleFrom(
                         minimumSize: const Size(0, 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                         backgroundColor: colors.sectionBackground,
                         foregroundColor: colors.textSecondary,
                       ),
-                      child: Text(
-                        cancelLabel!,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          cancelLabel!,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -155,15 +160,20 @@ class _AppDialog extends StatelessWidget {
                         foregroundColor: Colors.white,
                         shadowColor: Colors.transparent,
                         minimumSize: const Size(0, 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: Text(
-                        confirmLabel,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          confirmLabel,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

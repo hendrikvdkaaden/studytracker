@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// Theme extension carrying every color token that varies between
-/// light and dark mode. Theme-invariant colors (brand teal, status,
-/// icon tints, premium) stay as constants in [AppColors].
+import 'accent_palette.dart';
+
+/// Theme extension carrying every color token that varies between light and
+/// dark mode, plus the accent the user picked. Colors that vary with neither
+/// (status, icon tints, premium) stay as constants in [AppColors].
 ///
 /// Consume via the [AppThemeX] extension: `context.colors.card`.
 @immutable
@@ -18,8 +20,18 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color fieldBackground;
   final Color modalBackground;
   final Color sectionBackground;
-  final Color calendarBackground;
-  final Color calendarCard;
+
+  /// Solid fill behind [onAccent] text, and the foreground on light surfaces.
+  final Color accent;
+
+  /// Foreground on dark surfaces, where [accent] reads too dark.
+  final Color accentStrong;
+
+  /// Pale fill for chips and tints. Fill only -- see [AccentPalette].
+  final Color accentSoft;
+
+  /// Text and icons drawn on [accent].
+  final Color onAccent;
 
   /// Drag-handle pill on bottom sheets/modals.
   final Color dragHandle;
@@ -41,8 +53,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
     required this.fieldBackground,
     required this.modalBackground,
     required this.sectionBackground,
-    required this.calendarBackground,
-    required this.calendarCard,
+    required this.accent,
+    required this.accentStrong,
+    required this.accentSoft,
+    required this.onAccent,
     required this.dragHandle,
     required this.isDark,
   });
@@ -54,13 +68,17 @@ class AppTheme extends ThemeExtension<AppTheme> {
     border: Color(0xFFE2E8F0),
     divider: Color(0xFFE2E8F0),
     textPrimary: Color(0xFF1A1F2E),
-    textSecondary: Color(0xFF64748B),
+    textSecondary: Color(0xFF5B6B7F),
     textTertiary: Color(0xFF94A3B8),
     fieldBackground: Color(0xFFF8FAFC),
     modalBackground: Color(0xFFFFFFFF),
     sectionBackground: Color(0xFFF8FAFC),
-    calendarBackground: Color(0xFFF0FDFA),
-    calendarCard: Color(0xFFFFFFFF),
+    // Seeded with the palette the app shipped on; main.dart swaps in the
+    // user's choice via [withAccent].
+    accent: Color(0xFF0F766E),
+    accentStrong: Color(0xFF14B8A6),
+    accentSoft: Color(0xFF99F6E4),
+    onAccent: Color(0xFFFFFFFF),
     dragHandle: Color(0xFFCBD5E1),
     isDark: false,
   );
@@ -85,11 +103,35 @@ class AppTheme extends ThemeExtension<AppTheme> {
     fieldBackground: Color(0xFF334155),
     modalBackground: Color(0xFF1E293B),
     sectionBackground: Color(0xFF1E293B),
-    calendarBackground: Color(0xFF0D2626),
-    calendarCard: Color(0xFF134E4A),
+    // Dark mode takes the lighter accent as its foreground: the light-mode
+    // accent is too dark to read on these surfaces.
+    accent: Color(0xFF14B8A6),
+    accentStrong: Color(0xFF14B8A6),
+    accentSoft: Color(0xFF99F6E4),
+    onAccent: Color(0xFF0F172A),
     dragHandle: Color(0xFF475569),
     isDark: true,
   );
+
+  /// This theme with [palette]'s colours in place of the accent.
+  ///
+  /// Dark mode swaps the roles: it draws the light accent as its foreground,
+  /// because the solid one is too dark to read against a dark card. Text on
+  /// it flips to the dark ink for the same reason.
+  ///
+  /// [background] moves too, but only barely -- see [AccentPalette.backgroundTint].
+  /// [card] deliberately does not: keeping cards a flat white (or flat dark)
+  /// is what stops the tint from reaching the text that sits on them.
+  AppTheme withAccent(AccentPalette palette) {
+    return copyWith(
+      accent: isDark ? palette.accentStrong : palette.accent,
+      accentStrong: palette.accentStrong,
+      accentSoft: palette.accentSoft,
+      onAccent: isDark ? const Color(0xFF0F172A) : palette.onAccent,
+      background:
+          isDark ? palette.backgroundTintDark : palette.backgroundTint,
+    );
+  }
 
   /// Background tint for a small icon chip given its [accent] color.
   /// Dark mode uses a translucent accent (default alpha 0.15, override via
@@ -124,8 +166,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? fieldBackground,
     Color? modalBackground,
     Color? sectionBackground,
-    Color? calendarBackground,
-    Color? calendarCard,
+    Color? accent,
+    Color? accentStrong,
+    Color? accentSoft,
+    Color? onAccent,
     Color? dragHandle,
     bool? isDark,
   }) {
@@ -141,8 +185,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
       fieldBackground: fieldBackground ?? this.fieldBackground,
       modalBackground: modalBackground ?? this.modalBackground,
       sectionBackground: sectionBackground ?? this.sectionBackground,
-      calendarBackground: calendarBackground ?? this.calendarBackground,
-      calendarCard: calendarCard ?? this.calendarCard,
+      accent: accent ?? this.accent,
+      accentStrong: accentStrong ?? this.accentStrong,
+      accentSoft: accentSoft ?? this.accentSoft,
+      onAccent: onAccent ?? this.onAccent,
       dragHandle: dragHandle ?? this.dragHandle,
       isDark: isDark ?? this.isDark,
     );
@@ -164,9 +210,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
       modalBackground: Color.lerp(modalBackground, other.modalBackground, t)!,
       sectionBackground:
           Color.lerp(sectionBackground, other.sectionBackground, t)!,
-      calendarBackground:
-          Color.lerp(calendarBackground, other.calendarBackground, t)!,
-      calendarCard: Color.lerp(calendarCard, other.calendarCard, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      accentStrong: Color.lerp(accentStrong, other.accentStrong, t)!,
+      accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
+      onAccent: Color.lerp(onAccent, other.onAccent, t)!,
       dragHandle: Color.lerp(dragHandle, other.dragHandle, t)!,
       // `isDark` is a boolean flag, not a lerp-able color, so it flips at the
       // animation midpoint. Helpers that branch on it (iconChipBackground,
@@ -191,8 +238,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
         other.fieldBackground == fieldBackground &&
         other.modalBackground == modalBackground &&
         other.sectionBackground == sectionBackground &&
-        other.calendarBackground == calendarBackground &&
-        other.calendarCard == calendarCard &&
+        other.accent == accent &&
+        other.accentStrong == accentStrong &&
+        other.accentSoft == accentSoft &&
+        other.onAccent == onAccent &&
         other.dragHandle == dragHandle &&
         other.isDark == isDark;
   }
@@ -210,8 +259,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
         fieldBackground,
         modalBackground,
         sectionBackground,
-        calendarBackground,
-        calendarCard,
+        accent,
+        accentStrong,
+        accentSoft,
+        onAccent,
         dragHandle,
         isDark,
       );

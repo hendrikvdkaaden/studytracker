@@ -601,6 +601,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileThemeDark => 'Dark';
 
   @override
+  String get profileAccentLabel => 'Colour';
+
+  @override
+  String get profileAccentTeal => 'Teal';
+
+  @override
+  String get profileAccentBlue => 'Blue';
+
+  @override
+  String get profileAccentGreen => 'Green';
+
+  @override
+  String get profileAccentPurple => 'Purple';
+
+  @override
+  String get profileAccentOrange => 'Orange';
+
+  @override
+  String get profileAccentPink => 'Pink';
+
+  @override
+  String get profilePickerAccentTitle => 'Accent colour';
+
+  @override
   String get profileDeleteSessionsLabel => 'Delete all study sessions';
 
   @override

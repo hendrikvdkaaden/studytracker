@@ -5,7 +5,6 @@ import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
 import '../../services/study_session_repository.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../templates/home_template.dart';
 import 'add_goal_screen.dart';
@@ -134,7 +133,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'home_fab',
         onPressed: _onAddDeadline,
-        backgroundColor: AppColors.primary.withValues(alpha: 0.96),
+        backgroundColor: context.colors.accent.withValues(alpha: 0.96),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: SafeArea(

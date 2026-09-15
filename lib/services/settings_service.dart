@@ -270,6 +270,21 @@ class SettingsService {
     await _box.put(_keyEarnedGoalSlots, earnedGoalSlots + 1);
   }
 
+  // Accent colour
+  static const String _keyAccentPalette = 'accentPalette';
+
+  /// Index into `AccentPalette.all`.
+  ///
+  /// Stored as an index to match the themeMode convention, which makes the
+  /// order append-only: reordering the palettes would silently change what
+  /// everyone already picked. New colours go on the end.
+  static int get accentPaletteIndex =>
+      _box.get(_keyAccentPalette, defaultValue: 0) as int;
+
+  static Future<void> setAccentPaletteIndex(int index) async {
+    await _box.put(_keyAccentPalette, index);
+  }
+
   // Reminders
   static const String _keyNotificationsEnabled = 'notificationsEnabled';
 

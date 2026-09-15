@@ -3,10 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'product/screens/splash_screen.dart';
 import 'services/session_navigator.dart';
+import 'theme/accent_palette.dart';
 import 'theme/app_colors.dart';
 import 'theme/app_theme_extension.dart';
 
 final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
+
+/// Index into [AccentPalette.all]. Restored from storage on the splash screen,
+/// which is the earliest point Hive is open.
+final ValueNotifier<int> accentPaletteNotifier = ValueNotifier(0);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +23,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeModeNotifier,
-      builder: (context, themeMode, _) {
+    // ValueListenableBuilder takes a single listenable, and the theme now
+    // depends on two. Merging keeps one rebuild scope rather than nesting.
+    return ListenableBuilder(
+      listenable: Listenable.merge([themeModeNotifier, accentPaletteNotifier]),
+      builder: (context, _) {
+        final themeMode = themeModeNotifier.value;
+        final palette = AccentPalette.byId(accentPaletteNotifier.value);
+
         return MaterialApp(
           title: 'Deadly',
           // Lets a notification tap navigate without a BuildContext.
@@ -30,26 +40,29 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.primary,
+              // Seeded too, so the handful of widgets reading colorScheme
+              // directly drift along with the choice.
+              seedColor: palette.accent,
               brightness: Brightness.light,
-              surface: AppColors.lightBackground,
+              surface: palette.backgroundTint,
             ),
-            scaffoldBackgroundColor: AppColors.lightBackground,
+            scaffoldBackgroundColor: palette.backgroundTint,
             useMaterial3: true,
             fontFamily: 'Roboto',
-            extensions: const [AppTheme.light],
+            extensions: [AppTheme.light.withAccent(palette)],
           ),
           darkTheme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.primary,
+              seedColor: palette.accent,
               brightness: Brightness.dark,
-              surface: AppColors.darkBackground,
+              surface: palette.backgroundTintDark,
             ),
-            scaffoldBackgroundColor: AppColors.darkBackground,
+            scaffoldBackgroundColor: palette.backgroundTintDark,
+            // Cards stay flat: only the page beneath them takes the tint.
             cardColor: AppColors.darkCard,
             useMaterial3: true,
             fontFamily: 'Roboto',
-            extensions: const [AppTheme.dark],
+            extensions: [AppTheme.dark.withAccent(palette)],
           ),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

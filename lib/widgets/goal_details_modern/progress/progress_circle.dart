@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../utils/format_helpers.dart';
 
@@ -21,7 +20,7 @@ class ProgressCircle extends StatelessWidget {
     final isDark = context.colors.isDark;
     final progress = targetTime > 0 ? (timeSpent / targetTime).clamp(0.0, 1.0) : 0.0;
     final percentage = (progress * 100).toInt();
-    final color = accentColor ?? AppColors.calendarAccent;
+    final color = accentColor ?? context.colors.accentStrong;
     final formatTime = FormatHelpers.formatTime;
 
     return Container(

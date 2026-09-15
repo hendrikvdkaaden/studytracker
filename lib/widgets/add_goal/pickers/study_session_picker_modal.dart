@@ -96,7 +96,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: AppColors.primary),
+            colorScheme: ColorScheme.light(primary: context.colors.accent),
           ),
           child: child!,
         );
@@ -402,15 +402,15 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                   // Add button
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.primaryLight],
+                      gradient: LinearGradient(
+                        colors: [context.colors.accent, context.colors.accentStrong],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.35),
+                          color: context.colors.accent.withValues(alpha: 0.35),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

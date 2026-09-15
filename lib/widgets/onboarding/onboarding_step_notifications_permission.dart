@@ -77,8 +77,8 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
                     text: l10n.onboardingStep3TitleLine2,
                     style: TextStyle(
                       color: isDark
-                          ? AppColors.primaryVeryLight
-                          : AppColors.primary,
+                          ? context.colors.accentSoft
+                          : context.colors.accent,
                     ),
                   ),
                 ],
@@ -128,7 +128,7 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
           _buildPreviewEntry(
             context: context,
             icon: Icons.timer_outlined,
-            color: AppColors.primary,
+            color: context.colors.accent,
             title: l10n.notificationsPreviewSessionTitle,
             detail: l10n.notificationsPreviewSessionDetail,
           ),

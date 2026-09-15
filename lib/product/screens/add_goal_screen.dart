@@ -11,7 +11,6 @@ import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
 import '../../services/study_session_repository.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 import '../../utils/l10n_extension.dart';
@@ -81,7 +80,7 @@ class _AddGoalScreenState extends ConsumerState<AddGoalScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: AppColors.primary,
+              primary: context.colors.accent,
             ),
           ),
           child: child!,

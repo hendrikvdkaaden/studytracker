@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/study_session.dart';
 import '../../models/goal.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 
@@ -70,8 +69,8 @@ class HomeSessionItem extends StatelessWidget {
       return Container(
         width: 32,
         height: 32,
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
+        decoration: BoxDecoration(
+          color: context.colors.accent,
           shape: BoxShape.circle,
         ),
         child: const Icon(Icons.check, color: Colors.white, size: 18),
@@ -93,8 +92,8 @@ class HomeSessionItem extends StatelessWidget {
           child: Container(
             width: 10,
             height: 10,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+            decoration: BoxDecoration(
+              color: context.colors.accent,
               shape: BoxShape.circle,
             ),
           ),

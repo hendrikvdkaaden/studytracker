@@ -80,7 +80,7 @@ class _SubjectDropdown extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: BorderSide(color: context.colors.accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
@@ -141,7 +141,7 @@ class _SubjectDropdown extends StatelessWidget {
                   fontSize: 15,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   color: isSelected
-                      ? AppColors.primary
+                      ? context.colors.accent
                       : context.colors.textPrimary,
                 ),
               ),

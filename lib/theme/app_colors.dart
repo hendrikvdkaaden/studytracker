@@ -4,16 +4,11 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._(); // Private constructor to prevent instantiation
 
-  // Primary Colors
-  static const Color primary = Color(0xFF0F766E);      // Teal Dark
-  static const Color primaryLight = Color(0xFF14B8A6); // Teal Light
-  static const Color primaryVeryLight = Color(0xFF99F6E4); // Teal Very Light
-
-  // Calendar/Plan Screen Colors
-  static const Color calendarAccent = Color(0xFF14B8A6);
-  static const Color calendarDarkBackground = Color(0xFF0D2626);
-  static const Color calendarLightBackground = Color(0xFFF0FDFA);
-  static const Color calendarDarkCard = Color(0xFF134E4A);
+  // The accent lives on the AppTheme extension now, because the user picks
+  // it at runtime -- see AccentPalette. Reach it with context.colors.accent /
+  // .accentStrong / .accentSoft. It is deliberately absent here so a missed
+  // reference is a compile error rather than a stray teal next to a green
+  // button, which nothing would catch.
 
   // Background Colors
   static const Color darkBackground = Color(0xFF0F172A);
@@ -27,7 +22,6 @@ class AppColors {
 
   // Status Colors
   static const Color overdue = Color(0xFFEF4444);
-  static const Color upcoming = Color(0xFF0F766E);
   static const Color completed = Color(0xFF22C55E);
   static const Color success = Color(0xFF22C55E);
   static const Color error = Color(0xFFEF4444);
@@ -63,10 +57,11 @@ class AppColors {
   static const Color iconGreen = Color(0xFF059669);
   static const Color iconOrange = Color(0xFFEA580C);
   static const Color iconPurple = Color(0xFF7C3AED);
-  static const Color iconTeal = Color(0xFF0F766E);
 
   // Text secondary/tertiary
-  static const Color textSecondary = Color(0xFF64748B);
+  // Darkened from 0xFF64748B: on the tinted backgrounds the old value fell to
+  // 4.38, just under the 4.5 threshold. This clears 5.02 on every palette.
+  static const Color textSecondary = Color(0xFF5B6B7F);
   static const Color textTertiary = Color(0xFF94A3B8);
 
   // Premium gradient

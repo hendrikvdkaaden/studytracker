@@ -61,8 +61,8 @@ class OnboardingStepNotifications extends StatelessWidget {
                     text: 'reminders',
                     style: TextStyle(
                       color: isDark
-                          ? AppColors.primaryVeryLight
-                          : AppColors.primary,
+                          ? context.colors.accentSoft
+                          : context.colors.accent,
                     ),
                   ),
                 ],
@@ -85,8 +85,8 @@ class OnboardingStepNotifications extends StatelessWidget {
                   _buildReminderRow(
                     context: context,
                     icon: Icons.notifications_outlined,
-                    iconBgColor: AppColors.primary.withValues(alpha: 0.2),
-                    iconColor: AppColors.primaryLight,
+                    iconBgColor: context.colors.accent.withValues(alpha: 0.2),
+                    iconColor: context.colors.accentStrong,
                     label: l10n.onboardingSessionReminder,
                     value: sessionLabel,
                     onTap: onSessionReminderTap,

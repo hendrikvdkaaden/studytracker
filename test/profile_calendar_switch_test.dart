@@ -32,6 +32,8 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     required bool syncEnabled,
+    int accentPaletteIndex = 0,
+    VoidCallback? onAccentTap,
     bool notificationsEnabled = false,
     VoidCallback? onNotificationsTap,
     bool planAround = false,
@@ -59,6 +61,8 @@ void main() {
             sessionReminderMinutes: 15,
             deadlineReminderDays: 1,
             themeModeIndex: 0,
+            accentPaletteIndex: accentPaletteIndex,
+            onAccentTap: onAccentTap ?? () {},
             subjects: const [],
             schoolName: 'Hogeschool Utrecht',
             isPremium: premium,
@@ -92,6 +96,24 @@ void main() {
 
   bool switchValue(WidgetTester tester, String label) =>
       tester.widget<AppSwitch>(switchIn(label)).value;
+
+  testWidgets('the accent row names the chosen colour', (tester) async {
+    await pump(tester, syncEnabled: false, accentPaletteIndex: 4);
+
+    expect(find.text('Orange'), findsOneWidget);
+  });
+
+  testWidgets('tapping the accent row opens the picker', (tester) async {
+    var taps = 0;
+    await pump(tester, syncEnabled: false, onAccentTap: () => taps++);
+
+    await tester.ensureVisible(find.text('Colour'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Colour'));
+    await tester.pump();
+
+    expect(taps, 1);
+  });
 
   testWidgets('reminders is a switch reflecting its state', (tester) async {
     await pump(tester, syncEnabled: false, notificationsEnabled: true);

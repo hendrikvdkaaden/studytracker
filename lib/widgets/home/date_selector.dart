@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 
@@ -117,7 +116,7 @@ class _DateSelectorState extends State<DateSelector> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppColors.primary
+                              ? context.colors.accent
                               : context.colors.card,
                           borderRadius: BorderRadius.circular(16),
                           border: isSelected
@@ -128,7 +127,7 @@ class _DateSelectorState extends State<DateSelector> {
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.3),
+                                    color: context.colors.accent.withValues(alpha: 0.3),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
                                   ),
@@ -172,7 +171,7 @@ class _DateSelectorState extends State<DateSelector> {
                                 width: 4,
                                 height: 4,
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary,
+                                  color: context.colors.accent,
                                   shape: BoxShape.circle,
                                 ),
                               ),

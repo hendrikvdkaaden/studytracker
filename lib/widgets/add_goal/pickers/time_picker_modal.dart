@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 
 Future<({int hour, int minute})?> showTimePickerModal({
@@ -105,10 +104,10 @@ class _PickerHeader extends StatelessWidget {
           ),
           TextButton(
             onPressed: onDone,
-            child: const Text(
+            child: Text(
               'Done',
               style: TextStyle(
-                color: AppColors.primary,
+                color: context.colors.accent,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

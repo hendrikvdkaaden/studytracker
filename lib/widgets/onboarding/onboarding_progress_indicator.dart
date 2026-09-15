@@ -41,10 +41,10 @@ class OnboardingProgressIndicator extends StatelessWidget {
               margin: const EdgeInsets.only(right: 6),
               decoration: BoxDecoration(
                 color: i < step
-                    ? (isDark ? AppColors.primaryVeryLight : AppColors.primary)
+                    ? (isDark ? context.colors.accentSoft : context.colors.accent)
                     : isDark
                         ? AppColors.darkBorder
-                        : AppColors.primary.withValues(alpha: 0.2),
+                        : context.colors.accent.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(999),
               ),
             );

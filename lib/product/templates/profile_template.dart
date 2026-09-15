@@ -15,6 +15,8 @@ class ProfileTemplate extends StatelessWidget {
   final int sessionReminderMinutes;
   final int deadlineReminderDays;
   final int themeModeIndex;
+  final int accentPaletteIndex;
+  final VoidCallback onAccentTap;
   final List<SubjectData> subjects;
   final String schoolName;
   final bool isPremium;
@@ -44,6 +46,8 @@ class ProfileTemplate extends StatelessWidget {
     required this.sessionReminderMinutes,
     required this.deadlineReminderDays,
     required this.themeModeIndex,
+    required this.accentPaletteIndex,
+    required this.onAccentTap,
     required this.subjects,
     required this.schoolName,
     required this.isPremium,
@@ -73,6 +77,24 @@ class ProfileTemplate extends StatelessWidget {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     }
     return trimmed[0].toUpperCase();
+  }
+
+  String _accentLabel(BuildContext context) {
+    final l10n = context.l10n;
+    switch (accentPaletteIndex) {
+      case 1:
+        return l10n.profileAccentBlue;
+      case 2:
+        return l10n.profileAccentGreen;
+      case 3:
+        return l10n.profileAccentPurple;
+      case 4:
+        return l10n.profileAccentOrange;
+      case 5:
+        return l10n.profileAccentPink;
+      default:
+        return l10n.profileAccentTeal;
+    }
   }
 
   String _themeModeLabel(BuildContext context) {
@@ -158,11 +180,22 @@ class ProfileTemplate extends StatelessWidget {
           children: [
             _buildSettingsRow(
               context,
-              icon: Icons.palette_outlined,
+              // Light/dark, not colour -- the palette glyph belongs to the
+              // row below, which is the one that actually picks colours.
+              icon: Icons.brightness_6_outlined,
               iconColor: AppColors.iconGreen,
               label: l10n.profileThemeLabel,
               value: _themeModeLabel(context),
               onTap: onThemeTap,
+            ),
+            _buildDivider(context),
+            _buildSettingsRow(
+              context,
+              icon: Icons.palette_outlined,
+              iconColor: context.colors.accent,
+              label: l10n.profileAccentLabel,
+              value: _accentLabel(context),
+              onTap: onAccentTap,
             ),
           ],
         ),
@@ -305,8 +338,8 @@ class ProfileTemplate extends StatelessWidget {
             height: 64,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryLight],
+              gradient: LinearGradient(
+                colors: [context.colors.accent, context.colors.accentStrong],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

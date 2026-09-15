@@ -38,13 +38,13 @@ class DeadlineCard extends StatelessWidget {
       statusColor = AppColors.overdue;
     } else if (daysLeft == 0) {
       statusText = l10n.deadlineStatusToday;
-      statusColor = AppColors.upcoming;
+      statusColor = context.colors.accent;
     } else if (daysLeft == 1) {
       statusText = l10n.deadlineStatusTomorrow;
-      statusColor = AppColors.upcoming;
+      statusColor = context.colors.accent;
     } else {
       statusText = l10n.deadlineStatusDaysLeft(daysLeft);
-      statusColor = AppColors.upcoming;
+      statusColor = context.colors.accent;
     }
 
     return Column(

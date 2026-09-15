@@ -69,8 +69,8 @@ class OnboardingStepCalendar extends StatelessWidget {
                     text: l10n.onboardingStep5TitleLine2,
                     style: TextStyle(
                       color: isDark
-                          ? AppColors.primaryVeryLight
-                          : AppColors.primary,
+                          ? context.colors.accentSoft
+                          : context.colors.accent,
                     ),
                   ),
                 ],
@@ -118,7 +118,7 @@ class OnboardingStepCalendar extends StatelessWidget {
         children: [
           _buildPreviewEntry(
             context: context,
-            color: AppColors.primary,
+            color: context.colors.accent,
             title: 'Deadline Biology: Chapter 7',
             detail: 'All day',
           ),

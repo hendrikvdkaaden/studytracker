@@ -68,7 +68,7 @@ class _AppDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final accent = isDestructive ? AppColors.overdue : AppColors.primary;
+    final accent = isDestructive ? AppColors.overdue : context.colors.accent;
 
     return Dialog(
       backgroundColor: colors.modalBackground,
@@ -147,7 +147,7 @@ class _AppDialog extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: isDestructive
                             ? [AppColors.overdue, AppColors.overdue]
-                            : const [AppColors.primary, AppColors.primaryLight],
+                            : [context.colors.accent, context.colors.accentStrong],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),

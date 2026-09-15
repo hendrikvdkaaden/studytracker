@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../../theme/app_theme_extension.dart';
 
 class ActionButtons extends StatelessWidget {
   final VoidCallback onMarkComplete;
@@ -53,15 +54,15 @@ class ActionButtons extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryLight],
+        gradient: LinearGradient(
+          colors: [context.colors.accent, context.colors.accentStrong],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.35),
+            color: context.colors.accent.withValues(alpha: 0.35),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

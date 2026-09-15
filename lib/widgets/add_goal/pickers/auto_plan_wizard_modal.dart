@@ -222,14 +222,14 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: selected
-                                ? AppColors.primary
+                                ? context.colors.accent
                                 : (context.colors.isDark
                                     ? Colors.white.withValues(alpha: 0.06)
                                     : Colors.white),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: selected
-                                  ? AppColors.primary
+                                  ? context.colors.accent
                                   : (context.colors.isDark
                                       ? Colors.white.withValues(alpha: 0.1)
                                       : Colors.grey[200]!),
@@ -359,15 +359,15 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   flex: 2,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.primaryLight],
+                      gradient: LinearGradient(
+                        colors: [context.colors.accent, context.colors.accentStrong],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.35),
+                          color: context.colors.accent.withValues(alpha: 0.35),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -485,14 +485,14 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: selected
-                      ? AppColors.primary
+                      ? context.colors.accent
                       : (context.colors.isDark
                           ? Colors.white.withValues(alpha: 0.06)
                           : Colors.white),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
-                        ? AppColors.primary
+                        ? context.colors.accent
                         : (context.colors.isDark
                             ? Colors.white.withValues(alpha: 0.1)
                             : Colors.grey[200]!),
@@ -560,7 +560,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: active
-                            ? AppColors.primary.withValues(alpha: 0.8)
+                            ? context.colors.accent.withValues(alpha: 0.8)
                             : (context.colors.isDark
                                 ? Colors.white.withValues(alpha: 0.08)
                                 : AppColors.lightBorder),
@@ -588,10 +588,10 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                   const RoundSliderThumbShape(enabledThumbRadius: 10),
               overlayShape:
                   const RoundSliderOverlayShape(overlayRadius: 20),
-              thumbColor: AppColors.primary,
+              thumbColor: context.colors.accent,
               activeTrackColor: Colors.transparent,
               inactiveTrackColor: Colors.transparent,
-              overlayColor: AppColors.primary.withValues(alpha: 0.15),
+              overlayColor: context.colors.accent.withValues(alpha: 0.15),
               rangeThumbShape:
                   const RoundRangeSliderThumbShape(enabledThumbRadius: 10),
             ),

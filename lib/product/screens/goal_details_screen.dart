@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/goal.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
@@ -84,8 +83,8 @@ class _GoalDetailsScreenState extends ConsumerState<GoalDetailsScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
+            colorScheme: ColorScheme.light(
+              primary: context.colors.accent,
             ),
           ),
           child: child!,

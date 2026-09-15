@@ -52,8 +52,8 @@ class OnboardingStepSubjects extends StatelessWidget {
                     text: 'subjects',
                     style: TextStyle(
                       color: context.colors.isDark
-                          ? AppColors.primaryVeryLight
-                          : AppColors.primary,
+                          ? context.colors.accentSoft
+                          : context.colors.accent,
                     ),
                   ),
                 ],
@@ -98,20 +98,20 @@ class OnboardingStepSubjects extends StatelessWidget {
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.2),
+                                color: context.colors.accent.withValues(alpha: 0.2),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add,
-                                color: AppColors.primaryLight,
+                                color: context.colors.accentStrong,
                                 size: 20,
                               ),
                             ),
                             const SizedBox(width: 12),
                             Text(
                               l10n.onboardingAddSubject,
-                              style: const TextStyle(
-                                color: AppColors.primaryLight,
+                              style: TextStyle(
+                                color: context.colors.accentStrong,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),

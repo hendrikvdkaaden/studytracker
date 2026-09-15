@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
 import '../../../services/settings_service.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../utils/goal_type_helper.dart';
 import '../../../utils/l10n_extension.dart';
@@ -22,7 +21,7 @@ class GoalInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = accentColor
         ?? SettingsService.colorForSubject(goal.subject)
-        ?? AppColors.calendarAccent;
+        ?? context.colors.accentStrong;
 
     final sectionBg = context.colors.fieldBackground;
     final subtleText = context.colors.textSecondary;

@@ -23,13 +23,13 @@ class DeadlineListItem extends StatelessWidget {
     return GoalStatus.upcoming;
   }
 
-  Color _getStatusColor() {
+  Color _getStatusColor(BuildContext context) {
     final status = _getGoalStatus();
     switch (status) {
       case GoalStatus.overdue:
         return AppColors.overdue;
       case GoalStatus.upcoming:
-        return AppColors.upcoming;
+        return context.colors.accent;
       case GoalStatus.completed:
         return AppColors.completed;
       case GoalStatus.session:
@@ -60,7 +60,7 @@ class DeadlineListItem extends StatelessWidget {
     final subjectColor = SettingsService.colorForSubject(goal.subject);
 
     final iconColor = subjectColor ??
-        (status == GoalStatus.overdue ? AppColors.overdue : AppColors.primary);
+        (status == GoalStatus.overdue ? AppColors.overdue : context.colors.accent);
 
     return InkWell(
       onTap: onTap,
@@ -132,7 +132,7 @@ class DeadlineListItem extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _getStatusColor(),
+                    color: _getStatusColor(context),
                     shape: BoxShape.circle,
                   ),
                 ),

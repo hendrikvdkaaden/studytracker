@@ -232,8 +232,8 @@ class _PremiumGateSheetState extends State<_PremiumGateSheet> {
                   : _watchAd,
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 52),
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary, width: 1.5),
+                foregroundColor: context.colors.accent,
+                side: BorderSide(color: context.colors.accent, width: 1.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

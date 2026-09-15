@@ -10,7 +10,7 @@ import '../../services/hive_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/accent_palette.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../utils/legal_links.dart';
@@ -35,6 +35,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
   int _themeModeIndex = 0;
+  int _accentIndex = SettingsService.accentPaletteIndex;
   List<SubjectData> _subjects = [];
   String _schoolName = '';
   bool _showPrivacyOptions = false;
@@ -507,8 +508,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     16, 12, 16, MediaQuery.of(ctx).padding.bottom + 16),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.primaryLight],
+                    gradient: LinearGradient(
+                      colors: [context.colors.accent, context.colors.accentStrong],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
@@ -634,8 +635,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     16, 12, 16, MediaQuery.of(ctx).padding.bottom + 16),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.primaryLight],
+                    gradient: LinearGradient(
+                      colors: [context.colors.accent, context.colors.accentStrong],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
@@ -677,6 +678,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
+  /// Lets the user pick the app's accent colour.
+  ///
+  /// Every option is contrast-checked -- see `test/accent_contrast_test.dart`
+  /// -- so none of them can make the app unreadable.
+  Future<void> _pickAccent() async {
+    final l10n = context.l10n;
+    final labels = [
+      l10n.profileAccentTeal,
+      l10n.profileAccentBlue,
+      l10n.profileAccentGreen,
+      l10n.profileAccentPurple,
+      l10n.profileAccentOrange,
+      l10n.profileAccentPink,
+    ];
+    await _showPickerSheet(
+      title: l10n.profilePickerAccentTitle,
+      options: List.generate(AccentPalette.all.length, (i) => i),
+      currentValue: _accentIndex,
+      labelBuilder: (i) => labels[i],
+      leadingBuilder: (i) => Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: AccentPalette.byId(i).accent,
+          shape: BoxShape.circle,
+        ),
+      ),
+      onSelected: (i) async {
+        await SettingsService.setAccentPaletteIndex(i);
+        setState(() => _accentIndex = i);
+        widget.onThemeChanged?.call();
+      },
+    );
+  }
+
   Future<void> _pickTheme() async {
     final l10n = context.l10n;
     final labels = [l10n.profileThemeSystem, l10n.profileThemeLight, l10n.profileThemeDark];
@@ -700,6 +736,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     required T currentValue,
     required String Function(T) labelBuilder,
     required Future<void> Function(T) onSelected,
+    /// Optional widget before each label -- a colour swatch, say.
+    Widget Function(T)? leadingBuilder,
   }) async {
     await showModalBottomSheet(
       context: context,
@@ -752,15 +790,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 final isSelected = option == currentValue;
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  leading: leadingBuilder?.call(option),
                   title: Text(
                     labelBuilder(option),
                     style: TextStyle(
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      color: isSelected ? AppColors.primary : null,
+                      color: isSelected ? context.colors.accent : null,
                     ),
                   ),
                   trailing: isSelected
-                      ? Icon(Icons.check, color: AppColors.primary)
+                      ? Icon(Icons.check, color: context.colors.accent)
                       : null,
                   onTap: () async {
                     Navigator.pop(ctx);
@@ -855,6 +894,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       sessionReminderMinutes: _sessionReminderMinutes,
       deadlineReminderDays: _deadlineReminderDays,
       themeModeIndex: _themeModeIndex,
+      accentPaletteIndex: _accentIndex,
+      onAccentTap: _pickAccent,
       subjects: _subjects,
       schoolName: _schoolName,
       isPremium: isPremium,

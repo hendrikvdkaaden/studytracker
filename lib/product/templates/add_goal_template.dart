@@ -132,15 +132,15 @@ class AddGoalTemplate extends StatelessWidget {
           // Save button
           DecoratedBox(
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryLight],
+              gradient: LinearGradient(
+                colors: [context.colors.accent, context.colors.accentStrong],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.35),
+                  color: context.colors.accent.withValues(alpha: 0.35),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -371,12 +371,12 @@ class AddGoalTemplate extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
                   color: context.colors.iconChipBackground(
-                      AppColors.primary, AppColors.iconBgTeal),
+                      context.colors.accent, AppColors.iconBgTeal),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isDark
-                        ? AppColors.primary.withValues(alpha: 0.3)
-                        : AppColors.primary.withValues(alpha: 0.2),
+                        ? context.colors.accent.withValues(alpha: 0.3)
+                        : context.colors.accent.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
@@ -384,14 +384,14 @@ class AddGoalTemplate extends StatelessWidget {
                   children: [
                     Icon(Icons.add,
                         size: 14,
-                        color: isDark ? Colors.white : AppColors.primary),
+                        color: isDark ? Colors.white : context.colors.accent),
                     const SizedBox(width: 4),
                     Text(
                       context.l10n.addGoalAddSessionShort,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : AppColors.primary,
+                        color: isDark ? Colors.white : context.colors.accent,
                       ),
                     ),
                   ],

@@ -78,6 +78,9 @@ class _SplashScreenState extends State<SplashScreen>
       // hold up the splash screen.
       unawaited(AdService.init());
       themeModeNotifier.value = SettingsService.themeMode;
+      // Without this the app paints the default palette for a frame before
+      // the stored choice lands.
+      accentPaletteNotifier.value = SettingsService.accentPaletteIndex;
     } catch (e) {
       debugPrint('Initialization error: $e');
     }

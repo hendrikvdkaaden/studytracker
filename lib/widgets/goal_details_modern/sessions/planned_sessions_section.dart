@@ -126,8 +126,8 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: context.colors.isDark
-                          ? AppColors.primary.withValues(alpha: 0.9)
-                          : AppColors.primary,
+                          ? context.colors.accent.withValues(alpha: 0.9)
+                          : context.colors.accent,
                     ),
                   ),
                 ),
@@ -272,14 +272,14 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                       color: context.colors.iconChipBackground(
-                        AppColors.primary,
+                        context.colors.accent,
                         AppColors.iconBgBlue,
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: context.colors.isDark
-                            ? AppColors.primary.withValues(alpha: 0.3)
-                            : AppColors.primary.withValues(alpha: 0.2),
+                            ? context.colors.accent.withValues(alpha: 0.3)
+                            : context.colors.accent.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -290,7 +290,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                           size: 14,
                           color: context.colors.isDark
                               ? Colors.white
-                              : AppColors.primary,
+                              : context.colors.accent,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -300,7 +300,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                             fontWeight: FontWeight.w600,
                             color: context.colors.isDark
                                 ? Colors.white
-                                : AppColors.primary,
+                                : context.colors.accent,
                           ),
                         ),
                       ],

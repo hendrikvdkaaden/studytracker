@@ -62,14 +62,14 @@ class GoalTypeSelector extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.primary
+                      ? context.colors.accent
                       : (context.colors.isDark
                           ? Colors.white.withValues(alpha: 0.06)
                           : Colors.white),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.primary
+                        ? context.colors.accent
                         : (context.colors.isDark
                             ? Colors.white.withValues(alpha: 0.1)
                             : const Color(0xFFE5E7EB)),

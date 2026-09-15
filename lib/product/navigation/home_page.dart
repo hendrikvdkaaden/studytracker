@@ -5,7 +5,6 @@ import '../../services/settings_service.dart';
 import '../../services/update_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../screens/home_screen.dart';
@@ -129,7 +128,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onThemeChanged() {
+    // A payload-free ping: Profile has already persisted whichever of the two
+    // the user changed, so both are re-read.
     themeModeNotifier.value = SettingsService.themeMode;
+    accentPaletteNotifier.value = SettingsService.accentPaletteIndex;
   }
 
   @override
@@ -179,7 +181,7 @@ class _HomePageState extends State<HomePage> {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: context.colors.card.withValues(alpha: 0.8),
-          selectedItemColor: AppColors.primary,
+          selectedItemColor: context.colors.accent,
           unselectedItemColor: context.colors.textSecondary,
           selectedFontSize: 10,
           unselectedFontSize: 10,

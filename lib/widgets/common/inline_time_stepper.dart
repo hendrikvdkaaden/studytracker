@@ -176,7 +176,7 @@ class _InlineStepperState extends State<_InlineStepper> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: _editing
-                    ? AppColors.primary
+                    ? context.colors.accent
                     : (context.colors.isDark
                         ? Colors.white.withValues(alpha: 0.08)
                         : Colors.grey[100]!),

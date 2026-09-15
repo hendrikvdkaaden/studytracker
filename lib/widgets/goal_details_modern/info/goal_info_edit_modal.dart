@@ -89,7 +89,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
   Widget build(BuildContext context) {
     final backgroundColor = context.colors.modalBackground;
     final textColor = context.colors.textPrimary;
-    final subTextColor = AppColors.upcoming;
+    final subTextColor = context.colors.accent;
     final fieldFill = context.colors.fieldBackground;
     final borderColor = context.colors.border;
 
@@ -176,8 +176,8 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColors.calendarAccent,
+                        borderSide: BorderSide(
+                          color: context.colors.accentStrong,
                           width: 2,
                         ),
                       ),
@@ -220,12 +220,12 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                         child: Ink(
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? AppColors.calendarAccent.withValues(alpha: 0.2)
+                                ? context.colors.accentStrong.withValues(alpha: 0.2)
                                 : fieldFill,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: isSelected
-                                  ? AppColors.calendarAccent
+                                  ? context.colors.accentStrong
                                   : borderColor,
                             ),
                           ),
@@ -241,7 +241,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                                   GoalTypeHelper.getIconForType(type),
                                   size: 16,
                                   color: isSelected
-                                      ? AppColors.calendarAccent
+                                      ? context.colors.accentStrong
                                       : subTextColor,
                                 ),
                                 const SizedBox(width: 6),
@@ -251,7 +251,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                     color: isSelected
-                                        ? AppColors.calendarAccent
+                                        ? context.colors.accentStrong
                                         : textColor,
                                   ),
                                 ),
@@ -292,7 +292,7 @@ class _GoalInfoEditModalState extends State<_GoalInfoEditModal> {
                     child: ElevatedButton(
                       onPressed: _save,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: context.colors.accent,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),

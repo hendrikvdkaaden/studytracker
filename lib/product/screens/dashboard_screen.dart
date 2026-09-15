@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/goal.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../models/day_status.dart';
 import '../../models/study_session.dart';
@@ -129,7 +128,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard_fab',
         onPressed: _navigateToAddGoal,
-        backgroundColor: AppColors.primary.withValues(alpha: 0.96),
+        backgroundColor: context.colors.accent.withValues(alpha: 0.96),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: DashboardTemplate(

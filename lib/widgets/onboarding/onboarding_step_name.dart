@@ -53,8 +53,8 @@ class OnboardingStepName extends StatelessWidget {
                     text: 'name?',
                     style: TextStyle(
                       color: context.colors.isDark
-                          ? AppColors.primaryVeryLight
-                          : AppColors.primary,
+                          ? context.colors.accentSoft
+                          : context.colors.accent,
                     ),
                   ),
                 ],
@@ -160,7 +160,7 @@ Widget _buildTextField({
         borderRadius: BorderRadius.circular(16),
         borderSide: hasError
             ? const BorderSide(color: AppColors.overdue, width: 2)
-            : const BorderSide(color: AppColors.primaryLight, width: 2),
+            : BorderSide(color: context.colors.accentStrong, width: 2),
       ),
       contentPadding:
           const EdgeInsets.symmetric(horizontal: 20, vertical: 18),

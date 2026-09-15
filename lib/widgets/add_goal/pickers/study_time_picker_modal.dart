@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 
 class StudyTimePickerModal extends StatefulWidget {
@@ -58,10 +57,10 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text(
+                  child: Text(
                     'Cancel',
                     style: TextStyle(
-                      color: AppColors.primary,
+                      color: context.colors.accent,
                       fontSize: 16,
                     ),
                   ),
@@ -78,10 +77,10 @@ class _StudyTimePickerModalState extends State<StudyTimePickerModal> {
                     widget.onTimeSelected(tempHours, tempMinutes);
                     Navigator.pop(context);
                   },
-                  child: const Text(
+                  child: Text(
                     'Done',
                     style: TextStyle(
-                      color: AppColors.primary,
+                      color: context.colors.accent,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

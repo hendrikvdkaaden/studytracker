@@ -32,19 +32,19 @@ class CalendarDayCell extends StatelessWidget {
         height: 48,
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.calendarAccent.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
+              ? context.colors.accentStrong.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
           border: isSelected
               ? Border.all(
-                  color: AppColors.calendarAccent,
+                  color: context.colors.accentStrong,
                   width: 2.5,
                 )
               : null,
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.calendarAccent.withValues(alpha: 0.3),
+                    color: context.colors.accentStrong.withValues(alpha: 0.3),
                     blurRadius: 8,
                     spreadRadius: 1,
                   ),
@@ -76,7 +76,7 @@ class CalendarDayCell extends StatelessWidget {
                     height: 4,
                     margin: const EdgeInsets.symmetric(horizontal: 1),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(status),
+                      color: _getStatusColor(context, status),
                       shape: BoxShape.circle,
                     ),
                   );
@@ -89,12 +89,12 @@ class CalendarDayCell extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(GoalStatus status) {
+  Color _getStatusColor(BuildContext context, GoalStatus status) {
     switch (status) {
       case GoalStatus.overdue:
         return AppColors.overdue;
       case GoalStatus.upcoming:
-        return AppColors.primaryLight;
+        return context.colors.accentStrong;
       case GoalStatus.completed:
         return AppColors.completed;
       case GoalStatus.session:

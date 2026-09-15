@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 
 class FixedFooterButton extends StatelessWidget {
@@ -36,11 +35,11 @@ class FixedFooterButton extends StatelessWidget {
             child: Container(
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: context.colors.accent,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.25),
+                    color: context.colors.accent.withValues(alpha: 0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),

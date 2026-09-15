@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../models/study_session.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
 
@@ -154,7 +153,7 @@ class PlannedSessionItem extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color: AppColors.calendarAccent.withValues(alpha: 0.1),
+          color: context.colors.accentStrong.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -163,7 +162,7 @@ class PlannedSessionItem extends StatelessWidget {
             Icon(Icons.check_circle_outline,
                 size: 12,
                 color:
-                    isDark ? AppColors.calendarAccent : AppColors.upcoming),
+                    context.colors.accent),
             const SizedBox(width: 3),
             Text(
               'DONE',
@@ -171,7 +170,7 @@ class PlannedSessionItem extends StatelessWidget {
                 fontSize: 9,
                 fontWeight: FontWeight.bold,
                 color:
-                    isDark ? AppColors.calendarAccent : AppColors.upcoming,
+                    context.colors.accent,
               ),
             ),
           ],
@@ -186,7 +185,7 @@ class PlannedSessionItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: AppColors.calendarAccent.withValues(alpha: isToday ? 0.2 : 0.08),
+        color: context.colors.accentStrong.withValues(alpha: isToday ? 0.2 : 0.08),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -194,7 +193,7 @@ class PlannedSessionItem extends StatelessWidget {
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.bold,
-          color: isDark ? AppColors.calendarAccent : context.colors.textPrimary,
+          color: isDark ? context.colors.accent : context.colors.textPrimary,
         ),
       ),
     );

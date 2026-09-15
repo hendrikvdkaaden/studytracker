@@ -1132,6 +1132,54 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get profileThemeDark;
 
+  /// No description provided for @profileAccentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get profileAccentLabel;
+
+  /// No description provided for @profileAccentTeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get profileAccentTeal;
+
+  /// No description provided for @profileAccentBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get profileAccentBlue;
+
+  /// No description provided for @profileAccentGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get profileAccentGreen;
+
+  /// No description provided for @profileAccentPurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get profileAccentPurple;
+
+  /// No description provided for @profileAccentOrange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get profileAccentOrange;
+
+  /// No description provided for @profileAccentPink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get profileAccentPink;
+
+  /// No description provided for @profilePickerAccentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent colour'**
+  String get profilePickerAccentTitle;
+
   /// No description provided for @profileDeleteSessionsLabel.
   ///
   /// In en, this message translates to:

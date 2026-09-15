@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/app_theme_extension.dart';
+
 class OnboardingLandingButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
@@ -14,17 +16,21 @@ class OnboardingLandingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Was a hardcoded teal gradient, which stayed teal whatever accent the
+    // user picked -- most visible in onboarding, on a faintly tinted page.
+    // The glow has to track it too, or a pink button casts a teal shadow.
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF0F766E), Color(0xFF04B4A2)],
+        gradient: LinearGradient(
+          colors: [colors.accent, colors.accentStrong],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF04B4A2).withValues(alpha: 0.3),
+            color: colors.accentStrong.withValues(alpha: 0.3),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),

@@ -270,15 +270,55 @@ class SettingsService {
     await _box.put(_keyEarnedGoalSlots, earnedGoalSlots + 1);
   }
 
+  // Reminders
+  static const String _keyNotificationsEnabled = 'notificationsEnabled';
+
+  /// Whether the user wants reminders at all.
+  ///
+  /// Kept alongside the OS permission rather than derived from it: permission
+  /// is the precondition, this is the preference. Without it the Profile
+  /// switch could not be turned off, since switching off would mean revoking
+  /// an OS permission the app cannot revoke, and the row would spring back on.
+  static bool get notificationsEnabled =>
+      _box.get(_keyNotificationsEnabled, defaultValue: false) as bool;
+
+  static Future<void> setNotificationsEnabled(bool value) async {
+    await _box.put(_keyNotificationsEnabled, value);
+  }
+
+  /// Whether the preference has never been written.
+  ///
+  /// Distinct from reading false: users upgrading from a build that asked for
+  /// permission at startup are seeded from the OS once, and only once. A
+  /// defaultValue read cannot tell "never chosen" from "chosen no", and would
+  /// switch reminders back on for someone who deliberately turned them off.
+  static bool get notificationsEnabledIsUnset =>
+      _box.get(_keyNotificationsEnabled) == null;
+
   // Calendar sync
   static const String _keyCalendarSyncEnabled = 'calendarSyncEnabled';
   static const String _keyCalendarId = 'calendarId';
+  static const String _keyCalendarSyncPending = 'calendarSyncPending';
 
   static bool get calendarSyncEnabled =>
       _box.get(_keyCalendarSyncEnabled, defaultValue: false) as bool;
 
   static Future<void> setCalendarSyncEnabled(bool value) async {
     await _box.put(_keyCalendarSyncEnabled, value);
+  }
+
+  /// True while the user has been sent to system settings to grant calendar
+  /// access and has not come back yet.
+  ///
+  /// The app cannot revoke the OS grant, so a granted permission says nothing
+  /// about whether sync is wanted -- someone who deliberately switched sync
+  /// off still has it. Without this one-shot flag, resuming would read that
+  /// standing grant as consent and turn sync back on every time.
+  static bool get calendarSyncPending =>
+      _box.get(_keyCalendarSyncPending, defaultValue: false) as bool;
+
+  static Future<void> setCalendarSyncPending(bool value) async {
+    await _box.put(_keyCalendarSyncPending, value);
   }
 
   /// Identifier of the app's own calendar on the device, once created.

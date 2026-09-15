@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../services/calendar_sync_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
@@ -9,6 +12,7 @@ import '../../widgets/onboarding/onboarding_landing_page.dart';
 import '../../widgets/onboarding/onboarding_step_calendar.dart';
 import '../../widgets/onboarding/onboarding_step_name.dart';
 import '../../widgets/onboarding/onboarding_step_notifications.dart';
+import '../../widgets/onboarding/onboarding_step_notifications_permission.dart';
 import '../../widgets/onboarding/onboarding_step_subjects.dart';
 import '../../widgets/profile/add_subject_modal.dart';
 import '../navigation/home_page.dart';
@@ -31,6 +35,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   List<SubjectData> _subjects = [];
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
+  bool _notificationsEnabled = false;
+  bool _notificationsBusy = false;
+  bool _notificationsDenied = false;
   bool _calendarConnected = false;
   bool _calendarBusy = false;
   bool _calendarDenied = false;
@@ -53,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Advancing swaps pages without disposing the fields, so focus has to be
     // cleared explicitly or the keyboard stays up over the next step.
     FocusManager.instance.primaryFocus?.unfocus();
-    if (_currentPage < 4) {
+    if (_currentPage < 5) {
       setState(() {
         _nameError = false;
         _currentPage++;
@@ -104,11 +111,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() {
       _calendarBusy = false;
       _calendarConnected = connected;
-      // Only a refused permission is a dead end: iOS shows its prompt once,
-      // so offering the button again would go nowhere. A permission that was
-      // granted but whose calendar could not be created is worth retrying,
-      // so the button stays.
-      _calendarDenied = !granted;
+      // Only a refused permission is a dead end, and only on iOS, which shows
+      // its prompt once -- Android asks again, so hiding the button there
+      // would strand a user who tapped "don't allow" by mistake. A permission
+      // that was granted but whose calendar could not be created is worth
+      // retrying either way, so the button stays.
+      _calendarDenied = !granted && Platform.isIOS;
+    });
+  }
+
+  /// Asks for notification permission and records the answer.
+  ///
+  /// The preference is stored only on a grant: without permission there is
+  /// nothing to turn on, and the Profile switch is where it can be revisited.
+  Future<void> _enableNotifications() async {
+    if (_notificationsBusy || _notificationsEnabled) return;
+    setState(() => _notificationsBusy = true);
+
+    final granted = await NotificationService.requestPermission();
+    if (granted) await SettingsService.setNotificationsEnabled(true);
+
+    if (!mounted) return;
+    setState(() {
+      _notificationsBusy = false;
+      _notificationsEnabled = granted;
+      // Only a refusal is a dead end, and only on iOS, which shows its prompt
+      // once. Android re-prompts until the second refusal, so the retry has
+      // somewhere to go and the button stays.
+      _notificationsDenied = !granted && Platform.isIOS;
     });
   }
 
@@ -319,6 +349,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             onNext: _nextPage,
             onAddSubject: _showAddSubjectModal,
             onRemoveSubject: _removeSubject,
+          ),
+          OnboardingStepNotificationsPermission(
+            isEnabled: _notificationsEnabled,
+            isBusy: _notificationsBusy,
+            isDenied: _notificationsDenied,
+            onEnableTap: _enableNotifications,
+            onNext: _nextPage,
           ),
           OnboardingStepNotifications(
             sessionReminderMinutes: _sessionReminderMinutes,

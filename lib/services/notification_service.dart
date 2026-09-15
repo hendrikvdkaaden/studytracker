@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/goal.dart';
 import '../models/study_session.dart';
@@ -37,7 +40,15 @@ class NotificationService {
 
       const androidSettings =
           AndroidInitializationSettings('@mipmap/ic_launcher');
-      const iosSettings = DarwinInitializationSettings();
+      // All three default to true, and the native initialize goes straight on
+      // to requestAuthorizationWithOptions -- which put the system prompt on
+      // the splash screen, before the user had seen anything. Onboarding asks
+      // for it now, with an explanation.
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestSoundPermission: false,
+        requestBadgePermission: false,
+      );
       const settings =
           InitializationSettings(android: androidSettings, iOS: iosSettings);
 
@@ -45,6 +56,8 @@ class NotificationService {
         settings: settings,
         onDidReceiveNotificationResponse: _handleResponse,
       );
+
+      await _seedEnabledFromSystem();
     } catch (e) {
       debugPrint('Failed to initialize notifications: $e');
     }
@@ -71,16 +84,84 @@ class NotificationService {
     }
   }
 
-  /// Request notification permission (Android 13+)
+  /// Carries an existing grant over for users upgrading from a build that
+  /// asked at startup.
+  ///
+  /// They already said yes and are getting reminders; a prompt or a dialog
+  /// would be a regression for a permission they gave. Only ever runs while
+  /// the preference has never been written, so someone who later turned
+  /// reminders off is not switched back on.
+  static Future<void> _seedEnabledFromSystem() async {
+    if (!SettingsService.notificationsEnabledIsUnset) return;
+    await SettingsService.setNotificationsEnabled(await hasPermission());
+  }
+
+  /// Asks the user for permission, prompting on both platforms.
+  ///
+  /// Only called from the onboarding step and the Profile switch, both of
+  /// which explain the request first.
   static Future<bool> requestPermission() async {
     try {
+      final ios = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      if (ios != null) {
+        // Every option defaults to false, so a bare call asks for nothing.
+        final granted = await ios.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+        return granted ?? false;
+      }
+
       final android = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       final granted = await android?.requestNotificationsPermission();
-      return granted ?? true;
+      // Null means neither platform resolved, which is not a grant. The older
+      // `?? true` here is what made an iOS refusal invisible.
+      return granted ?? false;
     } catch (e) {
       debugPrint('Failed to request notification permission: $e');
       return false;
+    }
+  }
+
+  /// Whether the system currently lets the app post notifications.
+  ///
+  /// A pure read: never prompts, so it is safe to call on every resume.
+  static Future<bool> hasPermission() async {
+    try {
+      final ios = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      if (ios != null) {
+        final options = await ios.checkPermissions();
+        return options?.isEnabled ?? false;
+      }
+
+      final android = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      return await android?.areNotificationsEnabled() ?? false;
+    } catch (e) {
+      debugPrint('Failed to check notification permission: $e');
+      return false;
+    }
+  }
+
+  /// Sends the user to the system settings for this app.
+  ///
+  /// iOS only. A refusal there is terminal -- the prompt never returns -- so
+  /// settings is the only way back. Android re-prompts on its own, and
+  /// `app-settings:` does nothing there. Unlike the calendar plugin, this one
+  /// ships no settings opener, hence url_launcher.
+  static Future<void> openSettings() async {
+    if (!Platform.isIOS) return;
+    try {
+      await launchUrl(
+        Uri.parse('app-settings:'),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      debugPrint('Opening app settings failed: $e');
     }
   }
 
@@ -93,6 +174,8 @@ class NotificationService {
     String goalTitle,
   ) async {
     try {
+      if (!SettingsService.notificationsEnabled) return;
+
       final tz.TZDateTime scheduledDate;
 
       if (session.startTime != null) {
@@ -139,6 +222,8 @@ class NotificationService {
   /// Schedule a deadline reminder: 09:00, N days before goal.date
   static Future<void> scheduleDeadlineReminder(Goal goal) async {
     try {
+      if (!SettingsService.notificationsEnabled) return;
+
       final daysBefore = SettingsService.deadlineReminderDays;
       final reminderDate = goal.date.subtract(Duration(days: daysBefore));
       final scheduledDate = tz.TZDateTime(
@@ -199,7 +284,12 @@ class NotificationService {
     }
   }
 
-  /// Show an immediate notification to remind the user to finish their active session
+  /// Show an immediate notification to remind the user to finish their active
+  /// session.
+  ///
+  /// Not gated on the reminders preference: this is the way back into a timer
+  /// the user started and left running, not a reminder they opted into. Gating
+  /// it would strand a running session behind a setting about deadlines.
   static Future<void> showResumeSessionNotification(
     String goalTitle,
     String sessionId,
@@ -225,6 +315,60 @@ class NotificationService {
       );
     } catch (e) {
       debugPrint('Failed to show resume session notification: $e');
+    }
+  }
+
+  /// Drops every scheduled notification.
+  ///
+  /// Used when reminders are switched off: without it the ones already handed
+  /// to the system keep firing for days afterwards, which reads as a bug.
+  /// Deliberately unguarded -- cancelling has to work precisely when the
+  /// preference says no.
+  static Future<void> cancelAll() async {
+    try {
+      await _plugin.cancelAll();
+    } catch (e) {
+      debugPrint('Failed to cancel all notifications: $e');
+    }
+  }
+
+  /// Rebuilds every scheduled reminder from the stored goals and sessions.
+  ///
+  /// Reminders are handed to the OS once, when a goal or session is saved.
+  /// Anything that invalidates that handover -- [cancelAll] on a disable, a
+  /// revoked-then-restored system permission, a change to the reminder
+  /// offsets -- leaves the app believing in reminders the system no longer
+  /// holds. Without this, switching reminders off and back on silently
+  /// stopped them for every goal that already existed.
+  ///
+  /// Cancels each reminder before rescheduling it so a changed offset moves
+  /// the reminder rather than adding a second one, and skips completed goals
+  /// and sessions, which have nothing left to remind about. A no-op while the
+  /// preference is off, so callers do not have to check first.
+  static Future<void> rescheduleAll({
+    required List<Goal> goals,
+    required List<StudySession> sessions,
+  }) async {
+    if (!SettingsService.notificationsEnabled) return;
+
+    final sessionsByGoal = <String, List<StudySession>>{};
+    for (final session in sessions) {
+      if (session.isCompleted) continue;
+      sessionsByGoal.putIfAbsent(session.goalId, () => []).add(session);
+    }
+
+    for (final goal in goals) {
+      final goalSessions = sessionsByGoal[goal.id] ?? const <StudySession>[];
+      // Cancels by the same ids the scheduling below reuses, so this clears
+      // stale reminders without touching the resume notification a
+      // backgrounded timer may be showing.
+      await cancelGoalNotifications(goal.id, goalSessions);
+      if (goal.isCompleted) continue;
+
+      await scheduleDeadlineReminder(goal);
+      for (final session in goalSessions) {
+        await scheduleSessionReminder(session, goal.title);
+      }
     }
   }
 

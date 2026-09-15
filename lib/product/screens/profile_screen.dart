@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import '../../providers/app_providers.dart';
 import '../../services/ad_service.dart';
 import '../../services/calendar_sync_service.dart';
 import '../../services/hive_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/app_colors.dart';
@@ -26,7 +29,8 @@ class ProfileScreen extends ConsumerStatefulWidget {
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
+    with WidgetsBindingObserver {
   String _userName = '';
   int _sessionReminderMinutes = 15;
   int _deadlineReminderDays = 1;
@@ -34,6 +38,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   List<SubjectData> _subjects = [];
   String _schoolName = '';
   bool _showPrivacyOptions = false;
+  bool _notificationsEnabled = SettingsService.notificationsEnabled;
+  bool _notificationsBusy = false;
   bool _calendarSyncEnabled = false;
   bool _planAroundCalendar = SettingsService.planAroundCalendar;
   bool _calendarBusy = false;
@@ -41,6 +47,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _userName = SettingsService.userName;
     _sessionReminderMinutes = SettingsService.sessionReminderMinutes;
     _deadlineReminderDays = SettingsService.deadlineReminderDays;
@@ -48,7 +55,63 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _subjects = SettingsService.subjectData;
     _schoolName = SettingsService.schoolName;
     _loadPrivacyOptionsStatus();
+    _loadNotificationStatus();
     _loadCalendarSyncStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Re-reads calendar access when the app comes back to the foreground.
+  ///
+  /// Refusing the prompt makes the decision terminal: iOS answers every later
+  /// request with the same refusal instead of asking again, so the only way
+  /// back is system settings. Sending the user there and never looking again
+  /// left the row stuck off, and tapping it only reopened the same dialog --
+  /// a restart was the sole escape.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    _loadNotificationStatus();
+    _reconcileCalendarAccess();
+  }
+
+  Future<void> _reconcileCalendarAccess() async {
+    // A sync that is already on is handled by _loadCalendarSyncStatus, which
+    // turns it off again when access was revoked while the app was away.
+    if (SettingsService.calendarSyncEnabled) {
+      await _loadCalendarSyncStatus();
+      return;
+    }
+
+    // Off, and only finish the job for someone we actually sent to settings.
+    // A standing OS grant is not consent: the app cannot revoke it, so every
+    // user who ever turned sync off still has one, and reading it as a yes
+    // switched sync back on -- and re-backfilled the calendar -- on resume.
+    if (_calendarBusy || !SettingsService.calendarSyncPending) return;
+    // Claimed before the first await, so two resumes in quick succession
+    // cannot both get past the guard and backfill the calendar twice.
+    setState(() => _calendarBusy = true);
+    try {
+      if (!await CalendarSyncService.hasPermission()) return;
+      if (!mounted) return;
+      await SettingsService.setCalendarSyncPending(false);
+      await CalendarSyncService.enableAndBackfill(
+        goalRepo: ref.read(goalRepositoryProvider),
+        sessionRepo: ref.read(studySessionRepositoryProvider),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _calendarBusy = false;
+          _calendarSyncEnabled = SettingsService.calendarSyncEnabled;
+          _planAroundCalendar = SettingsService.planAroundCalendar;
+        });
+      }
+    }
   }
 
   /// Reconciles the stored preference with reality: the user may have revoked
@@ -75,6 +138,115 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         _planAroundCalendar = SettingsService.planAroundCalendar;
       });
     }
+  }
+
+  /// Reconciles the stored preference against the system.
+  ///
+  /// The OS overrules the flag: access revoked in settings means reminders
+  /// cannot fire, so the row must not keep claiming they will.
+  Future<void> _loadNotificationStatus() async {
+    var enabled = SettingsService.notificationsEnabled;
+    if (enabled && !await NotificationService.hasPermission()) {
+      // Only the preference is corrected. The system already refuses to post
+      // anything without the grant, so cancelling as well would add nothing
+      // except the permanent loss of every schedule -- and re-granting could
+      // then never bring the reminders back.
+      await SettingsService.setNotificationsEnabled(false);
+      enabled = false;
+    }
+    if (mounted) setState(() => _notificationsEnabled = enabled);
+  }
+
+  Future<void> _onNotificationsTap() async {
+    if (_notificationsBusy) return;
+    // Held across the dialog too, so a second tap cannot start a parallel run.
+    setState(() => _notificationsBusy = true);
+    try {
+      if (_notificationsEnabled) {
+        await _disableNotifications();
+      } else {
+        await _enableNotifications();
+      }
+    } finally {
+      if (mounted) setState(() => _notificationsBusy = false);
+    }
+  }
+
+  Future<void> _enableNotifications() async {
+    final l10n = context.l10n;
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: l10n.notificationsEnableTitle,
+      message: l10n.notificationsEnableMessage,
+      confirmLabel: l10n.notificationsEnableConfirm,
+      icon: Icons.notifications_active_outlined,
+    );
+    if (!confirmed || !mounted) return;
+
+    final granted = await NotificationService.requestPermission();
+    if (!mounted) return;
+
+    if (!granted) {
+      // iOS only ever shows its prompt once, so a refusal leaves system
+      // settings as the only way back. On Android `openSettings` is a no-op
+      // and the prompt comes back on the next attempt, so offering the button
+      // there would just be a button that does nothing.
+      if (!Platform.isIOS) {
+        await showAppMessageDialog(
+          context: context,
+          title: l10n.notificationsDeniedTitle,
+          message: l10n.notificationsDeniedMessage,
+          icon: Icons.lock_outline,
+        );
+        return;
+      }
+
+      final openSettings = await showAppConfirmDialog(
+        context: context,
+        title: l10n.notificationsDeniedTitle,
+        message: l10n.notificationsDeniedMessage,
+        confirmLabel: l10n.notificationsDeniedConfirm,
+        icon: Icons.lock_outline,
+      );
+      if (openSettings) await NotificationService.openSettings();
+      return;
+    }
+
+    await SettingsService.setNotificationsEnabled(true);
+    // Disabling cancels every schedule, so without this the switch would read
+    // on while no existing goal or session ever reminded again.
+    await _rescheduleAllNotifications();
+    if (!mounted) return;
+    setState(() => _notificationsEnabled = SettingsService.notificationsEnabled);
+  }
+
+  /// Rebuilds every reminder from the stored goals and sessions.
+  ///
+  /// Reminders are handed to the system when a goal or session is saved, so
+  /// anything that invalidates that handover -- a disable, a changed reminder
+  /// offset -- needs this to put them back.
+  Future<void> _rescheduleAllNotifications() async {
+    await NotificationService.rescheduleAll(
+      goals: ref.read(goalRepositoryProvider).getAllGoals(),
+      sessions: ref.read(studySessionRepositoryProvider).getAllSessions(),
+    );
+  }
+
+  Future<void> _disableNotifications() async {
+    final l10n = context.l10n;
+    final confirmed = await _showDestructiveConfirmation(
+      title: l10n.notificationsDisableTitle,
+      body: l10n.notificationsDisableMessage,
+      confirmLabel: l10n.notificationsDisableConfirm,
+    );
+    if (confirmed != true || !mounted) return;
+
+    await SettingsService.setNotificationsEnabled(false);
+    // Everything already handed to the system would otherwise keep firing for
+    // days after the user switched reminders off.
+    await NotificationService.cancelAll();
+    if (!mounted) return;
+    setState(() => _notificationsEnabled = false);
   }
 
   Future<void> _togglePlanAroundCalendar() async {
@@ -121,7 +293,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         confirmLabel: l10n.calendarSyncDeniedConfirm,
         icon: Icons.lock_outline,
       );
-      if (openSettings) await CalendarSyncService.openSettings();
+      if (openSettings) {
+        // Marks this as a trip the user chose to make, so the resume that
+        // follows may finish enabling sync. Nothing else sets it, which is
+        // what keeps a standing OS grant from re-enabling sync on its own.
+        await SettingsService.setCalendarSyncPending(true);
+        await CalendarSyncService.openSettings();
+      }
       return;
     }
 
@@ -146,6 +324,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     await CalendarSyncService.purgeAll();
     await SettingsService.setCalendarSyncEnabled(false);
+    // An abandoned trip to settings must not re-enable sync after the user
+    // has since turned it off here.
+    await SettingsService.setCalendarSyncPending(false);
     await _clearStoredEventIds();
     if (!mounted) return;
     setState(() => _calendarSyncEnabled = false);
@@ -337,6 +518,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onPressed: () async {
                       Navigator.pop(ctx);
                       await SettingsService.setSessionReminderMinutes(tempValue);
+                      // Already-scheduled reminders carry the old offset
+                      // baked in; only a reschedule moves them.
+                      await _rescheduleAllNotifications();
+                      if (!mounted) return;
                       setState(() => _sessionReminderMinutes = tempValue);
                     },
                     style: ElevatedButton.styleFrom(
@@ -460,6 +645,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onPressed: () async {
                       Navigator.pop(ctx);
                       await SettingsService.setDeadlineReminderDays(tempValue);
+                      // As above: the stored reminders still hold the old
+                      // number of days until they are rebuilt.
+                      await _rescheduleAllNotifications();
+                      if (!mounted) return;
                       setState(() => _deadlineReminderDays = tempValue);
                     },
                     style: ElevatedButton.styleFrom(
@@ -660,6 +849,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return ProfileTemplate(
       userName: _userName,
+      notificationsEnabled: _notificationsEnabled,
+      notificationsBusy: _notificationsBusy,
+      onNotificationsTap: _onNotificationsTap,
       sessionReminderMinutes: _sessionReminderMinutes,
       deadlineReminderDays: _deadlineReminderDays,
       themeModeIndex: _themeModeIndex,

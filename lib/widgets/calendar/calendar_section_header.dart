@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 
 class CalendarSectionHeader extends StatelessWidget {
@@ -30,15 +29,21 @@ class CalendarSectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.calendarAccent.withValues(alpha: 0.2),
+              // The tint stays on the strong mid-tone; only the numeral on
+              // top of it moves to accent, which is readable at 12px.
+              color: context.colors.accentStrong.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               count.toString(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: AppColors.calendarAccent,
+                // See date_header: the accent is only readable at this size
+                // on a light surface.
+                color: context.colors.isDark
+                    ? context.colors.textPrimary
+                    : context.colors.accent,
               ),
             ),
           ),

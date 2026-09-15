@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 
 enum TimerState { initial, running, paused, completed }
@@ -79,10 +78,13 @@ class TimerControls extends StatelessWidget {
               onPressed: _getPrimaryAction(),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                backgroundColor: AppColors.calendarAccent,
-                foregroundColor: Colors.white,
+                // The accent/onAccent pair is the readable combination:
+                // white on the strong mid-tone misses 4.5:1 on every palette,
+                // and 3:1 on most of them.
+                backgroundColor: context.colors.accent,
+                foregroundColor: context.colors.onAccent,
                 elevation: 8,
-                shadowColor: AppColors.calendarAccent.withValues(alpha: 0.3),
+                shadowColor: context.colors.accent.withValues(alpha: 0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

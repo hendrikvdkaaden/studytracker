@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 
@@ -167,10 +166,10 @@ class _EditNameDialogState extends State<EditNameDialog> {
                   child: ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.calendarAccent,
-                      foregroundColor: AppColors.darkBackground,
+                      backgroundColor: context.colors.accent,
+                      foregroundColor: context.colors.onAccent,
                       elevation: 4,
-                      shadowColor: AppColors.calendarAccent.withValues(alpha: 0.4),
+                      shadowColor: context.colors.accent.withValues(alpha: 0.4),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
@@ -285,7 +284,7 @@ class _SheetTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
           borderSide: BorderSide(
-            color: AppColors.calendarAccent.withValues(alpha: 0.5),
+            color: context.colors.accentStrong.withValues(alpha: 0.5),
             width: 2,
           ),
         ),

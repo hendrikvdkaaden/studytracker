@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 
 class SessionProgressBar extends StatelessWidget {
@@ -38,10 +37,15 @@ class SessionProgressBar extends StatelessWidget {
             ),
             Text(
               '$percentage% Completed',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: AppColors.calendarAccent,
+                // Normal-size text on a card: the mid-tone accent that dark
+                // mode resolves to misses 4.5:1 for blue, purple and pink,
+                // so the ink there is the normal one.
+                color: context.colors.isDark
+                    ? context.colors.textPrimary
+                    : context.colors.accent,
               ),
             ),
           ],
@@ -65,7 +69,7 @@ class SessionProgressBar extends StatelessWidget {
                       width: constraints.maxWidth * _progressPercentage,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.calendarAccent,
+                          color: context.colors.accentStrong,
                         ),
                       ),
                     ),

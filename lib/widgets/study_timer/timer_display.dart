@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 
 class TimerDisplay extends StatelessWidget {
@@ -24,10 +23,13 @@ class TimerDisplay extends StatelessWidget {
       children: [
         Text(
           _formatTime(),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 72,
             fontWeight: FontWeight.bold,
-            color: AppColors.calendarAccent,
+            // accent, not accentStrong: this is text on a card, and the
+            // strong mid-tone only clears 4.5:1 against a dark surface.
+            // accent already resolves to it in dark mode.
+            color: context.colors.accent,
             height: 1,
             letterSpacing: -2,
           ),
@@ -36,10 +38,10 @@ class TimerDisplay extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.calendarAccent.withValues(alpha: 0.1),
+            color: context.colors.accentStrong.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: AppColors.calendarAccent.withValues(alpha: 0.2),
+              color: context.colors.accentStrong.withValues(alpha: 0.2),
             ),
           ),
           child: Row(
@@ -48,7 +50,7 @@ class TimerDisplay extends StatelessWidget {
               Icon(
                 Icons.bolt,
                 size: 16,
-                color: AppColors.calendarAccent,
+                color: context.colors.accentStrong,
               ),
               const SizedBox(width: 6),
               Text(

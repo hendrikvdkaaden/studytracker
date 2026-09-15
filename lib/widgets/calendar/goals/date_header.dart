@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../utils/calendar_helpers.dart';
 import '../../../utils/l10n_extension.dart';
@@ -30,7 +29,7 @@ class DateHeader extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.calendarAccent.withValues(
+            color: context.colors.accentStrong.withValues(
               alpha: context.colors.isDark ? 0.16 : 0.12,
             ),
             borderRadius: BorderRadius.circular(999),
@@ -41,9 +40,9 @@ class DateHeader extends StatelessWidget {
               Container(
                 width: 8,
                 height: 8,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.calendarAccent,
+                  color: context.colors.accentStrong,
                 ),
               ),
               const SizedBox(width: 8),
@@ -65,10 +64,16 @@ class DateHeader extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   context.l10n.calendarTodayButton,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.calendarAccent,
+                    // Normal-size text, so it needs 4.5:1. Light mode gets
+                    // the solid accent; dark mode takes the normal ink,
+                    // because accent resolves to the mid-tone there and blue,
+                    // purple and pink fall under the bar on the tinted chip.
+                    color: context.colors.isDark
+                        ? context.colors.textPrimary
+                        : context.colors.accent,
                   ),
                 ),
               ],

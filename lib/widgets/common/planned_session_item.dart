@@ -79,7 +79,16 @@ class PlannedSessionItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: context.colors.textPrimary,
+                        // Struck through and muted once done, matching the
+                        // home screen -- the same session should not read
+                        // differently depending on which list it is in.
+                        color: _isCompleted
+                            ? context.colors.textTertiary
+                            : context.colors.textPrimary,
+                        decoration: _isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                        decorationColor: context.colors.textTertiary,
                       ),
                     ),
                   ),

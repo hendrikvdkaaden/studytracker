@@ -480,5 +480,52 @@
   "premiumDialogNotNow": "Not Now",
   "premiumDialogWatchAd": "Watch an ad to try once",
   "premiumDialogWatchAdForDeadline": "Watch an ad for one more",
-  "premiumDialogAdLoading": "Loading ad..."
+  "premiumDialogAdLoading": "Loading ad...",
+  "streakFreezeUsed": "A streak freeze covered your missed day. {count} left.",
+  "@streakFreezeUsed": {
+    "description": "Shown once after a freeze automatically rescued the streak",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "streakFreezeUsedPlural": "Streak freezes covered {days} missed days. {count} left.",
+  "@streakFreezeUsedPlural": {
+    "description": "Same, when more than one day was covered at once",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "streakCelebrationTitle": "{days, plural, =1{Day one} other{{days} days in a row}}",
+  "@streakCelebrationTitle": {
+    "description": "Headline of the dialog shown when the study streak grows",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "streakCelebrationBody": "{days, plural, =1{You studied today. Come back tomorrow to start a streak.} other{Every session counts. Keep it going tomorrow.}}",
+  "@streakCelebrationBody": {
+    "description": "Supporting line under the streak celebration headline",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "streakCelebrationButton": "Let's go",
+  "@streakCelebrationButton": {
+    "description": "Dismiss button on the streak celebration dialog"
+  },
+  "streakFreezeTitle": "Streak saved",
+  "@streakFreezeTitle": {
+    "description": "Headline of the dialog shown when a freeze covered a missed day"
+  }
 }

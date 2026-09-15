@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/goal.dart';
 import '../models/study_session.dart';
 import 'settings_service.dart';
+import 'streak_service.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
@@ -219,6 +220,89 @@ class NotificationService {
     }
   }
 
+  /// Warn, at [hour] this evening, that today's sessions still decide the
+  /// streak.
+  ///
+  /// Only scheduled when sessions are actually outstanding today. A streak is
+  /// never broken by a day without planned sessions -- calculateStreak skips
+  /// those entirely -- so warning on such a day would simply be untrue.
+  ///
+  /// One fixed id, so re-running this replaces the warning instead of stacking
+  /// a second one.
+  /// Whether tonight's streak warning is warranted, ignoring the clock.
+  ///
+  /// Split out because it is the only part of the warning a unit test can
+  /// reach: the plugin below is a package-internal singleton that throws
+  /// unless a real platform binding initialised it, so the scheduling call
+  /// itself can only be exercised on a device.
+  ///
+  /// The warning tells the user a streak is at stake tonight. These are the
+  /// conditions that make that claim true.
+  static bool shouldWarnAboutStreak({
+    required List<StudySession> todaysSessions,
+    required int streak,
+  }) {
+    if (!SettingsService.notificationsEnabled) return false;
+
+    // Nothing at risk: no streak to lose, or today holds nothing that could
+    // lose it. A day without planned sessions never breaks a streak -- the
+    // streak scan skips it -- so warning then would simply be untrue.
+    if (streak <= 0) return false;
+    return todaysSessions.any((s) => !StreakService.isCompletedOnTime(s));
+  }
+
+  static Future<void> scheduleStreakWarning({
+    required List<StudySession> todaysSessions,
+    required int streak,
+    DateTime? now,
+    int hour = 19,
+  }) async {
+    try {
+      if (!shouldWarnAboutStreak(
+        todaysSessions: todaysSessions,
+        streak: streak,
+      )) {
+        return;
+      }
+
+      final today = now ?? DateTime.now();
+      final scheduledDate = tz.TZDateTime(
+        tz.local,
+        today.year,
+        today.month,
+        today.day,
+        hour,
+      );
+
+      if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
+
+      await _plugin.zonedSchedule(
+        id: streakWarningId,
+        title: 'Your $streak-day streak is still open',
+        // Reminding, not scolding: the user is being told what is still
+        // possible, not what they failed to do.
+        body: 'Finish today\'s session to keep it going.',
+        scheduledDate: scheduledDate,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'streak',
+            'Streak Reminders',
+            channelDescription: 'A nudge while a streak is still at stake',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule streak warning: $e');
+    }
+  }
+
+  /// Fixed id so the warning replaces itself rather than stacking.
+  static int get streakWarningId => 'streak_warning'.hashCode;
+
   /// Schedule a deadline reminder: 09:00, N days before goal.date
   static Future<void> scheduleDeadlineReminder(Goal goal) async {
     try {
@@ -370,6 +454,44 @@ class NotificationService {
         await scheduleSessionReminder(session, goal.title);
       }
     }
+
+    // Rescheduled here for the same reason as the rest: a warning handed to
+    // the OS elsewhere would quietly disappear the moment the user toggles
+    // reminders off and on again.
+    await _rescheduleStreakWarning(sessions);
+  }
+
+  /// Re-hands the streak warning to the OS, cancelling any previous one.
+  ///
+  /// Public because [rescheduleAll] is not the only thing that invalidates
+  /// the warning: it is only reached from the Profile screen, so a user who
+  /// plans a session and never opens Profile would never be warned. The
+  /// splash calls this on every launch, which is the one point that reliably
+  /// sees the day's plan.
+  static Future<void> refreshStreakWarning(List<StudySession> sessions) =>
+      _rescheduleStreakWarning(sessions);
+
+  static Future<void> _rescheduleStreakWarning(
+    List<StudySession> sessions,
+  ) async {
+    await _plugin.cancel(id: streakWarningId);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final todaysSessions = sessions.where((s) {
+      final day = DateTime(s.date.year, s.date.month, s.date.day);
+      return day == today;
+    }).toList();
+
+    await scheduleStreakWarning(
+      todaysSessions: todaysSessions,
+      streak: StreakService.calculateStreak(
+        sessions: sessions,
+        now: now,
+        frozenDays: SettingsService.frozenDays.toSet(),
+      ),
+      now: now,
+    );
   }
 
   /// Cancel the resume session notification

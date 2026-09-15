@@ -7,6 +7,8 @@ import '../../services/hive_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/session_navigator.dart';
 import '../../services/settings_service.dart';
+import '../../services/study_session_repository.dart';
+import '../../services/streak_freeze_service.dart';
 import '../../services/subscription_service.dart';
 import '../../theme/app_theme_extension.dart';
 import '../navigation/home_page.dart';
@@ -81,6 +83,24 @@ class _SplashScreenState extends State<SplashScreen>
       // Without this the app paints the default palette for a frame before
       // the stored choice lands.
       accentPaletteNotifier.value = SettingsService.accentPaletteIndex;
+      // Once per launch, and only here: the streak itself is recalculated on
+      // every dashboard rebuild, so spending a token there would drain the
+      // stock as the user scrolls.
+      final sessions = StudySessionRepository().getAllSessions();
+      final outcome = await StreakFreezeService.check(
+        sessions: sessions,
+        now: DateTime.now(),
+      );
+      // The evening warning is otherwise only rebuilt from the Profile
+      // screen, so someone who plans a session and never goes there would
+      // never be warned. Launch is the one point that reliably sees the
+      // day's plan.
+      await NotificationService.refreshStreakWarning(sessions);
+      if (outcome.savedStreak) {
+        // Surfaced by HomePage on first paint. Without telling the user, the
+        // freeze is invisible and the rule is never learned.
+        pendingFreezeOutcome.value = outcome;
+      }
     } catch (e) {
       debugPrint('Initialization error: $e');
     }

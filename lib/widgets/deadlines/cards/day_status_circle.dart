@@ -46,6 +46,32 @@ class DayStatusCircle extends StatelessWidget {
           ),
           child: Icon(Icons.close, color: Colors.red.shade400, size: 16),
         );
+      case DayStatus.frozen:
+        // Deliberately not the green tick: the day was not studied, and
+        // dressing it up as completed would make the numbers untrustworthy.
+        return Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: context.colors.isDark
+                  ? Colors.lightBlue.shade900.withValues(alpha: 0.6)
+                  : Colors.lightBlue.shade200,
+              width: 2,
+            ),
+            color: context.colors.isDark
+                ? Colors.lightBlue.shade900.withValues(alpha: 0.15)
+                : Colors.lightBlue.shade50.withValues(alpha: 0.6),
+          ),
+          child: Icon(
+            Icons.ac_unit,
+            color: context.colors.isDark
+                ? Colors.lightBlue.shade200
+                : Colors.lightBlue.shade600,
+            size: 16,
+          ),
+        );
       case DayStatus.notPlanned:
         return Container(
           width: 32,

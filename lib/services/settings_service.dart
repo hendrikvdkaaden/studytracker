@@ -347,6 +347,84 @@ class SettingsService {
     }
   }
 
+  // Streak freezes
+  static const String _keyFreezesAvailable = 'freezesAvailable';
+  static const String _keyFrozenDays = 'frozenDays';
+  static const String _keyFreezeEarnedAtStreak = 'freezeEarnedAtStreak';
+
+  /// Unspent freezes, each of which covers one missed day.
+  ///
+  /// A count like [earnedGoalSlots] rather than a daily allowance: a freeze is
+  /// earned by keeping a streak up, then kept until a missed day spends it.
+  static int get freezesAvailable =>
+      _box.get(_keyFreezesAvailable, defaultValue: 0) as int;
+
+  static Future<void> setFreezesAvailable(int value) async {
+    await _box.put(_keyFreezesAvailable, value);
+  }
+
+  /// The days a freeze has already been spent on, as ISO-8601 dates.
+  ///
+  /// Stored rather than recomputed because it is what makes spending
+  /// idempotent: a day already in this list never costs a second token, no
+  /// matter how often the check runs. StreakService reads it; only
+  /// StreakFreezeService writes it.
+  static List<DateTime> get frozenDays {
+    final raw = _box.get(_keyFrozenDays);
+    if (raw is! List) return const [];
+    final out = <DateTime>[];
+    for (final entry in raw) {
+      if (entry is! String) continue;
+      final parsed = DateTime.tryParse(entry);
+      // Normalised to midnight: StreakService compares against whole days.
+      if (parsed != null) {
+        out.add(DateTime(parsed.year, parsed.month, parsed.day));
+      }
+    }
+    return out;
+  }
+
+  static Future<void> setFrozenDays(List<DateTime> days) async {
+    // Keep only the last year. The streak scan looks no further back, so
+    // without this the list would grow without limit.
+    final cutoff = DateTime.now().subtract(const Duration(days: 365));
+    final kept = days.where((d) => !d.isBefore(cutoff)).toList()..sort();
+    await _box.put(
+      _keyFrozenDays,
+      [for (final d in kept) DateTime(d.year, d.month, d.day).toIso8601String()],
+    );
+  }
+
+  /// The streak length the most recent freeze was handed out at.
+  ///
+  /// Without this a streak sitting at 7 would earn a fresh freeze on every
+  /// check instead of once.
+  static int get freezeEarnedAtStreak =>
+      _box.get(_keyFreezeEarnedAtStreak, defaultValue: 0) as int;
+
+  static Future<void> setFreezeEarnedAtStreak(int value) async {
+    await _box.put(_keyFreezeEarnedAtStreak, value);
+  }
+
+  // Streak celebration
+  static const String _keyLastCelebratedStreak = 'lastCelebratedStreak';
+
+  /// The streak length the user was last congratulated on.
+  ///
+  /// Stored rather than derived because the streak is recomputed on every
+  /// rebuild: without a record of what has already been celebrated, the same
+  /// +1 would be celebrated again on the next build, and a celebration missed
+  /// because the app closed would be lost for good.
+  ///
+  /// Follows the streak down as well as up -- see
+  /// StreakCelebration.shouldCelebrate for why.
+  static int get lastCelebratedStreak =>
+      _box.get(_keyLastCelebratedStreak, defaultValue: 0) as int;
+
+  static Future<void> setLastCelebratedStreak(int value) async {
+    await _box.put(_keyLastCelebratedStreak, value);
+  }
+
   /// True when the free ad-backed try has not been used today. The allowance
   /// resets at midnight rather than 24 hours after the last use.
   static bool get canUseAdTrialToday {

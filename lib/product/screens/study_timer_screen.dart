@@ -7,6 +7,10 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/notification_service.dart';
+import '../../main.dart';
+import '../../services/settings_service.dart';
+import '../../services/streak_celebration.dart';
+import '../../services/streak_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/common/app_dialog.dart';
@@ -121,6 +125,25 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
     await _sessionRepo.updateSession(updated);
   }
 
+  /// Records a streak increase for HomePage to celebrate once this screen
+  /// closes.
+  ///
+  /// Called after the session is written, so the recomputed streak includes
+  /// it. Note that calculateStreak skips today while any session is still
+  /// outstanding: finishing the first of three sessions correctly produces no
+  /// increase, and the last one produces it for the whole day.
+  Future<void> _recordStreakProgress() async {
+    final streak = StreakService.calculateStreak(
+      sessions: _sessionRepo.getAllSessions(),
+      now: DateTime.now(),
+      frozenDays: SettingsService.frozenDays.toSet(),
+    );
+    final celebrate = await StreakCelebration.evaluate(streak);
+    if (celebrate != null) {
+      pendingStreakCelebration.value = celebrate;
+    }
+  }
+
   Future<void> _stopTimer() async {
     final l10n = context.l10n;
     final elapsedTime = _formatElapsedTime();
@@ -146,6 +169,7 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
       );
 
       await _sessionRepo.updateSession(updatedSession);
+      await _recordStreakProgress();
 
       if (!mounted) return;
 
@@ -175,6 +199,7 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
             completedAt: DateTime.now(),
           );
           await _sessionRepo.updateSession(updatedSession);
+          await _recordStreakProgress();
         } else {
           await _persistElapsedSeconds();
         }
@@ -210,6 +235,7 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
       );
 
       await _sessionRepo.updateSession(updatedSession);
+      await _recordStreakProgress();
       if (!mounted) return;
       Navigator.pop(context, true);
     }

@@ -26,15 +26,24 @@ class StreakService {
   /// Number of consecutive days, counting back from [now], on which every
   /// planned session was completed on time.
   ///
-  /// Two rules shape the result:
+  /// Three rules shape the result:
   /// - Days with no planned sessions are skipped: they neither extend nor
   ///   break the streak.
   /// - Today is skipped while its sessions are still outstanding, so a streak
   ///   already earned stays visible during the day. Only an elapsed day with
   ///   unfinished sessions breaks it.
+  /// - A day listed in [frozenDays] bridges instead of breaking: a freeze
+  ///   covers a missed day but does not earn one, so the streak survives
+  ///   without growing.
+  ///
+  /// [frozenDays] must hold dates normalised to midnight, because that is what
+  /// the scan below compares against. Reading it is all this does -- spending a
+  /// freeze belongs to StreakFreezeService, which runs once per app start.
+  /// Doing it here would burn a token on every dashboard rebuild.
   static int calculateStreak({
     required List<StudySession> sessions,
     required DateTime now,
+    Set<DateTime> frozenDays = const {},
   }) {
     if (sessions.isEmpty) return 0;
 
@@ -66,6 +75,10 @@ class StreakService {
       } else if (i == 0) {
         // Today is still in progress: it cannot extend the streak yet, but it
         // must not break one the user already earned.
+        continue;
+      } else if (frozenDays.contains(day)) {
+        // A freeze was spent on this day. It bridges the gap without counting
+        // as studied -- the streak survives but does not grow.
         continue;
       } else {
         break;

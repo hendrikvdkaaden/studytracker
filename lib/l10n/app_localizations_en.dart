@@ -1161,4 +1161,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premiumDialogAdLoading => 'Loading ad...';
+
+  @override
+  String streakFreezeUsed(int count) {
+    return 'A streak freeze covered your missed day. $count left.';
+  }
+
+  @override
+  String streakFreezeUsedPlural(int days, int count) {
+    return 'Streak freezes covered $days missed days. $count left.';
+  }
+
+  @override
+  String streakCelebrationTitle(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days in a row',
+      one: 'Day one',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String streakCelebrationBody(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Every session counts. Keep it going tomorrow.',
+      one: 'You studied today. Come back tomorrow to start a streak.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get streakCelebrationButton => 'Nice';
+
+  @override
+  String get streakFreezeTitle => 'Streak saved';
 }

@@ -11,13 +11,18 @@ class AccentPalette {
   /// surfaces. Must clear 4.5:1 against white.
   final Color accent;
 
-  /// Foreground on dark surfaces, where [accent] is too dark to read.
+  /// Foreground on dark surfaces. Deliberately identical to [accent].
   ///
-  /// These are the normal mid-tones. A lighter shade was tried and read as a
-  /// visibly different, washed-out colour in dark mode, which is not wanted.
-  /// The cost: against the dark card blue scores 3.98, purple 3.45 and pink
-  /// 4.15 -- fine for fills and icons (3.0), under the 4.5 that accent-
-  /// coloured *text* on a dark card would need.
+  /// Dark mode draws the exact light-mode colour, by explicit choice: one
+  /// accent means one colour, and any lighter shade reads as a different,
+  /// washed-out one.
+  ///
+  /// The cost, measured against the dark card (0xFF1E293B): teal 2.67, blue
+  /// 2.18, green 2.92, purple 2.06, orange 2.82, pink 2.42 -- all under the
+  /// 3.0 a UI element normally needs. Where the accent is drawn as foreground
+  /// on a dark card (calendar day cells, the timer, progress circles,
+  /// onboarding icons) it is correspondingly dim. Accent-coloured *text* on a
+  /// dark card is therefore off the table; that ink is textPrimary.
   final Color accentStrong;
 
   /// Pale fill for chips and tints, light mode only.
@@ -62,55 +67,55 @@ class AccentPalette {
     // Those are lightened because tone-500 fails on a dark card (blue 3.98,
     // purple 3.45, pink 4.15); teal clears it at 5.88 and needs no such help,
     // and lightening it anyway visibly changed the colour in dark mode.
-    accentStrong: Color(0xFF14B8A6),
+    accentStrong: Color(0xFF0F766E),
     accentSoft: Color(0xFF99F6E4),
     backgroundTint: Color(0xFFF4F6FC),
-    backgroundTintDark: Color(0xFF0F2131),
+    backgroundTintDark: Color(0xFF0F1D2E),
   );
 
   static const AccentPalette blue = AccentPalette(
     id: 'blue',
     accent: Color(0xFF1D4ED8),
-    accentStrong: Color(0xFF3B82F6),
+    accentStrong: Color(0xFF1D4ED8),
     accentSoft: Color(0xFFBFDBFE),
     backgroundTint: Color(0xFFF5F6FE),
-    backgroundTintDark: Color(0xFF121D36),
+    backgroundTintDark: Color(0xFF101A34),
   );
 
   static const AccentPalette green = AccentPalette(
     id: 'green',
     accent: Color(0xFF15803D),
-    accentStrong: Color(0xFF22C55E),
+    accentStrong: Color(0xFF15803D),
     accentSoft: Color(0xFFBBF7D0),
     backgroundTint: Color(0xFFF4F7FB),
-    backgroundTintDark: Color(0xFF10212D),
+    backgroundTintDark: Color(0xFF0F1D2B),
   );
 
   static const AccentPalette purple = AccentPalette(
     id: 'purple',
     accent: Color(0xFF6D28D9),
-    accentStrong: Color(0xFF8B5CF6),
+    accentStrong: Color(0xFF6D28D9),
     accentSoft: Color(0xFFE9D5FF),
     backgroundTint: Color(0xFFF6F5FE),
-    backgroundTintDark: Color(0xFF161B36),
+    backgroundTintDark: Color(0xFF151834),
   );
 
   static const AccentPalette orange = AccentPalette(
     id: 'orange',
     accent: Color(0xFFC2410C),
-    accentStrong: Color(0xFFF97316),
+    accentStrong: Color(0xFFC2410C),
     accentSoft: Color(0xFFFED7AA),
     backgroundTint: Color(0xFFF8F5FA),
-    backgroundTintDark: Color(0xFF1D1D29),
+    backgroundTintDark: Color(0xFF1A1A28),
   );
 
   static const AccentPalette pink = AccentPalette(
     id: 'pink',
     accent: Color(0xFFBE185D),
-    accentStrong: Color(0xFFEC4899),
+    accentStrong: Color(0xFFBE185D),
     accentSoft: Color(0xFFFBCFE8),
     backgroundTint: Color(0xFFF8F4FC),
-    backgroundTintDark: Color(0xFF1C1A31),
+    backgroundTintDark: Color(0xFF1A172D),
   );
 
   /// Every palette, in the order they are stored and shown.

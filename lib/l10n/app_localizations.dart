@@ -2079,6 +2079,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading ad...'**
   String get premiumDialogAdLoading;
+
+  /// Shown once after a freeze automatically rescued the streak
+  ///
+  /// In en, this message translates to:
+  /// **'A streak freeze covered your missed day. {count} left.'**
+  String streakFreezeUsed(int count);
+
+  /// Same, when more than one day was covered at once
+  ///
+  /// In en, this message translates to:
+  /// **'Streak freezes covered {days} missed days. {count} left.'**
+  String streakFreezeUsedPlural(int days, int count);
+
+  /// Headline of the dialog shown when the study streak grows
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Day one} other{{days} days in a row}}'**
+  String streakCelebrationTitle(int days);
+
+  /// Supporting line under the streak celebration headline
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{You studied today. Come back tomorrow to start a streak.} other{Every session counts. Keep it going tomorrow.}}'**
+  String streakCelebrationBody(int days);
+
+  /// Dismiss button on the streak celebration dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Nice'**
+  String get streakCelebrationButton;
+
+  /// Headline of the dialog shown when a freeze covered a missed day
+  ///
+  /// In en, this message translates to:
+  /// **'Streak saved'**
+  String get streakFreezeTitle;
 }
 
 class _AppLocalizationsDelegate

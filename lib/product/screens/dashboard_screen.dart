@@ -48,6 +48,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final startOfWeek = CalendarHelpers.getStartOfWeek(now);
+    final frozen = SettingsService.frozenDays.toSet();
 
     Map<int, DayStatus> weekData = {};
 
@@ -71,6 +72,10 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
 
       if (allCompletedOnTime) {
         weekData[weekday] = DayStatus.completed;
+      } else if (hasMissed && frozen.contains(date)) {
+        // Checked before `missed`: a freeze was spent here, and showing the
+        // day as missed would contradict the streak that visibly carried on.
+        weekData[weekday] = DayStatus.frozen;
       } else if (hasMissed) {
         weekData[weekday] = DayStatus.missed;
       } else if (isPastDay) {
@@ -108,6 +113,7 @@ class DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   int _getStudyStreak() => StreakService.calculateStreak(
+        frozenDays: SettingsService.frozenDays.toSet(),
         sessions: _sessionRepo.getAllSessions(),
         now: DateTime.now(),
       );

@@ -75,31 +75,46 @@ void main() {
         );
       });
 
-      test('${palette.id}: large accent text works on either card', () {
-        // The 72px timer readout is large text, so the bar is 3.0 rather than
-        // 4.5 and the accent holds in both modes without swapping.
-        for (final base in [AppTheme.light, AppTheme.dark]) {
-          final themed = base.withAccent(palette);
-          expect(
-            contrast(themed.accent, themed.card),
-            greaterThanOrEqualTo(3.0),
-            reason: '${palette.id} fails even large text on a '
-                '${base.isDark ? 'dark' : 'light'} card',
-          );
-        }
+      test('${palette.id}: large accent text works on a light card', () {
+        // The 72px timer readout is large text, so the bar is 3.0 rather
+        // than 4.5.
+        //
+        // Light mode only. This used to cover both, on the premise that the
+        // accent held in either mode; dark mode now reuses the light-mode
+        // colour outright and lands at 2.67 or below, so that half of the
+        // guarantee is gone by choice. See the exemption test below.
+        expect(
+          contrast(
+            AppTheme.light.withAccent(palette).accent,
+            AppTheme.light.card,
+          ),
+          greaterThanOrEqualTo(3.0),
+          reason: '${palette.id} fails even large text on a light card',
+        );
       });
 
-      test('${palette.id}: the strong accent on a dark card', () {
-        // 3.0, not 4.5: these are the normal mid-tones, kept because the
-        // lighter shades read as a washed-out, different colour in dark mode.
-        // That holds the UI-element threshold (fills, icons, borders) but not
-        // the text one -- blue lands at 3.98, purple 3.45, pink 4.15. Putting
-        // accent-coloured *text* on a dark card is therefore off the table;
-        // the ink there is textPrimary.
+      test('${palette.id}: dark mode draws the light-mode accent', () {
+        // Not a contrast check. Dark mode deliberately reuses the exact
+        // light-mode colour so one accent means one colour, which puts every
+        // palette under the 3.0 a UI element would normally need (teal 2.67,
+        // blue 2.18, green 2.92, purple 2.06, orange 2.82, pink 2.42).
+        //
+        // A threshold slid down to fit those numbers would assert nothing, so
+        // this asserts the actual decision instead: the two are identical.
+        // Change that and this fails, which is the point.
+        expect(palette.accentStrong, palette.accent);
+      });
+
+      test('${palette.id}: is documented as dim on a dark card', () {
+        // The readability requirement has not gone away, it has been traded
+        // away here on purpose. This records the trade so nobody later reads
+        // the missing check as an oversight: the accent is not legible as
+        // foreground on a dark card, and text there uses textPrimary instead.
         expect(
           contrast(palette.accentStrong, AppTheme.dark.card),
-          greaterThanOrEqualTo(3.0),
-          reason: '${palette.id} is too dark to read on a dark card',
+          lessThan(3.0),
+          reason: '${palette.id} unexpectedly clears 3.0 -- if the palette '
+              'changed, revisit whether the exemption is still needed',
         );
       });
 
@@ -142,16 +157,19 @@ void main() {
       expect(themed.onAccent, AccentPalette.pink.onAccent);
     });
 
-    test('dark mode takes the lighter one as its foreground', () {
-      // The solid accent is too dark to read on a dark card, so dark mode
-      // swaps in the strong variant and flips the ink on top of it.
+    test('dark mode draws the light-mode accent unchanged', () {
+      // This once swapped in a lighter variant and checked the ink on it
+      // cleared 4.5. Both halves are gone: the variant is now the same colour,
+      // and pink against the dark ink measures 2.42. Dark mode keeping the
+      // exact light-mode colour is the deliberate replacement.
       final themed = AppTheme.dark.withAccent(AccentPalette.pink);
 
-      expect(themed.accent, AccentPalette.pink.accentStrong);
-      expect(
-        contrast(themed.accent, themed.onAccent),
-        greaterThanOrEqualTo(4.5),
-      );
+      expect(themed.accent, AccentPalette.pink.accent);
+      // White, not the 0xFF0F172A this used to assert. That dark ink suited a
+      // light mid-tone accent; on the solid light-mode accent it scores
+      // 2.51-3.56 across the palettes where white scores 5.02-7.10, and it
+      // showed up as black label text on the timer's Start button.
+      expect(themed.onAccent, const Color(0xFFFFFFFF));
     });
 
     test('it leaves the card and the ink alone', () {

@@ -9,6 +9,9 @@ import '../../widgets/home/deadline_card.dart';
 import '../../widgets/home/session_item.dart';
 
 class HomeTemplate extends StatelessWidget {
+  /// Current study streak, shown beside the month label.
+  final int streak;
+
   final DateTime selectedDate;
   final List<Goal> deadlines;
   final List<StudySession> sessions;
@@ -32,6 +35,7 @@ class HomeTemplate extends StatelessWidget {
     required this.onDeadlineTap,
     required this.onSessionTap,
     required this.isSessionCompleted,
+    this.streak = 0,
   });
 
   @override
@@ -46,6 +50,7 @@ class HomeTemplate extends StatelessWidget {
           child: DateSelector(
             selectedDate: selectedDate,
             onDateSelected: onDateSelected,
+            streak: streak,
           ),
         ),
         if (!hasAnyItems)

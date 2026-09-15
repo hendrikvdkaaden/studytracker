@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/day_status.dart';
 import '../../../theme/app_theme_extension.dart';
+import '../../common/streak_badge.dart';
 import '../../../utils/l10n_extension.dart';
 import 'day_status_circle.dart';
 
@@ -19,7 +20,13 @@ class StudyConsistencyCard extends StatelessWidget {
   static const _dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   bool get _hasAnySessions => weeklyConsistency.values.any(
-        (s) => s == DayStatus.completed || s == DayStatus.missed,
+        (s) =>
+            s == DayStatus.completed ||
+            s == DayStatus.missed ||
+            // A frozen day had a session too. Leaving it out made a week
+            // rescued entirely by freezes report "no sessions" directly above
+            // its own snowflakes.
+            s == DayStatus.frozen,
       );
 
   int get _completedDaysCount =>
@@ -93,17 +100,9 @@ class StudyConsistencyCard extends StatelessWidget {
                   ),
                   // In the header row rather than floating over the card, so
                   // it lines up with the title instead of approximately so.
-                  if (studyStreak >= 2) ...[
-                    const Text('🔥 ', style: TextStyle(fontSize: 15)),
-                    Text(
-                      '$studyStreak',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange.shade700,
-                      ),
-                    ),
-                  ],
+                  // Shared with the home screen so the two cannot drift on
+                  // threshold, colour or size. Hides itself at zero.
+                  StreakBadge(streak: studyStreak, size: 16),
                 ],
               ),
               const SizedBox(height: 12),

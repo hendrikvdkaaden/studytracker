@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/format_helpers.dart';
+import '../common/streak_badge.dart';
 
 class DateSelector extends StatefulWidget {
+  /// Current study streak, shown beside the month. 0 hides the badge.
+  final int streak;
+
   final DateTime selectedDate;
   final Function(DateTime) onDateSelected;
 
@@ -10,6 +14,7 @@ class DateSelector extends StatefulWidget {
     super.key,
     required this.selectedDate,
     required this.onDateSelected,
+    this.streak = 0,
   });
 
   @override
@@ -74,13 +79,25 @@ class _DateSelectorState extends State<DateSelector> {
         // leave the user guessing where they are.
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
-          child: Text(
-            FormatHelpers.formatWeekMonth(visibleWeek.first, visibleWeek.last),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: context.colors.textSecondary,
-            ),
+          child: Row(
+            children: [
+              Text(
+                FormatHelpers.formatWeekMonth(
+                  visibleWeek.first,
+                  visibleWeek.last,
+                ),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+              const Spacer(),
+              // The month changes as the user scrolls weeks and the streak
+              // does not, so these two are unrelated -- they share the line
+              // only because it is the one piece of empty space at the top.
+              StreakBadge(streak: widget.streak),
+            ],
           ),
         ),
         SizedBox(

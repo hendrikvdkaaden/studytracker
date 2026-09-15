@@ -4,6 +4,8 @@ import '../../models/goal.dart';
 import '../../models/study_session.dart';
 import '../../providers/app_providers.dart';
 import '../../services/goal_repository.dart';
+import '../../services/settings_service.dart';
+import '../../services/streak_service.dart';
 import '../../services/study_session_repository.dart';
 import '../../theme/app_theme_extension.dart';
 import '../templates/home_template.dart';
@@ -138,6 +140,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       body: SafeArea(
         child: HomeTemplate(
+          streak: StreakService.calculateStreak(
+            sessions: _sessionRepo.getAllSessions(),
+            now: DateTime.now(),
+            frozenDays: SettingsService.frozenDays.toSet(),
+          ),
           selectedDate: _selectedDate,
           deadlines: deadlines,
           sessions: allSessions,

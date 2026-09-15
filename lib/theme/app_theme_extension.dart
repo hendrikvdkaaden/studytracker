@@ -103,12 +103,13 @@ class AppTheme extends ThemeExtension<AppTheme> {
     fieldBackground: Color(0xFF334155),
     modalBackground: Color(0xFF1E293B),
     sectionBackground: Color(0xFF1E293B),
-    // Dark mode takes the lighter accent as its foreground: the light-mode
-    // accent is too dark to read on these surfaces.
-    accent: Color(0xFF14B8A6),
-    accentStrong: Color(0xFF14B8A6),
+    // Dark mode draws the light-mode accent unchanged, by explicit choice:
+    // one accent means one colour. See AccentPalette.accentStrong for what
+    // that costs in contrast on dark cards.
+    accent: Color(0xFF0F766E),
+    accentStrong: Color(0xFF0F766E),
     accentSoft: Color(0xFF99F6E4),
-    onAccent: Color(0xFF0F172A),
+    onAccent: Color(0xFFFFFFFF),
     dragHandle: Color(0xFF475569),
     isDark: true,
   );
@@ -127,7 +128,11 @@ class AppTheme extends ThemeExtension<AppTheme> {
       accent: isDark ? palette.accentStrong : palette.accent,
       accentStrong: palette.accentStrong,
       accentSoft: palette.accentSoft,
-      onAccent: isDark ? const Color(0xFF0F172A) : palette.onAccent,
+      // White in both modes. The dark ink here made sense while dark mode
+      // drew a light mid-tone accent; now that it draws the light-mode accent
+      // unchanged, that ink sits on a dark saturated fill and scores 2.51-3.56
+      // across the palettes, where white scores 5.02-7.10.
+      onAccent: palette.onAccent,
       background:
           isDark ? palette.backgroundTintDark : palette.backgroundTint,
     );

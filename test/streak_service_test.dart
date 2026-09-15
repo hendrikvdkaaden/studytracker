@@ -141,4 +141,90 @@ void main() {
       expect(_streak([_session(daysAgo: 0, completed: true)]), 1);
     });
   });
+
+  group('frozen days', () {
+    test('a frozen day bridges instead of breaking the streak', () {
+      // Missed two days ago, but a freeze was spent there: the days on either
+      // side still join up.
+      final sessions = [
+        _session(daysAgo: 0, completed: true),
+        _session(daysAgo: 1, completed: true),
+        _session(daysAgo: 2, completed: false),
+        _session(daysAgo: 3, completed: true),
+      ];
+
+      expect(
+        StreakService.calculateStreak(
+          sessions: sessions,
+          now: _now,
+          frozenDays: {_daysAgo(2)},
+        ),
+        3,
+        reason: 'the three studied days count; the frozen one only bridges',
+      );
+    });
+
+    test('a frozen day does not extend the streak on its own', () {
+      // Nothing was studied; a freeze must not manufacture a streak.
+      final sessions = [_session(daysAgo: 1, completed: false)];
+
+      expect(
+        StreakService.calculateStreak(
+          sessions: sessions,
+          now: _now,
+          frozenDays: {_daysAgo(1)},
+        ),
+        0,
+      );
+    });
+
+    test('an unfrozen missed day still breaks it', () {
+      final sessions = [
+        _session(daysAgo: 0, completed: true),
+        _session(daysAgo: 1, completed: false),
+        _session(daysAgo: 2, completed: true),
+      ];
+
+      expect(
+        StreakService.calculateStreak(
+          sessions: sessions,
+          now: _now,
+          frozenDays: {_daysAgo(5)},
+        ),
+        1,
+        reason: 'freezing an unrelated day must not rescue this one',
+      );
+    });
+
+    test('two missed days with only one frozen still break the streak', () {
+      final sessions = [
+        _session(daysAgo: 1, completed: false),
+        _session(daysAgo: 2, completed: false),
+        _session(daysAgo: 3, completed: true),
+      ];
+
+      expect(
+        StreakService.calculateStreak(
+          sessions: sessions,
+          now: _now,
+          frozenDays: {_daysAgo(1)},
+        ),
+        0,
+        reason: 'the second gap is not covered, so the chain ends there',
+      );
+    });
+
+    test('omitting frozenDays keeps the old behaviour', () {
+      // The default must be inert, or every existing caller changes meaning.
+      final sessions = [
+        _session(daysAgo: 1, completed: false),
+        _session(daysAgo: 2, completed: true),
+      ];
+
+      expect(
+        StreakService.calculateStreak(sessions: sessions, now: _now),
+        0,
+      );
+    });
+  });
 }

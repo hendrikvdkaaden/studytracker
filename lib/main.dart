@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'product/screens/splash_screen.dart';
 import 'services/session_navigator.dart';
+import 'services/streak_freeze_service.dart';
 import 'theme/accent_palette.dart';
 import 'theme/app_colors.dart';
 import 'theme/app_theme_extension.dart';
@@ -12,6 +13,24 @@ final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.syste
 /// Index into [AccentPalette.all]. Restored from storage on the splash screen,
 /// which is the earliest point Hive is open.
 final ValueNotifier<int> accentPaletteNotifier = ValueNotifier(0);
+
+/// A freeze spent during startup, waiting to be shown once.
+///
+/// The check runs on the splash screen, before any screen the user can be told
+/// on, so the result is parked here and cleared by whoever displays it. Null
+/// means there is nothing to report -- an automatic rescue the user is never
+/// told about teaches them nothing about the rule.
+final ValueNotifier<FreezeOutcome?> pendingFreezeOutcome = ValueNotifier(null);
+
+/// A streak increase waiting to be celebrated, or null.
+///
+/// Set by the timer screen the moment a session is saved, drained by HomePage
+/// on the next frame. Routed through a notifier rather than shown on the timer
+/// itself because the celebration belongs after that screen closes -- and
+/// because one of the four ways into the timer (a notification tap, via
+/// SessionNavigator) has no screen underneath listening for a pop result.
+/// HomePage is always below, so it sees every case.
+final ValueNotifier<int?> pendingStreakCelebration = ValueNotifier(null);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -743,11 +743,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return Container(
-          decoration: BoxDecoration(
-            color: ctx.colors.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
+        // Material, not a plain Container: the tiles below paint their ink
+        // splashes on the nearest Material ancestor, so a bare decoration
+        // here would sit on top of them and swallow the tap feedback.
+        return Material(
+          color: ctx.colors.card,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          clipBehavior: Clip.antiAlias,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

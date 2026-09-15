@@ -904,6 +904,90 @@ abstract class AppLocalizations {
   /// **'NOTIFICATIONS'**
   String get profileSectionNotifications;
 
+  /// No description provided for @profileNotificationsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get profileNotificationsLabel;
+
+  /// No description provided for @notificationsEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on reminders'**
+  String get notificationsEnableTitle;
+
+  /// No description provided for @notificationsEnableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadly will remind you before a study session starts and before a deadline arrives.'**
+  String get notificationsEnableMessage;
+
+  /// No description provided for @notificationsEnableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get notificationsEnableConfirm;
+
+  /// No description provided for @notificationsDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off'**
+  String get notificationsDeniedTitle;
+
+  /// No description provided for @notificationsDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications for Deadly in your device settings to get reminders.'**
+  String get notificationsDeniedMessage;
+
+  /// No description provided for @notificationsDeniedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get notificationsDeniedConfirm;
+
+  /// No description provided for @notificationsDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off reminders?'**
+  String get notificationsDisableTitle;
+
+  /// No description provided for @notificationsDisableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You will stop getting reminders, and any that are already scheduled are cancelled.'**
+  String get notificationsDisableMessage;
+
+  /// No description provided for @notificationsDisableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get notificationsDisableConfirm;
+
+  /// No description provided for @notificationsPreviewSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Study session coming up'**
+  String get notificationsPreviewSessionTitle;
+
+  /// No description provided for @notificationsPreviewSessionDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to study \"Chapter 7\" - 1h 30m'**
+  String get notificationsPreviewSessionDetail;
+
+  /// No description provided for @notificationsPreviewDeadlineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline tomorrow'**
+  String get notificationsPreviewDeadlineTitle;
+
+  /// No description provided for @notificationsPreviewDeadlineDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Biology report\" is due tomorrow!'**
+  String get notificationsPreviewDeadlineDetail;
+
   /// No description provided for @profileSectionAppearance.
   ///
   /// In en, this message translates to:
@@ -1510,41 +1594,89 @@ abstract class AppLocalizations {
   /// **'Add a subject'**
   String get onboardingAddSubject;
 
-  /// No description provided for @onboardingStep3Title.
+  /// No description provided for @onboardingStep4Title.
   ///
   /// In en, this message translates to:
   /// **'Set up reminders'**
-  String get onboardingStep3Title;
-
-  /// No description provided for @onboardingStep3Subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Get notified before your study sessions and deadlines'**
-  String get onboardingStep3Subtitle;
-
-  /// No description provided for @onboardingStep3Note.
-  ///
-  /// In en, this message translates to:
-  /// **'You can change this later in your Profile.'**
-  String get onboardingStep3Note;
-
-  /// No description provided for @onboardingStep4TitleLine1.
-  ///
-  /// In en, this message translates to:
-  /// **'Add to your'**
-  String get onboardingStep4TitleLine1;
-
-  /// No description provided for @onboardingStep4TitleLine2.
-  ///
-  /// In en, this message translates to:
-  /// **'calendar'**
-  String get onboardingStep4TitleLine2;
+  String get onboardingStep4Title;
 
   /// No description provided for @onboardingStep4Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'See your plans in your own calendar, and let Deadly work around the times you are busy'**
+  /// **'Get notified before your study sessions and deadlines'**
   String get onboardingStep4Subtitle;
+
+  /// No description provided for @onboardingStep4Note.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this later in your Profile.'**
+  String get onboardingStep4Note;
+
+  /// No description provided for @onboardingStep3TitleLine1.
+  ///
+  /// In en, this message translates to:
+  /// **'Never miss a'**
+  String get onboardingStep3TitleLine1;
+
+  /// No description provided for @onboardingStep3TitleLine2.
+  ///
+  /// In en, this message translates to:
+  /// **'deadline'**
+  String get onboardingStep3TitleLine2;
+
+  /// No description provided for @onboardingStep3Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a nudge before your study sessions and before a deadline arrives'**
+  String get onboardingStep3Subtitle;
+
+  /// No description provided for @onboardingNotificationsEnableButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingNotificationsEnableButton;
+
+  /// No description provided for @onboardingNotificationsEnabling.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabling...'**
+  String get onboardingNotificationsEnabling;
+
+  /// No description provided for @onboardingNotificationsDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications. You can turn these on in your Profile later.'**
+  String get onboardingNotificationsDenied;
+
+  /// No description provided for @onboardingNotificationsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get onboardingNotificationsEnabled;
+
+  /// No description provided for @onboardingStep3Note.
+  ///
+  /// In en, this message translates to:
+  /// **'Only reminders for what you planned yourself. You can change this later in your Profile.'**
+  String get onboardingStep3Note;
+
+  /// No description provided for @onboardingStep5TitleLine1.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to your'**
+  String get onboardingStep5TitleLine1;
+
+  /// No description provided for @onboardingStep5TitleLine2.
+  ///
+  /// In en, this message translates to:
+  /// **'calendar'**
+  String get onboardingStep5TitleLine2;
+
+  /// No description provided for @onboardingStep5Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See your plans in your own calendar, and let Deadly work around the times you are busy'**
+  String get onboardingStep5Subtitle;
 
   /// No description provided for @onboardingCalendarConnectButton.
   ///
@@ -1570,11 +1702,11 @@ abstract class AppLocalizations {
   /// **'Connected'**
   String get onboardingCalendarConnected;
 
-  /// No description provided for @onboardingStep4Note.
+  /// No description provided for @onboardingStep5Note.
   ///
   /// In en, this message translates to:
   /// **'Deadly writes to its own calendar, never to yours. You can change this later in your Profile.'**
-  String get onboardingStep4Note;
+  String get onboardingStep5Note;
 
   /// No description provided for @calendarPromptTitle.
   ///

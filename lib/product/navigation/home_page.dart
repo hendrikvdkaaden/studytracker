@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../services/calendar_sync_service.dart';
-import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../../services/update_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,11 +31,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // The calendar offer waits for the notification prompt to finish, so
-    // Android never stacks two permission dialogs on first launch.
+    // Notification permission is asked for during onboarding now, where it
+    // comes with an explanation. Requesting it here would put a bare system
+    // dialog on a screen that says nothing about why.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await NotificationService.requestPermission();
-      if (!mounted) return;
       await _maybeOfferCalendarSync();
       if (!mounted) return;
       await _maybeOfferUpdate();

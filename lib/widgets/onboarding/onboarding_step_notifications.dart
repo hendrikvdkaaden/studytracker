@@ -44,7 +44,7 @@ class OnboardingStepNotifications extends StatelessWidget {
             const SizedBox(height: 16),
             const OnboardingStepHeader(
               icon: Icons.notifications_outlined,
-              step: 3,
+              step: 4,
             ),
             const SizedBox(height: 20),
             RichText(
@@ -70,7 +70,7 @@ class OnboardingStepNotifications extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              l10n.onboardingStep3Subtitle,
+              l10n.onboardingStep4Subtitle,
               style: const TextStyle(
                 color: AppColors.textTertiary,
                 fontSize: 14,
@@ -116,7 +116,7 @@ class OnboardingStepNotifications extends StatelessWidget {
             const SizedBox(height: 16),
             Center(
               child: Text(
-                l10n.onboardingStep3Note,
+                l10n.onboardingStep4Note,
                 style: const TextStyle(
                   color: AppColors.textTertiary,
                   fontSize: 12,

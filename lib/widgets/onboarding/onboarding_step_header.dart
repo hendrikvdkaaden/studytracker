@@ -11,7 +11,7 @@ class OnboardingStepHeader extends StatelessWidget {
     super.key,
     required this.icon,
     required this.step,
-    this.totalSteps = 4,
+    this.totalSteps = 5,
   });
 
   @override

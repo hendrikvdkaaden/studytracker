@@ -479,6 +479,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSectionNotifications => 'NOTIFICATIONS';
 
   @override
+  String get profileNotificationsLabel => 'Reminders';
+
+  @override
+  String get notificationsEnableTitle => 'Turn on reminders';
+
+  @override
+  String get notificationsEnableMessage =>
+      'Deadly will remind you before a study session starts and before a deadline arrives.';
+
+  @override
+  String get notificationsEnableConfirm => 'Continue';
+
+  @override
+  String get notificationsDeniedTitle => 'Notifications are off';
+
+  @override
+  String get notificationsDeniedMessage =>
+      'Allow notifications for Deadly in your device settings to get reminders.';
+
+  @override
+  String get notificationsDeniedConfirm => 'Open settings';
+
+  @override
+  String get notificationsDisableTitle => 'Turn off reminders?';
+
+  @override
+  String get notificationsDisableMessage =>
+      'You will stop getting reminders, and any that are already scheduled are cancelled.';
+
+  @override
+  String get notificationsDisableConfirm => 'Turn off';
+
+  @override
+  String get notificationsPreviewSessionTitle => 'Study session coming up';
+
+  @override
+  String get notificationsPreviewSessionDetail =>
+      'Time to study \"Chapter 7\" - 1h 30m';
+
+  @override
+  String get notificationsPreviewDeadlineTitle => 'Deadline tomorrow';
+
+  @override
+  String get notificationsPreviewDeadlineDetail =>
+      '\"Biology report\" is due tomorrow!';
+
+  @override
   String get profileSectionAppearance => 'APPEARANCE';
 
   @override
@@ -834,24 +881,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingAddSubject => 'Add a subject';
 
   @override
-  String get onboardingStep3Title => 'Set up reminders';
-
-  @override
-  String get onboardingStep3Subtitle =>
-      'Get notified before your study sessions and deadlines';
-
-  @override
-  String get onboardingStep3Note =>
-      'You can change this later in your Profile.';
-
-  @override
-  String get onboardingStep4TitleLine1 => 'Add to your';
-
-  @override
-  String get onboardingStep4TitleLine2 => 'calendar';
+  String get onboardingStep4Title => 'Set up reminders';
 
   @override
   String get onboardingStep4Subtitle =>
+      'Get notified before your study sessions and deadlines';
+
+  @override
+  String get onboardingStep4Note =>
+      'You can change this later in your Profile.';
+
+  @override
+  String get onboardingStep3TitleLine1 => 'Never miss a';
+
+  @override
+  String get onboardingStep3TitleLine2 => 'deadline';
+
+  @override
+  String get onboardingStep3Subtitle =>
+      'Get a nudge before your study sessions and before a deadline arrives';
+
+  @override
+  String get onboardingNotificationsEnableButton => 'Continue';
+
+  @override
+  String get onboardingNotificationsEnabling => 'Enabling...';
+
+  @override
+  String get onboardingNotificationsDenied =>
+      'No notifications. You can turn these on in your Profile later.';
+
+  @override
+  String get onboardingNotificationsEnabled => 'Enabled';
+
+  @override
+  String get onboardingStep3Note =>
+      'Only reminders for what you planned yourself. You can change this later in your Profile.';
+
+  @override
+  String get onboardingStep5TitleLine1 => 'Add to your';
+
+  @override
+  String get onboardingStep5TitleLine2 => 'calendar';
+
+  @override
+  String get onboardingStep5Subtitle =>
       'See your plans in your own calendar, and let Deadly work around the times you are busy';
 
   @override
@@ -868,7 +942,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingCalendarConnected => 'Connected';
 
   @override
-  String get onboardingStep4Note =>
+  String get onboardingStep5Note =>
       'Deadly writes to its own calendar, never to yours. You can change this later in your Profile.';
 
   @override

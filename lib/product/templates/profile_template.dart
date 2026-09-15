@@ -9,6 +9,9 @@ import '../../widgets/profile/subjects_section.dart';
 
 class ProfileTemplate extends StatelessWidget {
   final String userName;
+  final bool notificationsEnabled;
+  final bool notificationsBusy;
+  final VoidCallback onNotificationsTap;
   final int sessionReminderMinutes;
   final int deadlineReminderDays;
   final int themeModeIndex;
@@ -35,6 +38,9 @@ class ProfileTemplate extends StatelessWidget {
   const ProfileTemplate({
     super.key,
     required this.userName,
+    required this.notificationsEnabled,
+    required this.notificationsBusy,
+    required this.onNotificationsTap,
     required this.sessionReminderMinutes,
     required this.deadlineReminderDays,
     required this.themeModeIndex,
@@ -109,23 +115,39 @@ class ProfileTemplate extends StatelessWidget {
         _buildGroupCard(
           context,
           children: [
-            _buildSettingsRow(
+            _buildSwitchRow(
               context,
-              icon: Icons.notifications_outlined,
-              iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
-              label: l10n.profileSessionReminderLabel,
-              value: l10n.profileSessionReminderFormat(sessionReminderMinutes),
-              onTap: onSessionReminderTap,
+              icon: Icons.notifications_active_outlined,
+              iconColor: AppColors.iconOrange,
+              label: l10n.profileNotificationsLabel,
+              value: notificationsEnabled,
+              onTap: onNotificationsTap,
+              busy: notificationsBusy,
             ),
-            _buildDivider(context),
-            _buildSettingsRow(
-              context,
-              icon: Icons.event_note_outlined,
-              iconColor: AppColors.iconPurple,
-              label: l10n.profileDeadlineReminderLabel,
-              value: l10n.profileDeadlineReminderFormat(deadlineReminderDays),
-              onTap: onDeadlineReminderTap,
-            ),
+            // The timings configure reminders that cannot fire while this is
+            // off, so they go with it -- the same reasoning that hides the
+            // calendar planning row while sync is off.
+            if (notificationsEnabled) ...[
+              _buildDivider(context),
+              _buildSettingsRow(
+                context,
+                icon: Icons.notifications_outlined,
+                iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                label: l10n.profileSessionReminderLabel,
+                value:
+                    l10n.profileSessionReminderFormat(sessionReminderMinutes),
+                onTap: onSessionReminderTap,
+              ),
+              _buildDivider(context),
+              _buildSettingsRow(
+                context,
+                icon: Icons.event_note_outlined,
+                iconColor: AppColors.iconPurple,
+                label: l10n.profileDeadlineReminderLabel,
+                value: l10n.profileDeadlineReminderFormat(deadlineReminderDays),
+                onTap: onDeadlineReminderTap,
+              ),
+            ],
           ],
         ),
         const SizedBox(height: 24),

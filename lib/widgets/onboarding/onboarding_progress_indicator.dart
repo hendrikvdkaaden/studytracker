@@ -13,7 +13,7 @@ class OnboardingProgressIndicator extends StatelessWidget {
   const OnboardingProgressIndicator({
     super.key,
     required this.step,
-    this.totalSteps = 4,
+    this.totalSteps = 5,
   });
 
   @override

@@ -32,6 +32,8 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     required bool syncEnabled,
+    bool notificationsEnabled = false,
+    VoidCallback? onNotificationsTap,
     bool planAround = false,
     bool premium = true,
     VoidCallback? onSyncTap,
@@ -51,6 +53,9 @@ void main() {
         home: Scaffold(
           body: ProfileTemplate(
             userName: 'Hendrik',
+            notificationsEnabled: notificationsEnabled,
+            notificationsBusy: false,
+            onNotificationsTap: onNotificationsTap ?? () {},
             sessionReminderMinutes: 15,
             deadlineReminderDays: 1,
             themeModeIndex: 0,
@@ -87,6 +92,45 @@ void main() {
 
   bool switchValue(WidgetTester tester, String label) =>
       tester.widget<AppSwitch>(switchIn(label)).value;
+
+  testWidgets('reminders is a switch reflecting its state', (tester) async {
+    await pump(tester, syncEnabled: false, notificationsEnabled: true);
+
+    expect(switchValue(tester, 'Reminders'), isTrue);
+  });
+
+  testWidgets('flipping reminders runs the same handler as the row',
+      (tester) async {
+    // The handler shows the confirmation, so the switch must not bypass it by
+    // writing the setting itself.
+    var taps = 0;
+    await pump(tester, syncEnabled: false, onNotificationsTap: () => taps++);
+
+    await tester.tap(switchIn('Reminders'));
+    await tester.pump();
+
+    expect(taps, 1);
+  });
+
+  testWidgets('the reminder timings are hidden while reminders are off',
+      (tester) async {
+    await pump(tester, syncEnabled: false, notificationsEnabled: false);
+
+    expect(
+      find.text('Session reminder'),
+      findsNothing,
+      reason: 'they configure reminders that cannot fire',
+    );
+    expect(find.text('Deadline reminder'), findsNothing);
+  });
+
+  testWidgets('the reminder timings appear once reminders are on',
+      (tester) async {
+    await pump(tester, syncEnabled: false, notificationsEnabled: true);
+
+    expect(find.text('Session reminder'), findsOneWidget);
+    expect(find.text('Deadline reminder'), findsOneWidget);
+  });
 
   testWidgets('calendar sync is a switch reflecting its state',
       (tester) async {

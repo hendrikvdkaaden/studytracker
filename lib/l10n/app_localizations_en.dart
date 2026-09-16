@@ -1195,7 +1195,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get streakCelebrationButton => 'Nice';
+  String get streakCelebrationButton => 'Let\'s go';
 
   @override
   String get streakFreezeTitle => 'Streak saved';

@@ -2107,7 +2107,7 @@ abstract class AppLocalizations {
   /// Dismiss button on the streak celebration dialog
   ///
   /// In en, this message translates to:
-  /// **'Nice'**
+  /// **'Let\'s go'**
   String get streakCelebrationButton;
 
   /// Headline of the dialog shown when a freeze covered a missed day

@@ -144,7 +144,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildIcon(),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           l10n.paywallTitle,
           style: TextStyle(
@@ -165,10 +165,18 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         _buildFeatureList(l10n),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         if (monthly != null || annual != null) ...[
+          if (monthly != null)
+            _buildPackageCard(
+              package: monthly,
+              label: l10n.paywallMonthlyLabel,
+              subtitle: l10n.paywallMonthlySubtitle,
+              period: l10n.paywallPeriodMonth,
+            ),
+          const SizedBox(height: 12),
           if (annual != null)
             _buildPackageCard(
               package: annual,
@@ -178,26 +186,20 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
               valueBadge: l10n.paywallYearlyValueBadge,
               period: l10n.paywallPeriodYear,
             ),
-          const SizedBox(height: 12),
-          if (monthly != null)
-            _buildPackageCard(
-              package: monthly,
-              label: l10n.paywallMonthlyLabel,
-              subtitle: l10n.paywallMonthlySubtitle,
-              period: l10n.paywallPeriodMonth,
-            ),
         ] else
           Text(
             l10n.paywallNoOfferings,
             style: TextStyle(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildIcon() => const PremiumIcon();
+  /// 64 rather than the default 96: the sheet has to fit a 667pt screen
+  /// without scrolling, and the icon is the cheapest 32pt to give back.
+  Widget _buildIcon() => const PremiumIcon(size: 64);
 
   /// Derives the per-month price from the store's own annual price so the
   /// figure is correct in every storefront and currency. Falls back to a
@@ -242,7 +244,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
       children: features
           .map(
             (f) => Padding(
-              padding: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.only(bottom: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -291,7 +293,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: context.colors.card,
           borderRadius: BorderRadius.circular(16),

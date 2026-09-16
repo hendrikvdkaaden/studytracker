@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import '../../services/settings_service.dart';
@@ -51,9 +50,7 @@ class OnboardingStepSubjects extends StatelessWidget {
                   TextSpan(
                     text: 'subjects',
                     style: TextStyle(
-                      color: context.colors.isDark
-                          ? context.colors.accentSoft
-                          : context.colors.accent,
+                      color: context.colors.accentOnSurface,
                     ),
                   ),
                 ],
@@ -62,8 +59,8 @@ class OnboardingStepSubjects extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               l10n.onboardingStep2Subtitle,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
@@ -128,8 +125,8 @@ class OnboardingStepSubjects extends StatelessWidget {
             Center(
               child: Text(
                 l10n.onboardingStep2Note,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
@@ -149,11 +146,10 @@ class OnboardingStepSubjects extends StatelessWidget {
   }
 
   Widget _buildSubjectChip(BuildContext context, SubjectData subject) {
-    final isDark = context.colors.isDark;
     // The whole pill removes the subject, not just the small cross: the icon
     // alone was a tap target barely wider than a fingertip.
     return Material(
-      color: isDark ? const Color(0xFF2D3449) : AppColors.lightChipBg,
+      color: context.colors.chipBackground,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: () => onRemoveSubject(subject),
@@ -162,9 +158,7 @@ class OnboardingStepSubjects extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(
-              color: isDark ? AppColors.darkBorder : AppColors.lightChipBorder,
-            ),
+            border: Border.all(color: context.colors.chipBorder),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -193,10 +187,10 @@ class OnboardingStepSubjects extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(
+              Icon(
                 Icons.close,
                 size: 16,
-                color: AppColors.textTertiary,
+                color: context.colors.textTertiary,
               ),
             ],
           ),

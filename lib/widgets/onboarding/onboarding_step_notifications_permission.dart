@@ -48,7 +48,6 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = context.colors.isDark;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -76,9 +75,7 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
                   TextSpan(
                     text: l10n.onboardingStep3TitleLine2,
                     style: TextStyle(
-                      color: isDark
-                          ? context.colors.accentSoft
-                          : context.colors.accent,
+                      color: context.colors.accentOnSurface,
                     ),
                   ),
                 ],
@@ -87,8 +84,8 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               l10n.onboardingStep3Subtitle,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
@@ -98,8 +95,8 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
             Center(
               child: Text(
                 l10n.onboardingStep3Note,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
@@ -184,8 +181,8 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
                 detail,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
               ),
@@ -240,8 +237,8 @@ class OnboardingStepNotificationsPermission extends StatelessWidget {
           Text(
             l10n.onboardingNotificationsDenied,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textTertiary,
+            style: TextStyle(
+              color: context.colors.textTertiary,
               fontSize: 13,
             ),
           ),

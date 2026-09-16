@@ -173,9 +173,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           const SizedBox(height: 12),
           Divider(
             height: 1,
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.grey[100],
+            color: context.colors.controlSurface,
           ),
           // Scrollable content
           Expanded(
@@ -223,16 +221,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                           decoration: BoxDecoration(
                             color: selected
                                 ? context.colors.accent
-                                : (context.colors.isDark
-                                    ? Colors.white.withValues(alpha: 0.06)
-                                    : Colors.white),
+                                : context.colors.optionSurface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: selected
                                   ? context.colors.accent
-                                  : (context.colors.isDark
-                                      ? Colors.white.withValues(alpha: 0.1)
-                                      : Colors.grey[200]!),
+                                  : context.colors.optionBorder,
                             ),
                             boxShadow: selected
                                 ? null
@@ -312,9 +306,7 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
           // Footer
           Divider(
             height: 1,
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.grey[100],
+            color: context.colors.controlSurface,
           ),
           if (_errorMessage != null)
             Padding(
@@ -486,16 +478,12 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                 decoration: BoxDecoration(
                   color: selected
                       ? context.colors.accent
-                      : (context.colors.isDark
-                          ? Colors.white.withValues(alpha: 0.06)
-                          : Colors.white),
+                      : context.colors.optionSurface,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
                         ? context.colors.accent
-                        : (context.colors.isDark
-                            ? Colors.white.withValues(alpha: 0.1)
-                            : Colors.grey[200]!),
+                        : context.colors.optionBorder,
                   ),
                 ),
                 child: Center(
@@ -561,14 +549,10 @@ class _AutoPlanWizardSheetState extends State<_AutoPlanWizardSheet> {
                       decoration: BoxDecoration(
                         color: active
                             ? context.colors.accent.withValues(alpha: 0.8)
-                            : (context.colors.isDark
-                                ? Colors.white.withValues(alpha: 0.08)
-                                : AppColors.lightBorder),
+                            : context.colors.controlSurface,
                         border: Border(
                           right: BorderSide(
-                            color: context.colors.isDark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.white.withValues(alpha: 0.6),
+                            color: context.colors.emptyFill,
                             width: 1,
                           ),
                         ),

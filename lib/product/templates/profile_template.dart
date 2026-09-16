@@ -557,8 +557,6 @@ class ProfileTemplate extends StatelessWidget {
   /// Upgrade card, only built for non-subscribers — subscribers see the
   /// Premium pill in the header instead.
   Widget _buildPremiumCard(BuildContext context) {
-    final isDark = context.colors.isDark;
-
     // Non-premium: gradient card met Upgrade knop
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -567,22 +565,14 @@ class ProfileTemplate extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           decoration: BoxDecoration(
-            gradient: isDark
-                ? const LinearGradient(
-                    colors: [Color(0xFF1E2A4A), Color(0xFF1A1F3A)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : const LinearGradient(
-                    colors: [Color(0xFFEFF6FF), Color(0xFFE0E7FF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+            gradient: LinearGradient(
+              colors: context.colors.premiumGradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isDark
-                  ? const Color(0xFF3B82F6).withValues(alpha: 0.10)
-                  : const Color(0xFF3B82F6).withValues(alpha: 0.20),
+              color: context.colors.premiumBorder,
             ),
           ),
           child: Row(
@@ -601,9 +591,7 @@ class ProfileTemplate extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1.1,
-                        color: isDark
-                            ? const Color(0xFFBFD7FF)
-                            : const Color(0xFF1E3A8A),
+                        color: context.colors.premiumLabel,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -613,9 +601,7 @@ class ProfileTemplate extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         height: 1.2,
-                        color: isDark
-                            ? const Color(0xFFDDE9FF)
-                            : const Color(0xFF1D4ED8),
+                        color: context.colors.premiumTitle,
                       ),
                     ),
                   ],

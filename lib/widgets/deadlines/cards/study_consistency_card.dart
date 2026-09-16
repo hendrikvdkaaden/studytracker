@@ -60,9 +60,7 @@ class StudyConsistencyCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: context.colors.isDark
-            ? const Color(0xFF2b2930)
-            : const Color(0xFFF3EDF7),
+        color: context.colors.statCardBackground,
         borderRadius: BorderRadius.circular(32),
         border: Border.all(
           color: const Color(0xFF6750A4).withValues(alpha: 0.1),
@@ -91,9 +89,7 @@ class StudyConsistencyCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: context.colors.isDark
-                            ? Colors.amber.shade400
-                            : Colors.amber.shade700,
+                        color: context.colors.badgeAmber,
                         letterSpacing: 1.2,
                       ),
                     ),

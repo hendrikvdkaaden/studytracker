@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../utils/l10n_extension.dart';
 import 'onboarding_landing_button.dart';
@@ -36,7 +35,7 @@ class OnboardingLandingPage extends StatelessWidget {
             Text(
               'Deadly',
               style: TextStyle(
-                color: context.colors.isDark ? Colors.white : AppColors.lightNavy,
+                color: context.colors.textPrimary,
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -1,
@@ -45,8 +44,8 @@ class OnboardingLandingPage extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               l10n.onboardingLandingTagline,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,

@@ -86,9 +86,8 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: context.colors.isDark
-                            ? AppColors.iconPurple.withValues(alpha: 0.3)
-                            : AppColors.iconPurple.withValues(alpha: 0.2),
+                        color:
+                            context.colors.accentAlpha(AppColors.iconPurple),
                       ),
                     ),
                     child: Row(
@@ -97,9 +96,10 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                         Icon(
                           Icons.auto_awesome,
                           size: 13,
-                          color: context.colors.isDark
-                              ? AppColors.iconPurple.withValues(alpha: 0.9)
-                              : AppColors.iconPurple,
+                          color: context.colors.accentAlpha(
+                              AppColors.iconPurple,
+                              darkAlpha: 0.9,
+                              lightAlpha: 1.0),
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -107,9 +107,10 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: context.colors.isDark
-                                ? AppColors.iconPurple.withValues(alpha: 0.9)
-                                : AppColors.iconPurple,
+                            color: context.colors.accentAlpha(
+                                AppColors.iconPurple,
+                                darkAlpha: 0.9,
+                                lightAlpha: 1.0),
                           ),
                         ),
                       ],
@@ -125,9 +126,10 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: context.colors.isDark
-                          ? context.colors.accent.withValues(alpha: 0.9)
-                          : context.colors.accent,
+                      color: context.colors.accentAlpha(
+                          context.colors.accent,
+                          darkAlpha: 0.9,
+                          lightAlpha: 1.0),
                     ),
                   ),
                 ),
@@ -277,9 +279,8 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: context.colors.isDark
-                            ? context.colors.accent.withValues(alpha: 0.3)
-                            : context.colors.accent.withValues(alpha: 0.2),
+                        color: context.colors
+                            .accentAlpha(context.colors.accent),
                       ),
                     ),
                     child: Row(
@@ -288,9 +289,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                         Icon(
                           Icons.add,
                           size: 14,
-                          color: context.colors.isDark
-                              ? Colors.white
-                              : context.colors.accent,
+                          color: context.colors.accentOnSurface,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -298,9 +297,7 @@ class _PlannedSessionsSectionState extends State<PlannedSessionsSection> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: context.colors.isDark
-                                ? Colors.white
-                                : context.colors.accent,
+                            color: context.colors.accentOnSurface,
                           ),
                         ),
                       ],

@@ -29,9 +29,8 @@ class DateHeader extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: context.colors.accentStrong.withValues(
-              alpha: context.colors.isDark ? 0.16 : 0.12,
-            ),
+            color: context.colors.statusTint(context.colors.accentStrong,
+                darkAlpha: 0.16, lightAlpha: 0.12),
             borderRadius: BorderRadius.circular(999),
           ),
           child: Row(
@@ -71,9 +70,7 @@ class DateHeader extends StatelessWidget {
                     // the solid accent; dark mode takes the normal ink,
                     // because accent resolves to the mid-tone there and blue,
                     // purple and pink fall under the bar on the tinted chip.
-                    color: context.colors.isDark
-                        ? context.colors.textPrimary
-                        : context.colors.accent,
+                    color: context.colors.accentText,
                   ),
                 ),
               ],

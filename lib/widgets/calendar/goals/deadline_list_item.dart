@@ -72,9 +72,7 @@ class DeadlineListItem extends StatelessWidget {
           color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : AppColors.lightBorder,
+            color: context.colors.cardHairline,
           ),
         ),
         child: Row(
@@ -84,7 +82,8 @@ class DeadlineListItem extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: context.colors.isDark ? 0.15 : 0.1),
+                color: context.colors.statusTint(iconColor,
+                    darkAlpha: 0.15, lightAlpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -116,7 +115,7 @@ class DeadlineListItem extends StatelessWidget {
                       fontSize: 13,
                       color: status == GoalStatus.overdue
                           ? AppColors.overdue
-                          : AppColors.textSecondary,
+                          : context.colors.textSecondary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

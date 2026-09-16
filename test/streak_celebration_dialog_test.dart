@@ -200,7 +200,7 @@ void main() {
       );
 
       expect(find.byType(Dialog), findsOneWidget);
-      await tester.tap(find.text('Nice'));
+      await tester.tap(find.text("Let's go"));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 

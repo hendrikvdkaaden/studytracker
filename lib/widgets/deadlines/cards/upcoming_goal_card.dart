@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../models/goal.dart';
-import '../../../theme/app_colors.dart';
 import '../../../theme/app_theme_extension.dart';
 import '../../../services/settings_service.dart';
 import '../../../utils/goal_helpers.dart';
@@ -45,9 +44,9 @@ class UpcomingGoalCard extends StatelessWidget {
     final accentColor = subjectColor ?? typeColor.shade600;
     final iconBg = subjectColor != null
         ? subjectColor.withValues(alpha: 0.15)
-        : (context.colors.isDark
-            ? typeColor.shade900.withValues(alpha: 0.3)
-            : typeColor.shade50);
+        : context.colors.iconChipBackground(
+            typeColor.shade900, typeColor.shade50,
+            darkAlpha: 0.3);
 
     return GestureDetector(
       onTap: onTap,
@@ -57,9 +56,7 @@ class UpcomingGoalCard extends StatelessWidget {
           color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : AppColors.lightBorder,
+            color: context.colors.cardHairline,
           ),
         ),
         child: Column(
@@ -99,9 +96,9 @@ class UpcomingGoalCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         goal.subject,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: context.colors.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

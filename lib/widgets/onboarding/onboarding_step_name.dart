@@ -52,9 +52,7 @@ class OnboardingStepName extends StatelessWidget {
                   TextSpan(
                     text: 'name?',
                     style: TextStyle(
-                      color: context.colors.isDark
-                          ? context.colors.accentSoft
-                          : context.colors.accent,
+                      color: context.colors.accentOnSurface,
                     ),
                   ),
                 ],
@@ -63,8 +61,8 @@ class OnboardingStepName extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               l10n.onboardingStep1Subtitle,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
@@ -120,7 +118,6 @@ Widget _buildTextField({
   TextInputAction? textInputAction,
   ValueChanged<String>? onSubmitted,
 }) {
-  final isDark = context.colors.isDark;
   return TextField(
     controller: controller,
     style: TextStyle(color: context.colors.textPrimary),
@@ -131,16 +128,12 @@ Widget _buildTextField({
     decoration: InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.3)
-            : AppColors.textTertiary,
+        color: context.colors.hintText,
       ),
       errorText: hasError ? context.l10n.onboardingNameError : null,
       errorStyle: const TextStyle(color: AppColors.overdue, fontSize: 12),
       filled: true,
-      fillColor: isDark
-          ? context.colors.fieldBackground
-          : AppColors.lightChipBg,
+      fillColor: context.colors.chipBackground,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
@@ -149,12 +142,7 @@ Widget _buildTextField({
         borderRadius: BorderRadius.circular(16),
         borderSide: hasError
             ? const BorderSide(color: AppColors.overdue, width: 1.5)
-            : BorderSide(
-                color: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightChipBorder,
-                width: 1,
-              ),
+            : BorderSide(color: context.colors.chipBorder, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

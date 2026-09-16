@@ -41,9 +41,7 @@ class CalendarSectionHeader extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 // See date_header: the accent is only readable at this size
                 // on a light surface.
-                color: context.colors.isDark
-                    ? context.colors.textPrimary
-                    : context.colors.accent,
+                color: context.colors.headingOnBackground,
               ),
             ),
           ),

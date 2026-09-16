@@ -177,9 +177,7 @@ class _InlineStepperState extends State<_InlineStepper> {
               border: Border.all(
                 color: _editing
                     ? context.colors.accent
-                    : (context.colors.isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.grey[100]!),
+                    : context.colors.controlSurface,
                 width: _editing ? 2 : 1,
               ),
               boxShadow: [
@@ -267,9 +265,7 @@ class _StepButton extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: context.colors.isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.grey[100],
+          color: context.colors.controlSurface,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(

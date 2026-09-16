@@ -233,9 +233,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           const SizedBox(height: 12),
           Divider(
             height: 1,
-            color: colors.isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.grey[100],
+            color: colors.controlSurface,
           ),
           // Scrollable content
           Expanded(
@@ -330,9 +328,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
                       color: sectionBg,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: colors.isDark
-                            ? Colors.white.withValues(alpha: 0.06)
-                            : AppColors.lightBorder,
+                        color: colors.cardHairline,
                       ),
                     ),
                     child: TextField(
@@ -495,9 +491,7 @@ class _StudySessionPickerModalState extends State<StudySessionPickerModal> {
           border: Border.all(
             color: hasError
                 ? AppColors.overdue
-                : (context.colors.isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : AppColors.lightBorder),
+                : context.colors.cardHairline,
             width: hasError ? 1.5 : 1,
           ),
         ),

@@ -26,7 +26,6 @@ class OnboardingStepNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = context.colors.isDark;
 
     final sessionLabel = sessionReminderMinutes == 0
         ? 'Disabled'
@@ -60,9 +59,7 @@ class OnboardingStepNotifications extends StatelessWidget {
                   TextSpan(
                     text: 'reminders',
                     style: TextStyle(
-                      color: isDark
-                          ? context.colors.accentSoft
-                          : context.colors.accent,
+                      color: context.colors.accentOnSurface,
                     ),
                   ),
                 ],
@@ -71,8 +68,8 @@ class OnboardingStepNotifications extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               l10n.onboardingStep4Subtitle,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
@@ -117,8 +114,8 @@ class OnboardingStepNotifications extends StatelessWidget {
             Center(
               child: Text(
                 l10n.onboardingStep4Note,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
@@ -179,15 +176,15 @@ Widget _buildReminderRow({
             ),
             Text(
               value,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
             const SizedBox(width: 6),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppColors.textTertiary,
+              color: context.colors.textTertiary,
               size: 20,
             ),
           ],

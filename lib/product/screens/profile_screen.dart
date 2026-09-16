@@ -422,7 +422,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Future<void> _pickSessionReminder() async {
     final l10n = context.l10n;
-    final isDark = context.colors.isDark;
 
     // Build list of minutes: 1–59
     final minutes = List.generate(59, (i) => i + 1);
@@ -479,7 +478,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 height: 200,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
-                    brightness: isDark ? Brightness.dark : Brightness.light,
+                    brightness: ctx.colors.brightness,
                     textTheme: CupertinoTextThemeData(
                       pickerTextStyle: TextStyle(
                         fontSize: 20,
@@ -553,7 +552,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Future<void> _pickDeadlineReminder() async {
     final l10n = context.l10n;
-    final isDark = context.colors.isDark;
 
     final days = List.generate(30, (i) => i + 1);
     int tempValue = _deadlineReminderDays.clamp(1, 30);
@@ -606,7 +604,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 height: 200,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
-                    brightness: isDark ? Brightness.dark : Brightness.light,
+                    brightness: ctx.colors.brightness,
                     textTheme: CupertinoTextThemeData(
                       pickerTextStyle: TextStyle(
                         fontSize: 20,

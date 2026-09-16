@@ -30,9 +30,7 @@ class StreakBadge extends StatelessWidget {
     // box at zero would make the row jump as the streak comes and goes.
     if (streak <= 0) return const SizedBox.shrink();
 
-    final colour = context.colors.isDark
-        ? Colors.orange.shade300
-        : Colors.orange.shade700;
+    final colour = context.colors.streakFlame;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

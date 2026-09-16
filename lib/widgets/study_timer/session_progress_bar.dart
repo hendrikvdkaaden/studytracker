@@ -43,9 +43,7 @@ class SessionProgressBar extends StatelessWidget {
                 // Normal-size text on a card: the mid-tone accent that dark
                 // mode resolves to misses 4.5:1 for blue, purple and pink,
                 // so the ink there is the normal one.
-                color: context.colors.isDark
-                    ? context.colors.textPrimary
-                    : context.colors.accent,
+                color: context.colors.accentText,
               ),
             ),
           ],

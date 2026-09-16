@@ -17,7 +17,6 @@ class ProgressCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.colors.isDark;
     final progress = targetTime > 0 ? (timeSpent / targetTime).clamp(0.0, 1.0) : 0.0;
     final percentage = (progress * 100).toInt();
     final color = accentColor ?? context.colors.accentStrong;
@@ -41,8 +40,9 @@ class ProgressCircle extends StatelessWidget {
             child: CustomPaint(
               painter: CircularProgressPainter(
                 progress: progress,
-                isDark: isDark,
                 color: color,
+                trackColor: context.colors.accentAlpha(color,
+                    darkAlpha: 0.2, lightAlpha: 0.15),
               ),
               child: Center(
                 child: Column(
@@ -80,7 +80,7 @@ class ProgressCircle extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(
                       right: BorderSide(
-                        color: color.withValues(alpha: isDark ? 0.3 : 0.2),
+                        color: context.colors.accentAlpha(color),
                       ),
                     ),
                   ),
@@ -145,16 +145,30 @@ class ProgressCircle extends StatelessWidget {
 }
 
 class CircularProgressPainter extends CustomPainter {
-  static const double strokeWidth = 16.0;
+  /// Kept as the default so the goal-details circle is unchanged; the timer
+  /// ring passes something much thinner.
+  static const double defaultStrokeWidth = 16.0;
 
   final double progress;
-  final bool isDark;
   final Color color;
+  final double strokeWidth;
+
+  /// The unfilled track, already resolved against the theme by the caller —
+  /// a painter has no BuildContext, so it takes the colour rather than a
+  /// brightness flag to branch on.
+  final Color trackColor;
+
+  /// Overrides [trackColor]'s own alpha. Pulled out so the timer ring can
+  /// breathe by animating it.
+  final double? trackAlpha;
 
   CircularProgressPainter({
     required this.progress,
-    required this.isDark,
     required this.color,
+    required this.trackColor,
+    this.strokeWidth = defaultStrokeWidth,
+    this.trackAlpha,
+    super.repaint,
   });
 
   @override
@@ -164,7 +178,9 @@ class CircularProgressPainter extends CustomPainter {
 
     // Background circle — tinted version of the accent color
     final backgroundPaint = Paint()
-      ..color = color.withValues(alpha: isDark ? 0.2 : 0.15)
+      ..color = trackAlpha == null
+          ? trackColor
+          : trackColor.withValues(alpha: trackAlpha!)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -193,7 +209,9 @@ class CircularProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(CircularProgressPainter oldDelegate) {
     return oldDelegate.progress != progress ||
-        oldDelegate.isDark != isDark ||
-        oldDelegate.color != color;
+        oldDelegate.trackColor != trackColor ||
+        oldDelegate.color != color ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.trackAlpha != trackAlpha;
   }
 }

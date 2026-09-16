@@ -32,7 +32,8 @@ class CalendarDayCell extends StatelessWidget {
         height: 48,
         decoration: BoxDecoration(
           color: isSelected
-              ? context.colors.accentStrong.withValues(alpha: context.colors.isDark ? 0.24 : 0.14)
+              ? context.colors.statusTint(context.colors.accentStrong,
+                  darkAlpha: 0.24, lightAlpha: 0.14)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
           border: isSelected

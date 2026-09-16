@@ -222,7 +222,6 @@ class AddGoalTemplate extends StatelessWidget {
   }
 
   Widget _buildSessionsSection(BuildContext context, Color subtleText) {
-    final isDark = context.colors.isDark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,9 +262,7 @@ class AddGoalTemplate extends StatelessWidget {
                       AppColors.iconPurple, AppColors.iconBgPurple),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark
-                        ? AppColors.iconPurple.withValues(alpha: 0.3)
-                        : AppColors.iconPurple.withValues(alpha: 0.2),
+                    color: context.colors.accentAlpha(AppColors.iconPurple),
                   ),
                 ),
                 child: Row(
@@ -273,18 +270,16 @@ class AddGoalTemplate extends StatelessWidget {
                   children: [
                     Icon(Icons.auto_awesome,
                         size: 13,
-                        color: isDark
-                            ? AppColors.iconPurple.withValues(alpha: 0.9)
-                            : AppColors.iconPurple),
+                        color: context.colors.accentAlpha(AppColors.iconPurple,
+                            darkAlpha: 0.9, lightAlpha: 1.0)),
                     const SizedBox(width: 4),
                     Text(
                       context.l10n.addGoalAutoPlanButton,
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.iconPurple.withValues(alpha: 0.9)
-                            : AppColors.iconPurple,
+                        color: context.colors.accentAlpha(AppColors.iconPurple,
+                            darkAlpha: 0.9, lightAlpha: 1.0),
                       ),
                     ),
                   ],
@@ -374,24 +369,21 @@ class AddGoalTemplate extends StatelessWidget {
                       context.colors.accent, AppColors.iconBgTeal),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark
-                        ? context.colors.accent.withValues(alpha: 0.3)
-                        : context.colors.accent.withValues(alpha: 0.2),
+                    color: context.colors.accentAlpha(context.colors.accent),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.add,
-                        size: 14,
-                        color: isDark ? Colors.white : context.colors.accent),
+                        size: 14, color: context.colors.accentOnSurface),
                     const SizedBox(width: 4),
                     Text(
                       context.l10n.addGoalAddSessionShort,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : context.colors.accent,
+                        color: context.colors.accentOnSurface,
                       ),
                     ),
                   ],

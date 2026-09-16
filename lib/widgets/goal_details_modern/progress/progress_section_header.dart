@@ -16,9 +16,10 @@ class ProgressSectionHeader extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: context.colors.isDark
-                ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.12)
-                : AppColors.iconBgTeal,
+            color: context.colors.iconChipBackground(
+                Theme.of(context).colorScheme.onSurfaceVariant,
+                AppColors.iconBgTeal,
+                darkAlpha: 0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(

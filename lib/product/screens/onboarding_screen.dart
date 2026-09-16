@@ -228,22 +228,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required String Function(int) itemBuilder,
     required Future<void> Function(int) onConfirm,
   }) {
-    final isDark = ctx.colors.isDark;
     int selectedIndex = initialIndex;
 
     return Container(
       decoration: BoxDecoration(
         color: ctx.colors.card,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, -4),
-                ),
-              ],
+        boxShadow: ctx.colors.cardShadow(
+          alpha: 0.08,
+          blurRadius: 20,
+          offset: const Offset(0, -4),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -288,7 +283,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 200,
             child: CupertinoTheme(
               data: CupertinoThemeData(
-                brightness: isDark ? Brightness.dark : Brightness.light,
+                brightness: ctx.colors.brightness,
                 textTheme: CupertinoTextThemeData(
                   pickerTextStyle: TextStyle(
                     fontSize: 20,

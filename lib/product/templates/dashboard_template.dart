@@ -138,9 +138,9 @@ class DashboardTemplate extends StatelessWidget {
               context: context,
               icon: Icons.error_outline,
               iconColor: AppColors.overdue,
-              iconBg: context.colors.isDark
-                  ? AppColors.overdue.withValues(alpha: 0.1)
-                  : const Color(0xFFFFEDED),
+              iconBg: context.colors.iconChipBackground(
+                  AppColors.overdue, const Color(0xFFFFEDED),
+                  darkAlpha: 0.1),
               label: context.l10n.dashboardSectionOverdue,
             ),
           ),
@@ -165,9 +165,9 @@ class DashboardTemplate extends StatelessWidget {
               context: context,
               icon: Icons.calendar_month,
               iconColor: AppColors.iconPurple,
-              iconBg: context.colors.isDark
-                  ? AppColors.iconBgPurple.withValues(alpha: 0.1)
-                  : const Color(0xFFFFEDED),
+              iconBg: context.colors.iconChipBackground(
+                  AppColors.iconBgPurple, const Color(0xFFFFEDED),
+                  darkAlpha: 0.1),
               label: context.l10n.dashboardSectionUpcoming,
             ),
           ),
@@ -193,9 +193,9 @@ class DashboardTemplate extends StatelessWidget {
               context: context,
               icon: Icons.check_circle_outline,
               iconColor: AppColors.completed,
-              iconBg: context.colors.isDark
-                  ? AppColors.completed.withValues(alpha: 0.1)
-                  : const Color(0xFFECFDF5),
+              iconBg: context.colors.iconChipBackground(
+                  AppColors.completed, const Color(0xFFECFDF5),
+                  darkAlpha: 0.1),
               label: context.l10n.dashboardSectionCompleted,
               trailing: _toggleButton(context),
             ),

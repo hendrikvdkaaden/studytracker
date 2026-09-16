@@ -13,9 +13,7 @@ class DayStatusCircle extends StatelessWidget {
       color: context.colors.border,
       width: 2,
     );
-    final emptyColor = context.colors.isDark
-        ? Colors.black.withValues(alpha: 0.2)
-        : Colors.white.withValues(alpha: 0.5);
+    final emptyColor = context.colors.emptyFill;
 
     switch (status) {
       case DayStatus.completed:
@@ -34,17 +32,10 @@ class DayStatusCircle extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: context.colors.isDark
-                  ? Colors.red.shade900.withValues(alpha: 0.5)
-                  : Colors.red.shade200,
-              width: 2,
-            ),
-            color: context.colors.isDark
-                ? Colors.red.shade900.withValues(alpha: 0.1)
-                : Colors.red.shade50.withValues(alpha: 0.5),
+            border: Border.all(color: context.colors.missedBorder, width: 2),
+            color: context.colors.missedFill,
           ),
-          child: Icon(Icons.close, color: Colors.red.shade400, size: 16),
+          child: Icon(Icons.close, color: context.colors.missedIcon, size: 16),
         );
       case DayStatus.frozen:
         // Deliberately not the green tick: the day was not studied, and
@@ -54,21 +45,12 @@ class DayStatusCircle extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: context.colors.isDark
-                  ? Colors.lightBlue.shade900.withValues(alpha: 0.6)
-                  : Colors.lightBlue.shade200,
-              width: 2,
-            ),
-            color: context.colors.isDark
-                ? Colors.lightBlue.shade900.withValues(alpha: 0.15)
-                : Colors.lightBlue.shade50.withValues(alpha: 0.6),
+            border: Border.all(color: context.colors.frozenBorder, width: 2),
+            color: context.colors.frozenFill,
           ),
           child: Icon(
             Icons.ac_unit,
-            color: context.colors.isDark
-                ? Colors.lightBlue.shade200
-                : Colors.lightBlue.shade600,
+            color: context.colors.frozenIcon,
             size: 16,
           ),
         );

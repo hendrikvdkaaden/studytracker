@@ -157,7 +157,6 @@ class PlannedSessionItem extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context, DateTime today) {
-    final isDark = context.colors.isDark;
     if (_isCompleted) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -202,7 +201,7 @@ class PlannedSessionItem extends StatelessWidget {
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.bold,
-          color: isDark ? context.colors.accent : context.colors.textPrimary,
+          color: context.colors.textPrimary,
         ),
       ),
     );

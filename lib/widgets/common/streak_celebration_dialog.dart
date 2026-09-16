@@ -306,9 +306,7 @@ class _FlameWithCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colour = context.colors.isDark
-        ? Colors.orange.shade300
-        : Colors.orange.shade700;
+    final colour = context.colors.streakFlame;
 
     final style = TextStyle(
       fontSize: 45,
@@ -374,9 +372,7 @@ class _FreezeHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.colors.isDark;
-    final colour =
-        isDark ? Colors.lightBlue.shade200 : Colors.lightBlue.shade600;
+    final colour = context.colors.frozenIcon;
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
@@ -388,15 +384,8 @@ class _FreezeHero extends StatelessWidget {
         height: 64,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: isDark
-                ? Colors.lightBlue.shade900.withValues(alpha: 0.6)
-                : Colors.lightBlue.shade200,
-            width: 2,
-          ),
-          color: isDark
-              ? Colors.lightBlue.shade900.withValues(alpha: 0.15)
-              : Colors.lightBlue.shade50.withValues(alpha: 0.6),
+          border: Border.all(color: context.colors.frozenBorder, width: 2),
+          color: context.colors.frozenFill,
         ),
         child: Icon(Icons.ac_unit, size: 32, color: colour),
       ),

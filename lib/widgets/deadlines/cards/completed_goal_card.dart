@@ -27,9 +27,7 @@ class CompletedGoalCard extends StatelessWidget {
           color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : AppColors.lightBorder,
+            color: context.colors.cardHairline,
           ),
         ),
         child: Row(
@@ -38,9 +36,7 @@ class CompletedGoalCard extends StatelessWidget {
               height: 44,
               width: 44,
               decoration: BoxDecoration(
-                color: context.colors.isDark
-                    ? AppColors.completed.withValues(alpha: 0.1)
-                    : AppColors.completed.withValues(alpha: 0.08),
+                color: context.colors.statusTint(AppColors.completed),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -69,9 +65,9 @@ class CompletedGoalCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     goal.subject,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -92,7 +88,8 @@ class CompletedGoalCard extends StatelessWidget {
               height: 28,
               width: 28,
               decoration: BoxDecoration(
-                color: AppColors.completed.withValues(alpha: context.colors.isDark ? 0.15 : 0.1),
+                color: context.colors.statusTint(AppColors.completed,
+                    darkAlpha: 0.15, lightAlpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

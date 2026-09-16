@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Centralized color definitions for the entire app
+/// Colors that are the same in light and dark mode.
+///
+/// Anything that *differs* between the two belongs on [AppTheme] as a token,
+/// not here — a `light*`/`dark*` pair in this file is an invitation to write
+/// `isDark ? AppColors.lightX : AppColors.darkX` at the call site, which is
+/// exactly what the theme extension exists to prevent. Reach the varying
+/// colors with `context.colors.<token>`.
 class AppColors {
   AppColors._(); // Private constructor to prevent instantiation
 
@@ -10,16 +16,6 @@ class AppColors {
   // reference is a compile error rather than a stray teal next to a green
   // button, which nothing would catch.
 
-  // Background Colors
-  static const Color darkBackground = Color(0xFF0F172A);
-  static const Color lightBackground = Color(0xFFF9F9FF);
-
-  // Onboarding light mode
-  static const Color lightChipBg = Color(0xFFF8FAFC);       // slate-50
-  static const Color lightChipBorder = Color(0xFFE2E8F0);   // slate-200
-  static const Color lightNavy = Color(0xFF1A1F2E);         // navy-900
-  static const Color lightNavyMuted = Color(0xFF283044);    // navy-800
-
   // Status Colors
   static const Color overdue = Color(0xFFEF4444);
   static const Color completed = Color(0xFF22C55E);
@@ -27,28 +23,13 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color warning = Color(0xFFF59E0B);
 
-  // Text Colors
-  static const Color darkText = Color(0xFF0F172A);
-  static const Color lightText = Color(0xFFF8FAFC);
-
-  // Border Colors
-  static const Color lightBorder = Color(0xFFE2E8F0);
-  static const Color darkBorder = Color(0xFF334155);
-  static const Color lightCardBorder = Color(0xFFF1F5F9);
-  static const Color darkCardBorder = Color(0xFF1E293B);
-
-  // Card Colors
-  static const Color lightCard = Colors.white;
+  // Card Colors — the seed values MaterialApp's ThemeData is built from.
+  // Widgets should read context.colors.card instead.
   static const Color darkCard = Color(0xFF1E293B);
 
-  // Accent Color (light grey-blue for subtle icons, dividers, inactive elements)
-  static const Color accent = Color(0xFFE2E8F0);
-
-  // Field Background Colors
-  static const Color darkFieldBackground = Color(0xFF1E293B);
-  static const Color lightFieldBackground = Color(0xFFF8FAFC);
-
-  // Semantic UI icon colors
+  // Semantic UI icon colors. The iconBg* pastels are the *light* half of an
+  // icon chip; pass them to context.colors.iconChipBackground(), which picks
+  // the translucent dark equivalent for you.
   static const Color iconBgBlue = Color(0xFFEFF6FF);
   static const Color iconBgGreen = Color(0xFFECFDF5);
   static const Color iconBgOrange = Color(0xFFFFF7ED);
@@ -57,12 +38,6 @@ class AppColors {
   static const Color iconGreen = Color(0xFF059669);
   static const Color iconOrange = Color(0xFFEA580C);
   static const Color iconPurple = Color(0xFF7C3AED);
-
-  // Text secondary/tertiary
-  // Darkened from 0xFF64748B: on the tinted backgrounds the old value fell to
-  // 4.38, just under the 4.5 threshold. This clears 5.02 on every palette.
-  static const Color textSecondary = Color(0xFF5B6B7F);
-  static const Color textTertiary = Color(0xFF94A3B8);
 
   // Premium gradient
   static const Color premiumBlue = Color(0xFF135BEC);
@@ -75,14 +50,6 @@ class AppColors {
   static const Color premiumGold = Color(0xFFF5C542);
   static const Color premiumGoldLight = Color(0xFFFDE68A);
   static const Color premiumGoldText = Color(0xFF78350F);
-
-  // Divider colors
-  static const Color dividerDark = Color(0xFF334155);
-  static const Color dividerLight = Color(0xFFE2E8F0);
-
-  // Section backgrounds
-  static const Color sectionDarkBg = Color(0xFF1E293B);
-  static const Color sectionLightBg = Color(0xFFF8FAFC);
 
   // Opacity helpers
   static Color withOpacity(Color color, double opacity) {

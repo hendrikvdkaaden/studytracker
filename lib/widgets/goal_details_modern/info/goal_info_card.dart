@@ -37,9 +37,8 @@ class GoalInfoCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: context.colors.isDark
-                    ? color.withValues(alpha: 0.15)
-                    : color.withValues(alpha: 0.12),
+                color: context.colors.statusTint(color,
+                    darkAlpha: 0.15, lightAlpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(

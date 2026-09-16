@@ -43,9 +43,7 @@ class PlannedSessionsList extends StatelessWidget {
                     Divider(
                       height: 1,
                       thickness: 1,
-                      color: context.colors.isDark
-                          ? const Color(0xFF2d4a48)
-                          : const Color(0xFFcee8e6),
+                      color: context.colors.tintedDivider,
                     ),
                   PlannedSessionItem(
                     session: sessions[i],

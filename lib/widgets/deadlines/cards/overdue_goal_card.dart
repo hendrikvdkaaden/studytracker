@@ -34,9 +34,7 @@ class OverdueGoalCard extends StatelessWidget {
           color: context.colors.sectionBackground,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: context.colors.isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : AppColors.lightBorder,
+            color: context.colors.cardHairline,
           ),
         ),
         child: Row(
@@ -45,9 +43,7 @@ class OverdueGoalCard extends StatelessWidget {
               height: 44,
               width: 44,
               decoration: BoxDecoration(
-                color: context.colors.isDark
-                    ? AppColors.overdue.withValues(alpha: 0.1)
-                    : AppColors.overdue.withValues(alpha: 0.08),
+                color: context.colors.statusTint(AppColors.overdue),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -73,9 +69,9 @@ class OverdueGoalCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     goal.subject,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -95,9 +91,7 @@ class OverdueGoalCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: context.colors.isDark
-                    ? AppColors.overdue.withValues(alpha: 0.1)
-                    : AppColors.overdue.withValues(alpha: 0.08),
+                color: context.colors.statusTint(AppColors.overdue),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Row(

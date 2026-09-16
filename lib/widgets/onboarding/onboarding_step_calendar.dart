@@ -40,7 +40,6 @@ class OnboardingStepCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = context.colors.isDark;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -68,9 +67,7 @@ class OnboardingStepCalendar extends StatelessWidget {
                   TextSpan(
                     text: l10n.onboardingStep5TitleLine2,
                     style: TextStyle(
-                      color: isDark
-                          ? context.colors.accentSoft
-                          : context.colors.accent,
+                      color: context.colors.accentOnSurface,
                     ),
                   ),
                 ],
@@ -79,8 +76,8 @@ class OnboardingStepCalendar extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               l10n.onboardingStep5Subtitle,
-              style: const TextStyle(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                color: context.colors.textTertiary,
                 fontSize: 14,
               ),
             ),
@@ -90,8 +87,8 @@ class OnboardingStepCalendar extends StatelessWidget {
             Center(
               child: Text(
                 l10n.onboardingStep5Note,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
@@ -169,8 +166,8 @@ class OnboardingStepCalendar extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 detail,
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
+                style: TextStyle(
+                  color: context.colors.textTertiary,
                   fontSize: 12,
                 ),
               ),
@@ -226,8 +223,8 @@ class OnboardingStepCalendar extends StatelessWidget {
           Text(
             l10n.onboardingCalendarDenied,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textTertiary,
+            style: TextStyle(
+              color: context.colors.textTertiary,
               fontSize: 13,
             ),
           ),

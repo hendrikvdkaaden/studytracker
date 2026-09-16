@@ -83,7 +83,8 @@ class _AppDialog extends StatelessWidget {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: accent.withValues(alpha: colors.isDark ? 0.18 : 0.1),
+                color: colors.statusTint(accent,
+                    darkAlpha: 0.18, lightAlpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 26, color: accent),

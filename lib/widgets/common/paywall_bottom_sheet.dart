@@ -300,7 +300,7 @@ class _PaywallBottomSheetState extends ConsumerState<_PaywallBottomSheet> {
           border: Border.all(
             color: isSelected
                 ? AppColors.premiumBlue
-                : (context.colors.isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.premiumCardBorder),
+                : context.colors.premiumTileBorder,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected

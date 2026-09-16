@@ -63,16 +63,12 @@ class GoalTypeSelector extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? context.colors.accent
-                      : (context.colors.isDark
-                          ? Colors.white.withValues(alpha: 0.06)
-                          : Colors.white),
+                      : context.colors.optionSurface,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? context.colors.accent
-                        : (context.colors.isDark
-                            ? Colors.white.withValues(alpha: 0.1)
-                            : const Color(0xFFE5E7EB)),
+                        : context.colors.optionBorder,
                   ),
                   boxShadow: isSelected
                       ? null

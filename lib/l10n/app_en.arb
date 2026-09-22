@@ -102,6 +102,21 @@
     }
   },
   "timerSnackSessionCompleted": "Session completed!",
+  "timerProgressPercent": "{percent}% completed",
+  "@timerProgressPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "timerHeaderCurrentlyStudying": "CURRENTLY STUDYING",
+  "timerPhaseReady": "Ready to Focus",
+  "timerPhaseCompleted": "Completed",
+  "timerPhasePaused": "Paused",
+  "timerPhaseGettingStarted": "Getting Started",
+  "timerPhaseDeepFocus": "Deep Focus Phase",
+  "timerPhaseFinalPush": "Final Push",
   "goalDetailsSectionInfo": "Deadline Info",
   "goalDetailsSectionStudySessions": "Study Sessions",
   "goalDetailsSectionProgress": "Progress",

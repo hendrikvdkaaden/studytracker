@@ -271,6 +271,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timerSnackSessionCompleted => 'Session completed!';
 
   @override
+  String timerProgressPercent(int percent) {
+    return '$percent% completed';
+  }
+
+  @override
+  String get timerHeaderCurrentlyStudying => 'CURRENTLY STUDYING';
+
+  @override
+  String get timerPhaseReady => 'Ready to Focus';
+
+  @override
+  String get timerPhaseCompleted => 'Completed';
+
+  @override
+  String get timerPhasePaused => 'Paused';
+
+  @override
+  String get timerPhaseGettingStarted => 'Getting Started';
+
+  @override
+  String get timerPhaseDeepFocus => 'Deep Focus Phase';
+
+  @override
+  String get timerPhaseFinalPush => 'Final Push';
+
+  @override
   String get goalDetailsSectionInfo => 'Deadline Info';
 
   @override

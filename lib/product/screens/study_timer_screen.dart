@@ -49,9 +49,7 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
     _confettiController = ConfettiController(duration: const Duration(seconds: 3));
     // A completed session starts fresh: resuming it would otherwise open on a
     // timer that already reads 00:00 with no way to run it but "Restart".
-    if (!widget.session.isCompleted && widget.session.elapsedSeconds != null) {
-      _elapsedSeconds = widget.session.elapsedSeconds!;
-    }
+    _elapsedSeconds = widget.session.resumeFrom;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -158,17 +156,14 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
 
     if (confirm) {
       _timer?.cancel();
-      final actualMinutes = _elapsedSeconds ~/ 60;
-      final updatedSession = widget.session.copyWith(
-        // Time studied is kept in actualDuration; elapsedSeconds only exists to
-        // resume a running timer, so a finished session resets it.
-        actualDuration: actualMinutes,
-        elapsedSeconds: 0,
-        isCompleted: true,
-        completedAt: DateTime.now(),
-      );
+      // Stopping early is not finishing -- see StudySession.stoppedAfter.
+      final updatedSession = widget.session.stoppedAfter(_elapsedSeconds);
 
       await _sessionRepo.updateSession(updatedSession);
+      // Recomputed unconditionally: the streak spans every session, so an
+      // early stop on this one may still leave a day earned by the others.
+      // calculateStreak decides what today is worth; this screen must not
+      // pre-empt it by skipping the call.
       await _recordStreakProgress();
 
       if (!mounted) return;
@@ -192,12 +187,12 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
       if (confirm) {
         _timer?.cancel();
         if (_timerState == TimerState.completed) {
-          final updatedSession = widget.session.copyWith(
-            actualDuration: widget.session.duration,
-            elapsedSeconds: 0,
-            isCompleted: true,
-            completedAt: DateTime.now(),
-          );
+          // The same rule as Stop and Mark Complete -- see
+          // StudySession.markedComplete. Writing `duration` here instead would
+          // discard overtime: a 65 minute run on a 60 minute plan would be
+          // logged as 60.
+          final updatedSession =
+              widget.session.markedComplete(_elapsedSeconds);
           await _sessionRepo.updateSession(updatedSession);
           await _recordStreakProgress();
         } else {
@@ -224,15 +219,10 @@ class _StudyTimerScreenState extends ConsumerState<StudyTimerScreen>
     if (confirm) {
       _timer?.cancel();
 
-      final updatedSession = widget.session.copyWith(
-        // The full session duration is logged via actualDuration; elapsed is
-        // reset so reopening the session starts a clean timer rather than one
-        // already sitting at 00:00.
-        actualDuration: widget.session.duration,
-        elapsedSeconds: 0,
-        isCompleted: true,
-        completedAt: DateTime.now(),
-      );
+      // At least the planned duration is logged, and more when the user
+      // studied longer or had already logged a stretch before resuming --
+      // see StudySession.markedComplete.
+      final updatedSession = widget.session.markedComplete(_elapsedSeconds);
 
       await _sessionRepo.updateSession(updatedSession);
       await _recordStreakProgress();

@@ -83,10 +83,16 @@ class StudySessionRepository {
         .fold(0, (total, session) => total + session.duration);
   }
 
-  /// Get planned (not completed) sessions for a specific goal
+  /// Get planned (still outstanding) sessions for a specific goal
+  ///
+  /// Outstanding means the work is still to do, which is not the same as
+  /// `!isCompleted`: stopping the timer near the end of a session leaves it
+  /// open so it can be resumed, and without this rule such a session would sit
+  /// in the planned list forever. See [StudySession.isEffectivelyStudied].
   List<StudySession> getPlannedSessionsByGoalId(String goalId) {
     return _box.values
-        .where((session) => session.goalId == goalId && !session.isCompleted)
+        .where((session) =>
+            session.goalId == goalId && !session.isEffectivelyStudied)
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date)); // Earliest first
   }
@@ -94,7 +100,8 @@ class StudySessionRepository {
   /// Get completed sessions for a specific goal
   List<StudySession> getCompletedSessionsByGoalId(String goalId) {
     return _box.values
-        .where((session) => session.goalId == goalId && session.isCompleted)
+        .where((session) =>
+            session.goalId == goalId && session.isEffectivelyStudied)
         .toList()
       ..sort((a, b) => b.date.compareTo(a.date)); // Most recent first
   }
@@ -123,10 +130,13 @@ class StudySessionRepository {
       });
   }
 
-  /// Get all planned sessions
+  /// Get all planned (still outstanding) sessions
+  ///
+  /// Same rule as [getPlannedSessionsByGoalId]: a session studied to the
+  /// threshold is done, whether or not the timer ran to zero.
   List<StudySession> getAllPlannedSessions() {
     return _box.values
-        .where((session) => !session.isCompleted)
+        .where((session) => !session.isEffectivelyStudied)
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
   }

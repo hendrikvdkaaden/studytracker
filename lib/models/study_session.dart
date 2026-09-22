@@ -60,6 +60,109 @@ class StudySession extends HiveObject {
     }
   }
 
+  /// Minutes actually studied, as the rest of the app reads them.
+  ///
+  /// Falls back to the planned duration for legacy sessions that were marked
+  /// complete before actualDuration existed, so an old record does not read as
+  /// zero minutes studied.
+  int get studiedMinutes {
+    final logged = actualDuration;
+    if (logged != null) return logged;
+    return isCompleted ? duration : 0;
+  }
+
+  /// Whether enough of this session was studied to count as done.
+  ///
+  /// The share rather than the whole: a user who studies 55 of 60 planned
+  /// minutes has done the session, and demanding the last five would cost them
+  /// the day. [home_screen] uses the strict `>= duration` rule to tick a
+  /// session off its list; this is the softer rule the streak reads, so an
+  /// early stop near the end does not silently break a streak overnight.
+  static const double completionThreshold = 0.9;
+
+  bool get isEffectivelyStudied {
+    if (duration <= 0) return isCompleted;
+    return studiedMinutes >= duration * completionThreshold;
+  }
+
+  /// The session as it should be saved when the user stops the timer after
+  /// [elapsedSeconds].
+  ///
+  /// Stopping early is not finishing. Pressing Stop five minutes into a sixty
+  /// minute session keeps the elapsed time and leaves the session open; only a
+  /// timer that reached its target is marked complete.
+  ///
+  /// [actualDuration] accumulates rather than overwrites: a session stopped at
+  /// 40 minutes, reopened and stopped again at 45 has studied 45 minutes, not
+  /// 5. The timer resumes its clock from [resumeFrom], so [elapsedSeconds]
+  /// already includes the earlier stretch -- but a session whose elapsed clock
+  /// was reset (a finished one restarted) would otherwise throw the earlier
+  /// total away, so the larger of the two wins.
+  ///
+  /// Built field by field rather than through [copyWith], because that helper
+  /// reads `completedAt ?? this.completedAt` and so cannot clear a completion
+  /// that no longer holds.
+  StudySession stoppedAfter(int elapsedSeconds) {
+    final reachedTarget = elapsedSeconds >= duration * 60;
+    final loggedNow = elapsedSeconds ~/ 60;
+    final previous = actualDuration ?? 0;
+
+    return StudySession(
+      id: id,
+      goalId: goalId,
+      date: date,
+      duration: duration,
+      startTime: startTime,
+      notes: notes,
+      calendarEventId: calendarEventId,
+      actualDuration: loggedNow > previous ? loggedNow : previous,
+      // A finished session reopening at 00:00 offers nothing but Restart, so
+      // it resets; an interrupted one has to resume where it left off.
+      elapsedSeconds: reachedTarget ? 0 : elapsedSeconds,
+      isCompleted: reachedTarget,
+      completedAt: reachedTarget ? DateTime.now() : null,
+    );
+  }
+
+  /// The session as it should be saved when the user marks it complete by
+  /// hand, having studied [elapsedSeconds].
+  ///
+  /// The same rule as [stoppedAfter] for what was studied -- overtime is kept,
+  /// and an earlier stretch is never clamped away -- but the session is marked
+  /// complete regardless of whether the clock reached its target, because the
+  /// user said so. At minimum the planned duration is credited: marking a
+  /// session complete means it was done.
+  StudySession markedComplete(int elapsedSeconds) {
+    final loggedNow = elapsedSeconds ~/ 60;
+    final previous = actualDuration ?? 0;
+    final studied = [loggedNow, previous, duration]
+        .reduce((a, b) => a > b ? a : b);
+
+    return StudySession(
+      id: id,
+      goalId: goalId,
+      date: date,
+      duration: duration,
+      startTime: startTime,
+      notes: notes,
+      calendarEventId: calendarEventId,
+      actualDuration: studied,
+      // Reset so reopening starts a clean timer rather than one already
+      // sitting at 00:00.
+      elapsedSeconds: 0,
+      isCompleted: true,
+      completedAt: DateTime.now(),
+    );
+  }
+
+  /// Elapsed seconds to reopen this session on.
+  ///
+  /// A completed session starts fresh; an interrupted one resumes.
+  int get resumeFrom {
+    if (!isCompleted && elapsedSeconds != null) return elapsedSeconds!;
+    return 0;
+  }
+
   StudySession copyWith({
     String? id,
     String? goalId,

@@ -9,10 +9,19 @@ class StreakService {
 
   /// A session is completed on time when completedAt falls on the planned day
   /// or earlier. Legacy sessions without completedAt fall back to isCompleted.
+  ///
+  /// A session stopped early also counts, provided enough of it was studied --
+  /// see [StudySession.isEffectivelyStudied]. Without that, stopping 58
+  /// minutes into a 60 minute session would break the streak retroactively:
+  /// today is exempt from the scan, so nothing looks wrong that evening and
+  /// the streak is simply gone the next morning. Such a session has no
+  /// completedAt, so it is credited to the day it was planned for, which is
+  /// the day it was studied.
   static bool isCompletedOnTime(StudySession s) {
     if (s.completedAt != null) {
       return !s.completedAt!.isAfter(endOfDay(s));
     }
+    if (s.isEffectivelyStudied) return true;
     return s.isCompleted;
   }
 

@@ -580,6 +580,54 @@ abstract class AppLocalizations {
   /// **'Session completed!'**
   String get timerSnackSessionCompleted;
 
+  /// No description provided for @timerProgressPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% completed'**
+  String timerProgressPercent(int percent);
+
+  /// No description provided for @timerHeaderCurrentlyStudying.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENTLY STUDYING'**
+  String get timerHeaderCurrentlyStudying;
+
+  /// No description provided for @timerPhaseReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Focus'**
+  String get timerPhaseReady;
+
+  /// No description provided for @timerPhaseCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get timerPhaseCompleted;
+
+  /// No description provided for @timerPhasePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get timerPhasePaused;
+
+  /// No description provided for @timerPhaseGettingStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Started'**
+  String get timerPhaseGettingStarted;
+
+  /// No description provided for @timerPhaseDeepFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Focus Phase'**
+  String get timerPhaseDeepFocus;
+
+  /// No description provided for @timerPhaseFinalPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Final Push'**
+  String get timerPhaseFinalPush;
+
   /// No description provided for @goalDetailsSectionInfo.
   ///
   /// In en, this message translates to:

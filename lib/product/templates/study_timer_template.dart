@@ -1,9 +1,10 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import '../../theme/app_theme_extension.dart';
+import '../../utils/l10n_extension.dart';
 import '../../widgets/study_timer/timer_display.dart';
+import '../../widgets/study_timer/timer_progress_ring.dart';
 import '../../widgets/study_timer/session_info_card.dart';
-import '../../widgets/study_timer/session_progress_bar.dart';
 import '../../widgets/study_timer/timer_controls.dart';
 
 class StudyTimerTemplate extends StatelessWidget {
@@ -36,29 +37,31 @@ class StudyTimerTemplate extends StatelessWidget {
     required this.confettiController,
   });
 
-  String _getPhaseLabel() {
+  String _getPhaseLabel(BuildContext context) {
+    final l10n = context.l10n;
+
     if (timerState == TimerState.initial) {
-      return 'Ready to Focus';
+      return l10n.timerPhaseReady;
     }
     if (timerState == TimerState.completed) {
-      return 'Completed';
+      return l10n.timerPhaseCompleted;
     }
     if (timerState == TimerState.paused) {
-      return 'Paused';
+      return l10n.timerPhasePaused;
     }
     if (targetMinutes == 0) {
-      return 'Deep Focus Phase';
+      return l10n.timerPhaseDeepFocus;
     }
 
     final targetSeconds = targetMinutes * 60;
     final progress = elapsedSeconds / targetSeconds;
 
     if (progress < 0.25) {
-      return 'Getting Started';
+      return l10n.timerPhaseGettingStarted;
     } else if (progress < 0.75) {
-      return 'Deep Focus Phase';
+      return l10n.timerPhaseDeepFocus;
     } else {
-      return 'Final Push';
+      return l10n.timerPhaseFinalPush;
     }
   }
 
@@ -89,7 +92,7 @@ class StudyTimerTemplate extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'CURRENTLY STUDYING',
+                              context.l10n.timerHeaderCurrentlyStudying,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
@@ -123,27 +126,32 @@ class StudyTimerTemplate extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
+                    // The spacing below is what closes the gap that used to
+                    // sit under the session card. A mainAxisAlignment would
+                    // not: a Column inside a SingleChildScrollView gets an
+                    // unbounded main axis, shrink-wraps its children, and so
+                    // has no free space to distribute.
                     child: Column(
                       children: [
-                        const SizedBox(height: 40),
-                        // Timer Display
-                        TimerDisplay(
-                          remainingSeconds: ((targetMinutes * 60) - elapsedSeconds).clamp(0, targetMinutes * 60),
-                          phaseLabel: _getPhaseLabel(),
+                        const SizedBox(height: 24),
+                        TimerProgressRing(
+                          elapsedSeconds: elapsedSeconds,
+                          targetMinutes: targetMinutes,
+                          timerState: timerState,
+                          childBuilder: (context, progressPercentage) =>
+                              TimerDisplay(
+                            remainingSeconds: ((targetMinutes * 60) - elapsedSeconds).clamp(0, targetMinutes * 60),
+                            phaseLabel: _getPhaseLabel(context),
+                            progressPercentage: progressPercentage,
+                          ),
                         ),
-                        const SizedBox(height: 64),
+                        const SizedBox(height: 32),
                         // Session Info
                         SessionInfoCard(
                           targetMinutes: targetMinutes,
                           elapsedSeconds: elapsedSeconds,
                         ),
-                        const SizedBox(height: 32),
-                        // Progress Bar
-                        SessionProgressBar(
-                          elapsedSeconds: elapsedSeconds,
-                          targetMinutes: targetMinutes,
-                        ),
-                        const SizedBox(height: 100),
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
